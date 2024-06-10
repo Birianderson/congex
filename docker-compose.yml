@@ -1,0 +1,90 @@
+version: '3'
+services:
+    composer-install:
+        container_name: congex-composer-install
+        build:
+            context: ./.docker/php-fpm
+            dockerfile: Dockerfile
+        image: congex/fpm
+        restart: on-failure
+        volumes:
+            - '.:/var/www/html'
+        command: composer update && chmod -R 777 storage && chmod 777 database/database.sqlite
+        networks:
+            - congex_network
+
+    npm-install:
+        container_name: congex-npm-install
+        build:
+            context: ./.docker/node
+            dockerfile: Dockerfile
+        image: congex/mix
+        restart: on-failure
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            - '.:/var/www/html'
+        command: npm install
+        networks:
+            - congex_network
+
+    fpm:
+        container_name: congex-fpm
+        build:
+            context: ./.docker/php-fpm
+            dockerfile: Dockerfile
+        image: congex/fpm
+        restart: unless-stopped
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - congex_network
+        depends_on:
+            composer-install:
+                condition: service_completed_successfully
+
+    nginx:
+        container_name: congex-nginx
+        image: congex/nginx
+        restart: unless-stopped
+        build:
+            context: ./.docker/nginx
+            dockerfile: Dockerfile
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+        ports:
+            - "${APP_PORT}:80"
+        volumes:
+            - '.:/var/www/html'
+        networks:
+            - congex_network
+        depends_on:
+            fpm:
+                condition: service_started
+
+    mix:
+        container_name: congex-mix
+        build:
+            context: ./.docker/node
+            dockerfile: Dockerfile
+        image: congex/mix
+        restart: unless-stopped
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
+        ports:
+            - '5173:5173'
+        volumes:
+            - '.:/var/www/html'
+        command: npm run dev
+        networks:
+            - congex_network
+        depends_on:
+            npm-install:
+                condition: service_completed_successfully
+
+networks:
+    congex_network:
+        driver: bridge
+
