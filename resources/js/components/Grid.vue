@@ -1,3 +1,3 @@
 <template>
-    <h2> Cu de galinha</h2>
+    <h2> Cu de2 galinha</h2>
 </template>

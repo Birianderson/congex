@@ -1,4 +1,5 @@
 import './bootstrap';
+import * as bootstrap from 'bootstrap';
 import '../css/app.css';
 import { createApp, defineAsyncComponent } from 'vue/dist/vue.esm-bundler';
 
