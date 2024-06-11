@@ -2,6 +2,10 @@ FROM php:8.2-fpm
 
 MAINTAINER Adriano Colombo <colombo@tce.mt.gov.br>
 
+# Add user for laravel application
+RUN useradd -u 1000 -ms /bin/bash -g www-data www
+
+
 #Install dependencies
 RUN apt-get update
 RUN apt-get install -y software-properties-common build-essential ca-certificates libpng-dev libjpeg62-turbo-dev libfreetype6-dev locales zip jpegoptim optipng pngquant gifsicle unzip git curl lua-zlib-dev libmemcached-dev libbz2-dev alien libaio1 wget
@@ -41,6 +45,7 @@ RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
 COPY --chown=www:www-data php.ini /usr/local/etc/php/php.ini
+COPY --chown=www:www-data www.conf /usr/local/etc/php-fpm.d/www.conf
 
 WORKDIR /var/www/html
 
