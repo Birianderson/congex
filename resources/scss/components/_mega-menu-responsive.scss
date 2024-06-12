@@ -1,0 +1,556 @@
+/*
+https://medium.com/swlh/building-a-css-only-responsive-multi-level-mega-menu-ee0a3781cc3f
+*/
+
+$color-accent:                     #eee;
+$color-light:                      #1275b8;
+$color-dark:                        #2a2a2a;
+$menu-link-padding:                 10px 15px;
+$breakpoint:                        950px;
+$mega-menu-multiLevel-colWidth:     100/3 + 0%;
+$mobile-menu-back-height:           calc(1.4em + 30px);
+$mobile-menu-back-offset:           calc(0px - (1.4em + 40px));
+$menu-mobile-width:                 350px;
+
+/*
+body {
+  font-family: 'Noto Sans', sans-serif;
+  background: #fafafa;
+  padding: 0;
+  margin: 0;
+}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+*/
+
+// ------------------ SHARED STYLES
+#mega-menu-container{
+
+   nav {
+       .menu-pencil-icon {
+           position: relative;
+           left: 30px;
+           top: 5px;
+           color: #FFFFFF;
+           font-size: 16px;
+       }
+
+       ul, li {
+           list-style: none;
+           padding: 0;
+           margin: 0;
+           font-family: 'Roboto Condensed', Helvetica;
+           white-space: nowrap;
+       }
+       a {
+           display: block;
+           text-decoration: none;
+           text-transform: uppercase;
+           font-family: 'Roboto Condensed', Helvetica;
+           font-size: 0.8rem;
+           &:hover, &:visited {
+               text-decoration: none;
+           }
+       }
+   }
+
+.menu-bar {
+    background: $color-light;
+    display: flex;
+    z-index:9;
+}
+
+.menu-link {
+    padding: $menu-link-padding;
+    background: $color-light;
+    color: $color-accent;
+    transition: background .2s, color .2s;
+    position: relative;
+    z-index: 1;
+    &[aria-haspopup="true"] {
+        padding-right: 40px;
+        &:after {
+            content: "";
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-size: 11px;
+            background-repeat: no-repeat;
+            width: 14px;
+            height: 14px;
+            font-size:12px;
+            position: absolute;
+            right: 10px;
+            top:50%;
+            transform: translateY(-50%);
+        }
+    }
+}
+.menu-link.menu-list-link {
+    padding-top:3px;
+    padding-bottom: 3px;
+    background-color: #028fd6;
+}
+.mega-menu-header {
+    font-size: 1.0em;
+    padding-bottom:5px;
+    text-transform: uppercase;
+    background-color: #028fd6;
+    /*color: $secondary;*/
+}
+
+.mega-menu {
+    background: $color-light;
+    z-index: 10;
+    padding-bottom: 15px;
+    background-color: #028fd6;
+}
+
+.mega-menu--multiLevel {
+
+    flex-direction: column;
+}
+
+
+// ------------------ MEDIA QUERIES
+
+@media all and (min-width: $breakpoint + 1px) {
+// Desktop only
+
+#mega-menu-container-sup .nav {
+    margin-top: 50px;
+    background: $color-light;
+
+    > nav {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+}
+
+    .menu {
+        [aria-haspopup="true"] {
+            ~ ul {
+                display: none;
+            }
+        }
+    }
+
+    .menu-bar {
+        position: relative;
+        > li {
+            > [aria-haspopup="true"] {
+            // STYLING: Down arrow on desktop
+            &:after {
+                /*background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1397521/arrowBottom.svg#accent');*/
+            }
+                &:hover {
+                    &:after {
+                        /*background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1397521/arrowBottom.svg#light');*/
+                    }
+                }
+
+            // FUNCTIONALITY: Open mega menu
+            &:focus {
+                ~ ul {
+                    display: flex;
+                    transform-origin: top;
+                    animation: dropdown .2s ease-out;
+                }
+            }
+            // FUNCTIONALITY: Keep mega menu open
+            ~ ul {
+                &:hover {
+                    display: flex;
+                }
+            }
+            }
+
+        // FUNCTIONALITY: Keep mega menu open
+        &:focus-within {
+            > [aria-haspopup="true"] {
+                ~ ul {
+                    display: flex;
+                }
+            }
+        }
+
+        // STYLING: Hover/Active state
+        > [aria-haspopup="true"]:focus,
+        &:focus-within > [aria-haspopup="true"],
+        &:hover > a {
+            background: #028fd6;
+            color: white;
+            &:after {
+                background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1397521/arrowTop.svg#light');
+            }
+        }
+        }
+    }
+
+    .mega-menu {
+    // LAYOUT: Mega menu
+    position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+    // FUNCTIONALITY: Keep mega menu open
+    &:hover {
+        display: flex;
+    }
+        a {
+            &:hover {
+                background: tint($color-accent, 85%);
+                color: white;
+                text-decoration: underline;
+            }
+        }
+    }
+
+
+    .mega-menu--multiLevel {
+    // LAYOUT: Multi level columns
+    > li {
+        width: $mega-menu-multiLevel-colWidth;
+        > [aria-haspopup="true"] {
+            ~ ul {
+                left: $mega-menu-multiLevel-colWidth;
+                width: $mega-menu-multiLevel-colWidth;
+                ul {
+                    width: 100%;
+                    left: 100%;
+                }
+            }
+        }
+    }
+
+        li {
+        // FUNCTIONALITY: Opening flyouts
+        &:hover {
+            > [aria-haspopup="true"] {
+                ~ ul {
+                    display: block;
+                    transform-origin: left;
+                    animation: flyout .2s ease-out;
+                }
+            }
+        }
+
+        // FUNCTIONALITY: Keeping flyouts open
+        &:focus-within {
+            > [aria-haspopup="true"] {
+                ~ ul {
+                    display: block;
+                }
+            }
+        }
+
+        // STYLING: Flyout link active states
+        &:hover, &:focus-within {
+            > [aria-haspopup="true"], > a {
+                background: tint($color-accent, 85%);
+                color: darken($color-accent, 5%);
+            }
+        }
+        }
+        [aria-haspopup="true"] {
+            ~ ul, & {
+                border-left: 1px solid #f0f0f0;
+            // FUNCTIONALITY: Keeping flyouts open
+            &:hover {
+                display: block;
+            }
+            }
+        // LAYOUT: Flyouts
+        ~ ul {
+            position: absolute;
+            top: 0;
+            height: 100%;
+        }
+        }
+    }
+
+
+// STYLING: Flat mega menu columns
+.mega-menu--flat {
+    > * {
+        flex: 1;
+    }
+}
+
+// Hide mobile specific elements
+.mobile-menu-trigger, .mobile-menu-header, .mobile-menu-back-item {
+    display: none;
+}
+
+}
+
+@media all and (max-width: $breakpoint) {
+
+    #mega-menu-container-sup .nav {
+        padding: 20px;
+    }
+
+    .mobile-menu-trigger, .mobile-menu-header, .mobile-menu-back-item {
+        display: block;
+    }
+
+    .mobile-menu-trigger {
+        background:  $color-light;
+        color:$color-accent;
+        border: 0;
+        padding: 10px;
+        font-size: 1.2em;
+
+    }
+
+    .mobile-menu-header {
+        order: -1;
+        /*background: #028fd6;*/
+        a {
+            padding: $menu-link-padding;
+            color: white;
+            visibility: visible;
+        }
+    }
+
+    .menu-bar {
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100vh;
+        width: $menu-mobile-width;
+        max-width: $menu-mobile-width;
+        max-width: 90%;
+        overflow-x: hidden;
+        transition: left .3s;
+        box-shadow: 1px 0px 2px 0px rgba(0,0,0,0.25);
+        > li {
+            > [aria-haspopup="true"] {
+                ~ ul {
+                    display: flex;
+                    flex-direction: column;
+                    background: $color-light;
+
+                    position: absolute;
+                    left: 100%;
+                    top: 0;
+                    max-height: 100vh;
+                    width: 100%;
+                    transition: left .3s;
+                // Second level
+                > li {
+                    > [aria-haspopup="true"] {
+                        font-size: 1.2em;
+                        ~ ul {
+                            a {
+                                padding-left: 40px;
+
+                            }
+                        // Third level
+                        > li {
+                            > [aria-haspopup="true"] {
+                                ~ ul {
+                                    a {
+                                        padding-left: 80px;
+                                    }
+                                }
+                            }
+                        }
+                        }
+                    }
+                }
+                    [aria-haspopup="true"] {
+                        color: $color-dark;
+                        &:after {
+                            content: "+";
+                            background: none;
+                            font-size: 1em;
+                            font-weight: normal;
+                            height: 20px;
+                            line-height: 1;
+                        }
+                        ~ ul {
+                            max-height: 0px;
+                            transform-origin: top;
+                            transform: scaleY(0);
+                            transition: max-height .1s;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    .mega-menu-content {
+        padding: $menu-link-padding;
+    }
+
+    .mobile-menu-back-item {
+        order: -1;
+        margin-top:15px;
+        a {
+            background: tint(grey, 70%);
+            color: white;
+            max-height: $mobile-menu-back-height;
+            margin-top: $mobile-menu-back-offset;
+            padding-top: 6px;
+            cursor: pointer;
+            pointer-events: none;
+            &:before {
+                content: "";
+                width: 14px;
+                height: 12px;
+                /*background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/1397521/arrowLeft.svg#default');*/
+                background-size: 14px;
+                margin-right: 10px;
+                display: inline-block;
+            }
+        }
+    }
+
+// ------------------------ ALL DEVICES
+
+.mobile-menu-trigger {
+// FUNCTIONALITY: Open mobile menu
+&:focus {
+    ~ ul {
+        left: 0;
+    }
+}
+}
+
+    .menu-bar {
+    // FUNCTIONALITY: Keep menu open
+    &:hover, &:focus-within {
+        left: 0;
+    }
+        > li {
+            > [aria-haspopup="true"] {
+            // FUNCTIONALITY: Open mega menu
+            &:focus {
+                ~ ul {
+                    left: 0;
+                }
+            }
+                ~ ul {
+                // STYLING: Back button offset
+                margin-top: $mobile-menu-back-height;
+
+                // FUNCTIONALITY: Keep mega menu open
+                &:hover, &:focus-within {
+                    left: 0;
+                }
+                // FUNCTIONALITY: Open dropdowns
+                [aria-haspopup="true"] {
+                    &:focus {
+                        ~ ul {
+                            max-height: 500px;
+                            animation: dropdown .3s forwards;
+                        }
+                    }
+                }
+                // FUNCTIONALITY: Keep dropdowns open
+                li {
+                    &:focus-within {
+                        > [aria-haspopup="true"] {
+                            ~ ul {
+                                max-height: 500px;
+                                transform: scaleY(1);
+                            }
+                        }
+                    }
+                }
+
+                }
+            }
+        // FUNCTIONALITY: Prevent clicks on link behind back button
+        &:focus-within ~ .mobile-menu-header a {
+            visibility: hidden;
+        }
+        }
+    }
+
+// ------------------------ TOUCH DEVICES
+
+@media (hover: none) {
+
+// FUNCTIONALITY: Open mobile menu
+.mobile-menu-trigger {
+    &:hover {
+        ~ ul {
+            left: 0;
+        }
+    }
+}
+
+// FUNCTIONALITY: Open mega menu
+.menu-bar {
+    > li {
+        > [aria-haspopup="true"] {
+            &:hover {
+                ~ ul {
+                    left: 0;
+                }
+            }
+            ~ ul {
+                &:hover {
+                    left: 0;
+                }
+            // FUNCTIONALITY: Open dropdowns
+            [aria-haspopup="true"] {
+                &:hover {
+                    ~ ul {
+                        max-height: 500px;
+                        animation: dropdown .3s forwards;
+                    }
+                }
+                ~ ul {
+                    &:hover {
+                        max-height: 500px;
+                        transform: scaleY(1);
+                    }
+                }
+            }
+            }
+        }
+        &:hover ~ .mobile-menu-header {
+            a {
+                visibility: hidden;
+            }
+        }
+    }
+}
+}
+}
+
+
+// ------------------ ANIMATIONS
+
+@keyframes dropdown {
+    0% {
+        opacity: 0;
+        transform: scaleY(0);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes flyout {
+    0% {
+        opacity: 0;
+        transform: scaleX(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+}

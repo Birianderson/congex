@@ -1,1 +1,113 @@
-@import 'bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+// Variables
+@import "variables/app";
+
+// Bootstrap
+//@import '~bootstrap/scss/bootstrap';
+@import "bootstrap/scss/mixins/banner";
+@include bsBanner("");
+
+// Configuration
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// Layout & components
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/accordion";
+@import "bootstrap/scss/breadcrumb";
+@import "bootstrap/scss/pagination";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/toasts";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/popover";
+@import "bootstrap/scss/carousel";
+@import "bootstrap/scss/spinners";
+@import "bootstrap/scss/offcanvas";
+@import "bootstrap/scss/placeholders";
+
+// Helpers
+@import "bootstrap/scss/helpers";
+
+// Utilities
+@import "bootstrap/scss/utilities/api";
+// scss-docs-end import-stack
+
+// Theme mixins
+@import "./mixins/button";
+
+// Theme components
+@import "./components/scrollbar";
+@import "./components/avatar";
+@import "./components/buttons";
+@import "./components/card";
+@import "./components/chart";
+@import "./components/content";
+@import "./components/dropdown";
+@import "./components/feather";
+@import "./components/footer";
+@import "./components/hamburger";
+@import "./components/list-group";
+@import "./components/main";
+@import "./components/navbar";
+@import "./components/reboot";
+@import "./components/sidebar";
+@import "./components/sizing";
+@import "./components/stat";
+@import "./components/tables";
+@import "./components/type";
+@import "./components/wrapper";
+@import "./components/cc";
+@import "./components/products";
+@import "./components/connector";
+@import "./components/login";
+
+// Theme utilities
+@import "./utilities/cursors";
+@import './utilities/variables';
+@import "./utilities/color";
+@import "./utilities/pagination";
+@import "./utilities/form";
+@import "./utilities/popup";
+@import "./utilities/tooltip";
+@import "./utilities/text";
+
+// 3rd party plugin styles
+@import "./vendor/flatpickr";
+@import "./vendor/simplebar";
+
+.element-with-gradient {
+    background: rgb(140, 87, 255); // Fallback para navegadores que não suportam gradientes
+    background: $gradient-background;
+    border-top-right-radius: 20px; // ajusta o valor conforme necessário
+    border-bottom-right-radius: 20px; // ajusta o valor conforme necessário
+    margin-right: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); // Exemplo de sombra
+}
+
+body {
+    font-family: $font-family-sans-serif !important;
+    margin: 0 !important;
+}

@@ -1,0 +1,12 @@
+.connector {
+    height: 70px;
+    transition: ease 0.5s;
+    cursor: pointer;
+    border: solid 1px #cecece;
+    border-radius: 5px;
+
+    &.disabled {
+        filter: grayscale(100%);
+        opacity: 0.3;
+    }
+}

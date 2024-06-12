@@ -1,0 +1,13 @@
+@media screen and (min-width: 600px) {
+    .login-container {
+        width: 350px;
+        //margin: 50px auto 10px auto;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .login-container {
+        width: 90%;
+        margin: 20px auto 10px auto;
+    }
+}
