@@ -6,14 +6,14 @@
     </a>
     <ul class="nav flex-column mb-auto mt-3" >
         <li class="nav-item">
-            <a href="#" class="nav-link" aria-current="page">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+            <a href="#" class="nav-link icon-md" aria-current="page">
+                <i class="fa fa-home me-2"></i>
                 Home
             </a>
         </li>
         <li>
             <a href="#" class="nav-link text-white element-with-gradient">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                <i class="fa fa-home me-2"></i>
                 Dashboard
             </a>
         </li>
@@ -23,18 +23,7 @@
                 Orders
             </a>
         </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                Products
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link text-white">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-                Customers
-            </a>
-        </li>
+
     </ul>
     <hr>
     <div class="dropdown">
