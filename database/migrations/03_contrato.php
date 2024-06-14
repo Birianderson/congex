@@ -1,0 +1,43 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('contrato', function (Blueprint $table) {
+            $table->id();
+            $table->string('numero');
+            $table->text('objeto');
+            $table->string('situacao');
+            $table->char('ativo');
+            $table->date('data_inicio');
+            $table->date('data_fim');
+            $table->bigInteger('valor');
+            $table->string('oberservacao')->nullable();
+            $table->unsignedBigInteger('licitacao_id');
+            $table->foreign('licitacao_id')->references('id')->on('licitacao');
+            $table->unsignedBigInteger('empresa_id')->nullable();
+            $table->foreign('empresa_id')->references('id')->on('empresa');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('contrato');
+    }
+};
