@@ -102,20 +102,10 @@
 @import "@fortawesome/fontawesome-free/css/solid.css";
 @import "@fortawesome/fontawesome-free/css/regular.css";
 @import "@fortawesome/fontawesome-free/css/brands.css";
+@import "variables/datatable";
+@import "variables/menu";
 
 
-.element-with-gradient {
-    background: rgb(140, 87, 255); // Fallback para navegadores que não suportam gradientes
-    background: $gradient-background;
-    border-top-right-radius: 20px; // ajusta o valor conforme necessário
-    border-bottom-right-radius: 20px; // ajusta o valor conforme necessário
-    margin-right: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); // Exemplo de sombra
-}
-
-.icon-md {
-    font-size: 16px;
-}
 
 body {
     font-family: $font-family-sans-serif !important;

@@ -5,6 +5,7 @@ import { createApp, defineAsyncComponent } from 'vue/dist/vue.esm-bundler';
 import mitt from 'mitt';
 const app = createApp({});
 import Toast from "vue-toast-notification";
+import DataTable from 'datatables.net-vue3';
 
 const components = import.meta.glob('./components/**/*.vue', {eager: true});
 

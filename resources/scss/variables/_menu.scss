@@ -1,0 +1,13 @@
+
+.element-with-gradient {
+    background: rgb(140, 87, 255);
+    background: $gradient-background;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    margin-right: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.icon-md {
+    font-size: 16px;
+}

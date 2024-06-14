@@ -1,4 +1,4 @@
-<div class="d-flex flex-column flex-shrink-0 text-white bg-gray-200" style="width: 280px;">
+<div class="d-flex flex-column flex-shrink-0 text-white bg-gray-100" style="width: 280px;">
     <a href="/" class=" ">
         <div class="text-start ms-5" style="height: 60px; width: 100%;">
             <img src="{{ asset('assets/image/logo.png') }}" alt="Logo" style="max-height: 100%; max-width: 100%; object-fit: contain;">

@@ -18,7 +18,7 @@
     <x-partials.notification></x-partials.notification>
     <x-partials.menu></x-partials.menu>
     <div class="main">
-        <main class="content">
+        <main class="content bg-gray-100">
             <div class="container-fluid p-0">
                 <div class="d-flex align-items-start">
                     <div class="flex-grow-1">
