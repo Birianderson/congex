@@ -6,8 +6,23 @@
     border-bottom-right-radius: 20px;
     margin-right: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
 }
 
 .icon-md {
     font-size: 16px;
+}
+
+.menu-text{
+    color: #6b6677;
+    font-weight: bold;
+    margin-top: 5px;
+}
+/* Adicionando estilo para o ícone de seta */
+.nav-link .fa-chevron-down {
+    transition: transform 0.2s;
+}
+
+.nav-link.collapsed .fa-chevron-down {
+    transform: rotate(-90deg);
 }
