@@ -3,18 +3,19 @@
 
 <script>
 import { ref, onMounted, inject } from 'vue';
-import { useToast } from "vue-toast-notification";
-import 'vue-toast-notification/dist/theme-sugar.css';
+import { useToast } from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
 export default {
 
-    setup(props, { emit }) {
+    setup(props, {emit}) {
         const events = inject('events');
         const toast = useToast();
 
         const getNotificationType = (type) => {
-            if(type === 'success') {
+            if (type === 'success') {
                 return toast.success;
-            } else if(type === 'error') {
+            } else if (type === 'error') {
                 return toast.error;
             } else if (type === 'info') {
                 return toast.info;
@@ -26,7 +27,7 @@ export default {
         }
 
         onMounted(() => {
-            if(props.show) {
+            if (props.show) {
                 setTimeout(() => {
                     const notification = getNotificationType(props.type);
                     notification(props.message, {
@@ -48,10 +49,10 @@ export default {
     },
 
     props: {
-        message: { default: null },
-        type: { default: null },
-        duration: { default: null },
-        show: { default: null }
+        message: {default: null},
+        type: {default: null},
+        duration: {default: null},
+        show: {default: null}
     }
 }
 </script>

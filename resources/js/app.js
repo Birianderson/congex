@@ -4,7 +4,7 @@ import '../css/app.css';
 import { createApp, defineAsyncComponent } from 'vue/dist/vue.esm-bundler';
 import mitt from 'mitt';
 const app = createApp({});
-import Toast from "vue-toast-notification";
+import Toast from "vue-toastification";
 import DataTable from 'datatables.net-vue3';
 
 const components = import.meta.glob('./components/**/*.vue', {eager: true});
