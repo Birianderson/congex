@@ -38,6 +38,57 @@ class EmpresaRepository implements EmpresaContract {
         }
     }
 
+
+    /**
+     * Atualizar Empresa
+     * @param int $id
+     * @param array $params
+     * @param bool $autoCommit
+     * @return bool
+     * @throws Exception
+     */
+    public function update(int $id, array $params, bool $autoCommit = true): bool
+    {
+        $autoCommit && DB::beginTransaction();
+        try {
+            $empresa = $this->getById($id);
+            $empresa->update([
+                'nome' => $params['nome'],
+                'cnpj' => $params['cnpj'],
+            ]);
+            $autoCommit && DB::commit();
+            return true;
+        } catch (Exception $ex) {
+            $autoCommit && DB::rollBack();
+            throw new Exception($ex);
+        }
+    }
+
+
+    /**
+     * Deletar categoria
+     * @param int $id
+     * @param bool $autoCommit
+     * @return bool
+     * @throws Exception
+     */
+    public function destroy(int $id, bool $autoCommit = true): bool
+    {
+        $autoCommit && DB::beginTransaction();
+        try {
+            $empresa = $this->getById($id);
+            $empresa->delete();
+            $autoCommit && DB::commit();
+        } catch (Exception $ex) {
+            $autoCommit && DB::rollBack();
+            throw new Exception($ex->getMessage());
+        }
+
+        return true;
+    }
+
+
+
     /**
      * @param array $params
      * @return LengthAwarePaginator
@@ -57,13 +108,8 @@ class EmpresaRepository implements EmpresaContract {
 
     public function getById(int $id): Model
     {
-        return Empresa::query()
-            ->with(['termo_aditivo', 'documento_contrato' => function ($query) {
-                $query->where('tipo', 'termo_aditivo');
-            }])
-            ->orderBy('empresa')
-            ->where('id', $id)
-            ->firstOrFail();
+        return Empresa::query()->where('id', $id)->firstOrFail();
     }
+
 
 }

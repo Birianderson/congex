@@ -35,31 +35,24 @@ class EmpresaController extends Controller
         return response()->json('success', 201);
     }
 
-    public function edit(int $id){
-        $contrato = $this->repository->getById($id);
-        $documentos_contrato = $this->repository->getAllDocumentoContrato($id);
-        $all_documentos = $this->repository->getAllTipoDocumentoContrato();
-        return view('contrato.edit', compact('contrato', 'documentos_contrato','all_documentos'));
+    public function edit(int $id): JsonResponse
+    {
+        $empresa = $this->repository->getById($id);
+        return response()->json($empresa);
     }
 
-    public function update(ContratoRequest $request, int $id){
+    /**
+     *
+     */
+    public function update(EmpresaRequest $request, int $id): JsonResponse
+    {
         $params = $request->except('_token');
-        $contrato = $this->repository->getById($id);
-        $documentos_contrato = $this->repository->getAllDocumentoContrato($id);
-        $all_documentos = $this->repository->getAllTipoDocumentoContrato();
-        $this->repository->update($id, $params, $contrato, $all_documentos,$documentos_contrato);
-        return redirect(route("contrato.index", ));
-    }
-    public function historico($id){
-        $contrato = $this->repository->getById($id);
-        $documentos = $this->repository->getDocsByLicitacaoId($contrato->licitacao_id);
-        $termos_aditivos = $this->repository->getTermoAditivoById($id);
-        $documentos_contrato = $this->repository->getAllDocumentoContrato($id);
-        return view('contrato.historico', compact('contrato', 'documentos', 'termos_aditivos','documentos_contrato'));
+        $this->repository->update($id, $params);
+        return response()->json('success', 201);
     }
     public function delete(int $id){
         $this->repository->destroy($id);
-        return redirect(route("contrato.index"));
+        return response()->json('success', 201);
     }
 
 }

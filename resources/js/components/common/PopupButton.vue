@@ -12,7 +12,6 @@ export default {
         const events = inject('events');
 
         const open = () => {
-            console.log('oi')
             let data = typeof props.data === 'string' ? JSON.parse(props.data) : props.data;
             events.emit('popup', {
                 title: props.title,

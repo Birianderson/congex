@@ -48,7 +48,6 @@ export default {
                 const response = await axios.get(`${acao.value}${props.data.id}`);
                 acao.value += props.data.id;
                 info.value = response.data;
-                readOnly.value = Boolean(props.data.readOnly);
             } catch (err) {
                 emit('notification', {
                     type: 'error',
@@ -62,6 +61,7 @@ export default {
         }
 
         onMounted(async () => {
+            console.log(props);
             events.off("form-submitted");
             events.on("form-submitted", (sucesso) => {
                 if (sucesso) {
@@ -73,7 +73,7 @@ export default {
                     emit('close', true);
                 }
             });
-            if (props.data) {
+            if (props.data.id) {
                 await loadData();
             } else {
                 ready.value = true;
@@ -88,7 +88,7 @@ export default {
     },
 
     props: {
-        data: {default: null, required: true},
+        data: {default: null, required: true}
     }
 
 }

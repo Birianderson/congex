@@ -26,5 +26,5 @@ Route::group(['prefix' => 'empresa', 'namespace' => 'App\Http\Controllers\Empres
     Route::get('/historico/{id}',[EmpresaController::class, 'historico'])->name('empresa.historico');
     Route::get('/{id}',[EmpresaController::class, 'edit'])->name('empresa.edit');
     Route::post('/{id}',[EmpresaController::class, 'update'])->name('empresa.update');
-    Route::post('/{id}/delete',[EmpresaController::class, 'delete'])->name('empresa.delete');
+    Route::delete('/delete/{id}',[EmpresaController::class, 'delete'])->name('empresa.delete');
 });
