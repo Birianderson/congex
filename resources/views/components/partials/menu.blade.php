@@ -4,7 +4,7 @@
     </a>
     <ul class="nav flex-column mb-auto mt-3">
         <li class="mt-2">
-            <a href="#" class="nav-link text-white element-with-gradient">
+            <a href="#" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'dashboard')) element-with-gradient text-white @endif">
                 <i class="fa fa-line-chart me-2"></i>
                 Dashboard
             </a>
@@ -34,7 +34,7 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="#" class="nav-link menu-text">
+            <a href="{{route('empresa.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'empresa')) element-with-gradient text-white @endif">
                 <i class="fa fa-building me-2"></i>
                 Empresas
             </a>

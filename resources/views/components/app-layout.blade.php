@@ -17,6 +17,7 @@
 <div class="wrapper" id="app">
     <x-partials.notification></x-partials.notification>
     <x-partials.menu></x-partials.menu>
+    <popup></popup>
     <div class="main">
         <main class="content bg-gray-100">
             <div class="container-fluid p-0">
