@@ -5,7 +5,7 @@
         </div>
         <div class="p-5">
             <div class="d-flex justify-content-end">
-                <popup-button id="empresa" title="Nova Empresa" component="form-empresa" action="/empresa/" size="lg">
+                <popup-button id="empresa" title="Nova Empresa" component="form-empresa" action="/empresa/" size="lg" type="primary">
                     <i class="fa fa-plus"></i>
                     Nova Empresa
                 </popup-button>

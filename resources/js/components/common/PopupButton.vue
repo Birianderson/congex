@@ -1,5 +1,5 @@
 <template>
-    <button :class="`btn btn-${type}`" @click="open">
+    <button class="popup-button" :class="`btn btn-${type}`" @click="open">
         <slot></slot>
     </button>
 </template>

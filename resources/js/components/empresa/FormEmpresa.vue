@@ -65,15 +65,16 @@ export default {
             events.off("form-submitted");
             events.on("form-submitted", (sucesso) => {
                 if (sucesso) {
-                    events.emit('table-reload', true);
+                    events.emit('reload', true);
                     events.emit('notification', {
                         type: 'success',
-                        message: 'Categoria salva com Sucesso!'
+                        message: 'Empresa salva com Sucesso!'
                     });
+                    emit('reload');
                     emit('close', true);
                 }
             });
-            if (props.data.id) {
+            if (props.data) {
                 await loadData();
             } else {
                 ready.value = true;

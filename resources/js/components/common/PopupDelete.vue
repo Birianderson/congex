@@ -43,6 +43,7 @@ export default {
                     type: 'success',
                     message: 'Registro excluído com sucesso!'
                 });
+                events.emit('reload');
                 emit('close', true);
             } catch (error) {
                 events.emit('notification', {
@@ -55,18 +56,6 @@ export default {
 
         onMounted(() => {
             acao.value = `${props.data.acao}${props.data.id}`;
-            console.log(acao.value);
-            events.off("form-submitted");
-            events.on("form-submitted", (sucesso) => {
-                if (sucesso) {
-                    events.emit('table-reload', true);
-                    events.emit('notification', {
-                        type: 'success',
-                        message: 'Categoria salva com Sucesso!'
-                    });
-                    emit('close', true);
-                }
-            });
         });
 
         return {
