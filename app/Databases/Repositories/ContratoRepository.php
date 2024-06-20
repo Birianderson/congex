@@ -3,25 +3,13 @@
 namespace App\Databases\Repositories;
 
 use App\Databases\Contracts\ContratoContract;
-use App\Databases\Contracts\LicitacaoContract;
 use App\Databases\Models\Contrato;
-use App\Databases\Models\Documento;
-use App\Databases\Models\DocumentoContrato;
-use App\Databases\Models\FaseLicitacao;
-use App\Databases\Models\Licitacao;
-use App\Databases\Models\Notificacao;
-use App\Databases\Models\TermoAditivo;
-use App\Databases\Models\TipoDocumento;
-use App\Databases\Models\TipoDocumentoContrato;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Comment\Doc;
-use function PHPUnit\Framework\isNull;
-
 class ContratoRepository implements ContratoContract {
 
     public function __construct(private Contrato $model){}
@@ -57,22 +45,22 @@ class ContratoRepository implements ContratoContract {
                 'valor'=>$valorNumerico,
             ]);
             $contrato->save();
-
-            foreach ($params as $key => $file) {
-                if ($file instanceof UploadedFile) {
-                    $key = str_replace('_', ' ', $key);
-                    $path = $file->store('/public');
-                    $arquivo = new DocumentoContrato([
-                        'nome' => $key,
-                        'tipo' => 'contrato',
-                        'path' => $path,
-                        'contrato_id' => $contrato['id'],
-                        'tipo_id' => $contrato['id']
-                    ]);
-                    $arquivo->save();
-                }
-            }
-
+            /*
+                        foreach ($params as $key => $file) {
+                            if ($file instanceof UploadedFile) {
+                                $key = str_replace('_', ' ', $key);
+                                $path = $file->store('/public');
+                                $arquivo = new DocumentoContrato([
+                                    'nome' => $key,
+                                    'tipo' => 'contrato',
+                                    'path' => $path,
+                                    'contrato_id' => $contrato['id'],
+                                    'tipo_id' => $contrato['id']
+                                ]);
+                                $arquivo->save();
+                            }
+                        }
+            */
             if($autoCommit) DB::commit();
             return true;
         } catch(Exception $ex) {
@@ -159,35 +147,28 @@ class ContratoRepository implements ContratoContract {
             throw new Exception($ex);
         }
     }
-    public function getAll(array $params): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    /**
+     * @param array $params
+     * @return LengthAwarePaginator
+     */
+    public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Contrato::query()
-            ->with(['termo_aditivo'])
-            ->selectRaw("
-                CONTRATO.*,
-                CASE
-                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.data_fim FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '1')
-                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.data_fim FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '2')
-                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.data_fim FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '3')
-                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.data_fim FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '4')
-                    ELSE contrato.DATA_FIM
-                END AS data_fim_real ,
-                CASE
-                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.VALOR FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '1')
-                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.VALOR FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '2')
-                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.VALOR FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '3')
-                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.VALOR FROM scmgcc.TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.ordem = '4')
-                    ELSE contrato.VALOR
-                END AS valor_real
-            ");
-
-        return $query
-            ->orderBy($params['sort'] ?? 'empresa', $params['sort_dir'] ?? 'asc')
-            ->paginate( 10)
-            ->appends($params);
-
+        $query = Contrato::query();
+        $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
+        if(isset($params['search']['value']) && !empty($params['search']['value'])){
+            $search = strtolower($params['search']['value']);
+            $query->where('nome', 'like', '%'.$search.'%');
+        }
+        if(isset($params['order'][0]) && !empty($params['order'][0])){
+            $columnNumber = $params['order'][0]['column'];
+            $dir = $params['order'][0]['dir'];
+            $columnName = $params['columns'][$columnNumber]['data'];
+            $query->orderBy($columnName, $dir);
+        }else{
+            $query->orderBy('nome', 'asc');
+        }
+        return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }
-
 
 
     public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model

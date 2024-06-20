@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Contrato;
 
 use App\Databases\Contracts\ContratoContract;
-use App\Databases\Contracts\LicitacaoContract;
-use App\Databases\Models\Contrato;
-use App\Databases\Repositories\ContratoRepository;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ContratoRequest;
-use App\Http\Requests\LicitacaoRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,10 +15,17 @@ class ContratoController extends Controller
 
     public function index(Request $request)
     {
-        $params = $request->all();
-        $contratos = $this->repository->getAll($request->all());
-        $sortDir = $request->get('sort_dir', 'asc');
-        return view('contrato.index', compact('contratos', 'sortDir'));
+        return view('contrato.index');
+    }
+
+    public function list(Request $request): JsonResponse
+    {
+        $dados = $this->repository->getAll($request->all());
+        return response()->json([
+            'data' => $dados->all(),
+            'recordsFiltered' => $dados->total(),
+            'recordsTotal' => $dados->total()
+        ]);
     }
 
     public function add()
