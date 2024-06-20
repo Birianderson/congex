@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FiscalRequest extends FormRequest
+class PessoaRequest extends FormRequest
 {
 
     /**

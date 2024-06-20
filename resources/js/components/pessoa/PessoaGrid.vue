@@ -2,7 +2,7 @@
     <div v-if="ready">
         <DataTable
             ref="mydatatable"
-            id="fiscal"
+            id="pessoa"
             :ajax="ajax"
             class="table table-hover table-responsive "
             width="100%"
@@ -62,7 +62,7 @@ export default {
             },
         };
 
-        const ajax = '/fiscal/list';
+        const ajax = '/pessoa/list';
 
         onMounted(() => {
             ready.value = true;
@@ -78,8 +78,8 @@ export default {
 
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('popup', {
-                        title: 'Editar Fiscal',
-                        component: 'form-fiscal',
+                        title: 'Editar Pessoa',
+                        component: 'form-pessoa',
                         data: {
                             id: `${id}`,
                         },
@@ -93,10 +93,10 @@ export default {
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('loading', true);
                     events.emit('popup', {
-                        title: `Deletar Fiscal`,
+                        title: `Deletar Pessoa`,
                         component: 'popup-delete',
                         data: {
-                            acao: '/fiscal/delete/',
+                            acao: '/pessoa/delete/',
                             id: `${id}`,
                         },
                     });

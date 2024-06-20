@@ -41,7 +41,7 @@ export default {
         const events = inject('events');
         const info = ref({});
         const ready = ref(false);
-        const acao = ref('/fiscal/');
+        const acao = ref('/pessoa/');
         const readOnly = ref(false);
         const loadData = async () => {
             try {
@@ -68,7 +68,7 @@ export default {
                     events.emit('reload', true);
                     events.emit('notification', {
                         type: 'success',
-                        message: 'Fiscal salva com Sucesso!'
+                        message: 'Pessoa salva com Sucesso!'
                     });
                     emit('reload');
                     emit('close', true);

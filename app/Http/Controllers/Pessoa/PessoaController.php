@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Fiscal;
+namespace App\Http\Controllers\Pessoa;
 
-use App\Databases\Contracts\FiscalContract;
+use App\Databases\Contracts\PessoaContract;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\FiscalRequest;
+use App\Http\Requests\PessoaRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class FiscalController extends Controller
+class PessoaController extends Controller
 {
-    public function __construct(private FiscalContract $repository){}
+    public function __construct(private PessoaContract $repository){}
 
     public function index(Request $request): View
     {
-        return view('fiscal.index');
+        return view('pessoa.index');
     }
 
     public function list(Request $request): JsonResponse
@@ -29,7 +29,7 @@ class FiscalController extends Controller
     }
 
 
-    public function create(FiscalRequest $request){
+    public function create(PessoaRequest $request){
         $params = $request->except('_token');
         $this->repository->create($params);
         return response()->json('success', 201);
@@ -37,14 +37,14 @@ class FiscalController extends Controller
 
     public function edit(int $id): JsonResponse
     {
-        $fiscal = $this->repository->getById($id);
-        return response()->json($fiscal);
+        $Pessoa = $this->repository->getById($id);
+        return response()->json($Pessoa);
     }
 
     /**
      *
      */
-    public function update(FiscalRequest $request, int $id): JsonResponse
+    public function update(PessoaRequest $request, int $id): JsonResponse
     {
         $params = $request->except('_token');
         $this->repository->update($id, $params);

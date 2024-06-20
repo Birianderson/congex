@@ -59,9 +59,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{route('fiscal.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'fiscal')) element-with-gradient text-white @endif">
+                    <a href="{{route('pessoa.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'pessoa')) element-with-gradient text-white @endif">
                         <i class="fa fa-people-group me-2"></i>
-                        Fiscal
+                        Pessoas
                     </a>
                 </li>
                 <li>

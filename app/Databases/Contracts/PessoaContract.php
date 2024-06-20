@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-interface FiscalContract
+interface PessoaContract
 {
     //public function create(array $params, bool $autoCommit = true): bool;
     // public function getAll(array $params);

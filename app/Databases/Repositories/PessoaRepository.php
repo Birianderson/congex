@@ -2,16 +2,16 @@
 
 namespace App\Databases\Repositories;
 
-use App\Databases\Contracts\FiscalContract;
-use App\Databases\Models\Fiscal;
+use App\Databases\Contracts\PessoaContract;
+use App\Databases\Models\Pessoa;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class FiscalRepository implements FiscalContract {
+class PessoaRepository implements PessoaContract {
 
-    public function __construct(private Fiscal $model){}
+    public function __construct(private Pessoa $model){}
 
     /**
      * Salvar novo categoria
@@ -24,11 +24,11 @@ class FiscalRepository implements FiscalContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $fiscal = new Fiscal([
+            $Pessoa = new Pessoa([
                 'nome' => $params['nome'],
                 'cpf' => $params['cpf'],
             ]);
-            $fiscal->save();
+            $Pessoa->save();
 
             $autoCommit && DB::commit();
             return true;
@@ -51,8 +51,8 @@ class FiscalRepository implements FiscalContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $fiscal = $this->getById($id);
-            $fiscal->update([
+            $Pessoa = $this->getById($id);
+            $Pessoa->update([
                 'nome' => $params['nome'],
                 'cpf' => $params['cpf'],
             ]);
@@ -76,8 +76,8 @@ class FiscalRepository implements FiscalContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $fiscal = $this->getById($id);
-            $fiscal->delete();
+            $Pessoa = $this->getById($id);
+            $Pessoa->delete();
             $autoCommit && DB::commit();
         } catch (Exception $ex) {
             $autoCommit && DB::rollBack();
@@ -95,7 +95,7 @@ class FiscalRepository implements FiscalContract {
      */
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Fiscal::query();
+        $query = Pessoa::query();
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -115,7 +115,7 @@ class FiscalRepository implements FiscalContract {
 
     public function getById(int $id): Model
     {
-        return Fiscal::query()->where('id', $id)->firstOrFail();
+        return Pessoa::query()->where('id', $id)->firstOrFail();
     }
 
 

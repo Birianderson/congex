@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('fiscal', function (Blueprint $table) {
+        Schema::create('pessoa', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
             $table->integer('cpf');
