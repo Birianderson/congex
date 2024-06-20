@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nome');
             $table->integer('cpf');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::drop('fiscal');
+        Schema::drop('pessoa');
     }
 };

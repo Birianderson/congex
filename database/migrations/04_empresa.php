@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nome');
             $table->integer('cnpj');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

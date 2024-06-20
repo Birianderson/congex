@@ -28,6 +28,7 @@ return new class extends Migration
             $table->unsignedBigInteger('termo_aditivo_id');
             $table->foreign('termo_aditivo_id')->references('id')->on('termo_aditivo');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

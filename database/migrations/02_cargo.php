@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('cargo', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

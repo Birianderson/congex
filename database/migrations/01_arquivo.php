@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tipo_arquivo_id')->nullable();
             $table->foreign('tipo_arquivo_id')->references('id')->on('tipo_arquivo_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

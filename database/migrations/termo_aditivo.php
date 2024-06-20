@@ -25,6 +25,7 @@ return new  class extends Migration
             $table->unsignedBigInteger('fase_termo_aditivo_id');
             $table->foreign('fase_termo_aditivo_id')->references('id')->on('fase_termo_aditivo');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

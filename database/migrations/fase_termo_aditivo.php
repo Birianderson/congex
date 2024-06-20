@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('ordem');
             $table->string('cor');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
