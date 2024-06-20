@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Cargo\CargoController;
 use App\Http\Controllers\Contrato\ContratoController;
 use App\Http\Controllers\Empresa\EmpresaController;
 use App\Http\Controllers\Fiscal\FiscalController;
@@ -39,4 +40,15 @@ Route::group(['prefix' => 'fiscal', 'namespace' => 'App\Http\Controllers\FiscalC
     Route::get('/{id}',[FiscalController::class, 'edit'])->name('fiscal.edit');
     Route::post('/{id}',[FiscalController::class, 'update'])->name('fiscal.update');
     Route::delete('/delete/{id}',[FiscalController::class, 'delete'])->name('fiscal.delete');
+});
+
+Route::group(['prefix' => 'cargo', 'namespace' => 'App\Http\Controllers\CargoController'], function() {
+    Route::get('/', [CargoController::class, 'index'])->name('cargo.index');
+    Route::get('/add', [CargoController::class, 'add'])->name('cargo.add');
+    Route::get('/list', [CargoController::class, 'list'])->name('cargo.list');
+    Route::post('/',[CargoController::class,'create'])->name('cargo.create');
+    Route::get('/historico/{id}',[CargoController::class, 'historico'])->name('cargo.historico');
+    Route::get('/{id}',[CargoController::class, 'edit'])->name('cargo.edit');
+    Route::post('/{id}',[CargoController::class, 'update'])->name('cargo.update');
+    Route::delete('/delete/{id}',[CargoController::class, 'delete'])->name('cargo.delete');
 });

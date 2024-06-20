@@ -45,7 +45,7 @@
                 Configuração
                 <i class="fa fa-chevron-down ms-auto"></i>
             </a>
-            <ul id="submenu1" class="collapse list-unstyled ps-3  @if(str_contains(request()->route()->getName(), 'fiscal')) show @endif" >
+            <ul id="submenu1" class="collapse list-unstyled ps-3  @if(str_contains(request()->route()->getName(), 'fiscal')) show @endif @if(str_contains(request()->route()->getName(), 'cargo')) show @endif" >
                 <li>
                     <a href="#" class="nav-link menu-text">
                         <i class="fa fa-th-list me-2"></i>
@@ -65,7 +65,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link menu-text">
+                    <a href="{{route('cargo.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'cargo')) element-with-gradient text-white @endif">
                         <i class="fa fa-briefcase me-2"></i>
                         Cargos
                     </a>
