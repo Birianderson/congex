@@ -16,8 +16,8 @@
 .page-link.active, .active > .page-link {
     z-index: 3;
     color: var(--bs-pagination-active-color);
-    background-color: rgb(140, 87, 255);
-    border-color: rgb(140, 87, 255);;
+    background-color: rgb(115,103,240);
+    border-color: rgb(115,103,240);
 }
 
 .cardheader {
@@ -29,17 +29,17 @@
     color: white;
     font-size: 16px;
     word-wrap: break-word;
-    background-color: rgb(140, 87, 255);
+    background-color: rgb(115,103,240);
     background-clip: border-box;
     border: 0 solid rgba(0, 0, 0, .125);
     border-radius: .75rem;
-    box-shadow: 0 4px 20px 0 rgba(0,0,0,.14),0 7px 10px -5px rgba(140,87,255,.4)!important;
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,.14),0 7px 10px -5px rgba(115,103,240,.4)!important;
     justify-content: center;
     align-items: start;
 }
 
 .popup-button{
-    box-shadow: 0 4px 20px 0 rgba(0,0,0,.14),0 7px 10px -5px rgba(140,87,255,.4)!important;
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,.14),0 7px 10px -5px rgba(115,103,240,.4)!important;
 }
 
 .dt-action{
