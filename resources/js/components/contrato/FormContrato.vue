@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-6 mb-5">
                         <label for="cnpj" class="form-label">CNPJ</label>
-                        <input type="text" class="cnpj form-control @error('cnpj') is-invalid @enderror" id="cnpj" name="cnpj"/>
+                        <input type="text" v-mask="'##.###.###/####-##'" class="form-control @error('cnpj') is-invalid @enderror" id="cnpj" name="cnpj"/>
                     </div>
                 </div>
                 <div class="row">
@@ -43,7 +43,7 @@
                 <div class="row">
                     <div class="col-6 mb-5">
                         <label for="valor" class="form-label">Valor do Contrato</label>
-                        <input type="text" class="valor form-control @error('valor') is-invalid @enderror" id="valor" name="valor">
+                        <input type="text" v-money="money" class="form-control @error('valor') is-invalid @enderror" id="valor" name="valor">
                     </div>
                     <div class="col-6 mb-5">
                         <label for="observacao" class="form-label">Observação do Contrato</label>
@@ -63,25 +63,37 @@
                     <button type="button" class="btn btn-secondary text-white" @click="close" aria-label="Close">
                         <i class="fa fa-close"></i> Cancelar
                     </button>
-
                 </div>
             </div>
         </form>
     </div>
 </template>
 
-
-<script>
-import {inject, onMounted, ref} from 'vue';
+<script lang="ts">
+import axios from 'axios';
+import { inject, onMounted, ref } from 'vue';
+import { MaskDirective } from 'vue-the-mask';
+import { VMoney } from 'v-money3';
 
 export default {
-
-    setup(props, {emit}) {
+    directives: {
+        mask: MaskDirective,
+        money: VMoney
+    },
+    setup(props, { emit }) {
         const events = inject('events');
         const info = ref({});
         const ready = ref(false);
         const acao = ref('/contrato/');
         const readOnly = ref(false);
+
+        const money = {
+            prefix: 'R$ ',
+            thousands: '.',
+            decimal: ',',
+            precision: 2
+        };
+
         const loadData = async () => {
             try {
                 const response = await axios.get(`${acao.value}${props.data.id}`);
@@ -122,7 +134,7 @@ export default {
         })
 
         return {
-            info, ready, acao, readOnly, close
+            info, ready, acao, readOnly, close, money
         }
 
     },
@@ -132,6 +144,18 @@ export default {
     }
 
 }
-
-
 </script>
+
+<style>
+.form-label {
+    font-weight: bold;
+}
+
+.form-control {
+    border-radius: 0.25rem;
+}
+
+.btn {
+    margin: 0.5rem;
+}
+</style>
