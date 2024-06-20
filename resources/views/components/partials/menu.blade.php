@@ -40,12 +40,12 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link menu-text">
+            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'fiscal')) show text-primary @endif" @if(str_contains(request()->route()->getName(), 'fiscal')) aria-expanded="true" @endif>
                 <i class="fa fa-cog me-2"></i>
                 Configuração
                 <i class="fa fa-chevron-down ms-auto"></i>
             </a>
-            <ul id="submenu1" class="collapse list-unstyled ps-3">
+            <ul id="submenu1" class="collapse list-unstyled ps-3  @if(str_contains(request()->route()->getName(), 'fiscal')) show @endif" >
                 <li>
                     <a href="#" class="nav-link menu-text">
                         <i class="fa fa-th-list me-2"></i>
@@ -59,9 +59,15 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link menu-text">
+                    <a href="{{route('fiscal.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'fiscal')) element-with-gradient text-white @endif">
                         <i class="fa fa-people-group me-2"></i>
                         Fiscal
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link menu-text">
+                        <i class="fa fa-briefcase me-2"></i>
+                        Cargos
                     </a>
                 </li>
                 <li>
