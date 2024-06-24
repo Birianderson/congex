@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col">
                     <label :for="'pessoa-' + index">Pessoa</label>
-                    <select class="form-select" :id="'pessoa-' + index" v-model="entry.pessoa" name="pessoa[]">
+                    <select class="form-select" :id="'pessoa-' + index" v-model="entry.pessoa" name="pessoa[]" >
                         <option disabled value="">Selecione uma pessoa</option>
                         <option v-for="pessoa in pessoas" :key="pessoa.id" :value="pessoa.id">
                             {{ pessoa.nome }}
@@ -13,7 +13,7 @@
                 </div>
                 <div class="col">
                     <label :for="'cargo-' + index">Cargo</label>
-                    <select class="form-select" :id="'cargo-' + index" v-model="entry.cargo" name="cargo[]">
+                    <select class="form-select" :id="'cargo-' + index" v-model="entry.cargo" name="cargo[]" :data-error-class="`cargo-${index}`">
                         <option disabled value="">Selecione um cargo</option>
                         <option v-for="cargo in cargos" :key="cargo.id" :value="cargo.id">
                             {{ cargo.nome }}

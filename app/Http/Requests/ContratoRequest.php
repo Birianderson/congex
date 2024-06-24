@@ -12,8 +12,13 @@ class ContratoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'max:255', 'min:5'],
-            'cnpj' => ['required'],
+            'empresa_id' => ['required'],
+            'numero' => ['required'],
+            'cargo' => ['required'],
+            'pessoa' => ['required'],
+            'data_inicio' => ['required'],
+            'data_fim' => ['required'],
+            'valor' => ['required', 'numeric', 'min:0.01'],
         ];
     }
 

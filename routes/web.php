@@ -12,7 +12,7 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\ContratoController'], function() {
     Route::get('/', [ContratoController::class, 'index'])->name('contrato.index');
-    Route::get('/add', [ContratoController::class, 'add'])->name('contrato.add');
+    Route::get('/list', [ContratoController::class, 'list'])->name('contrato.list');
     Route::post('/',[ContratoController::class,'create'])->name('contrato.create');
     Route::get('/historico/{id}',[ContratoController::class, 'historico'])->name('contrato.historico');
     Route::get('/{id}',[ContratoController::class, 'edit'])->name('contrato.edit');
@@ -25,6 +25,7 @@ Route::group(['prefix' => 'empresa', 'namespace' => 'App\Http\Controllers\Empres
     Route::get('/add', [EmpresaController::class, 'add'])->name('empresa.add');
     Route::get('/list', [EmpresaController::class, 'list'])->name('empresa.list');
     Route::post('/',[EmpresaController::class,'create'])->name('empresa.create');
+    Route::get('/get-by-query', [EmpresaController::class, 'getByQuery'])->name('legislacao.get-by-query');
     Route::get('/historico/{id}',[EmpresaController::class, 'historico'])->name('empresa.historico');
     Route::get('/{id}',[EmpresaController::class, 'edit'])->name('empresa.edit');
     Route::post('/{id}',[EmpresaController::class, 'update'])->name('empresa.update');
@@ -33,7 +34,6 @@ Route::group(['prefix' => 'empresa', 'namespace' => 'App\Http\Controllers\Empres
 
 Route::group(['prefix' => 'pessoa', 'namespace' => 'App\Http\Controllers\PessoaController'], function() {
     Route::get('/', [PessoaController::class, 'index'])->name('pessoa.index');
-    Route::get('/add', [PessoaController::class, 'add'])->name('pessoa.add');
     Route::get('/list', [PessoaController::class, 'list'])->name('pessoa.list');
     Route::post('/',[PessoaController::class,'create'])->name('pessoa.create');
     Route::get('/historico/{id}',[PessoaController::class, 'historico'])->name('pessoa.historico');

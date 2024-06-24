@@ -41,6 +41,11 @@ class EmpresaController extends Controller
         return response()->json($empresa);
     }
 
+    public function getByQuery(Request $request): JsonResponse {
+        return response()->json($this->repository->getByQuery($request->query('q'))->toArray());
+    }
+
+
     /**
      *
      */

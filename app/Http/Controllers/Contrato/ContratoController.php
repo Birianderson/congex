@@ -28,17 +28,10 @@ class ContratoController extends Controller
         ]);
     }
 
-    public function add()
-    {
-        $documentos = $this->repository->getAllTipoDocumentoContrato();
-        $licitacao_sem_ref = $this->repository->getLicitacaoSemReferencia();
-        return view('contrato.add', compact('licitacao_sem_ref', 'documentos'));
-    }
-
-    public function create(ContratoRequest $request){
+    public function create(ContratoRequest $request):JsonResponse {
         $params = $request->except('_token');
         $this->repository->create($params);
-        return redirect(route("contrato.index"));
+        return response()->json('success', 201);
     }
 
     public function edit(int $id){

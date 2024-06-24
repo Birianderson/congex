@@ -31,8 +31,8 @@ export default {
         let dt;
 
         const columns = ref([
-            {data: 'nome', title: 'Nome', width: '40%',},
-            {data: 'cnpj', title: 'CNPJ', width: '40%',},
+            {data: 'numero', title: 'Número', width: '40%',},
+            {data: 'valor', title: 'Valoe', width: '40%',},
             {
                 data: null,
                 title: 'Ações',
@@ -62,7 +62,7 @@ export default {
             },
         };
 
-        const ajax = '/empresa/list';
+        const ajax = '/contrato/list';
 
         onMounted(() => {
             ready.value = true;

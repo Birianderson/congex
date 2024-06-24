@@ -4,6 +4,7 @@ namespace App\Databases\Repositories;
 
 use App\Databases\Contracts\ContratoContract;
 use App\Databases\Models\Contrato;
+use App\Databases\Models\Responsabilidade;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -26,25 +27,44 @@ class ContratoRepository implements ContratoContract {
             $dataFim = Carbon::createFromFormat('Y-m-d', $params['data_fim']);
             if ($dataInicio->isBefore($dataHoje) && $dataFim->isAfter($dataHoje)) {
                 $params['situacao'] = 'V';
+                $params['ativo'] = 'S';
             } else {
                 $params['situacao'] = 'NV';
+                $params['ativo'] = 'N';
             }
-            $valorNumerico = preg_replace("/[^0-9]/", "", $params['valor']);
 
             $contrato = new Contrato([
                 'numero' => $params['numero'],
-                'fiscal'=>$params['fiscal'],
                 'objeto'=>$params['objeto'],
-                'cnpj' => $params['cnpj'],
-                'empresa' => $params['empresa'],
+                'situacao'=>$params['situacao'],
+                'ativo' => $params['ativo'],
+                'empresa_id'=>$params['empresa_id'],
                 'oberservacao' => $params['observacao'],
-                'licitacao_id'=>$params['licitacao_id'],
-                'situacao' => $params['situacao'],
+                'licitacao_id'=>$params['licitacao_id'] ?? null,
                 'data_inicio'=>$params['data_inicio'],
                 'data_fim'=>$params['data_fim'],
-                'valor'=>$valorNumerico,
+                'valor'=> $params['valor'],
             ]);
             $contrato->save();
+
+            if (isset($params['cargo']) && isset($params['pessoa'])) {
+                $cargos = $params['cargo'];
+                $pessoas = $params['pessoa'];
+
+                foreach ($cargos as $index => $cargoId) {
+                    if (isset($pessoas[$index])) {
+                        $pessoaId = $pessoas[$index];
+
+                        $responsabilidade = new Responsabilidade([
+                            'contrato_id' => $contrato->id,
+                            'cargo_id' => $cargoId,
+                            'pessoa_id' => $pessoaId,
+                        ]);
+                        $responsabilidade->save();
+                    }
+                }
+            }
+
             /*
                         foreach ($params as $key => $file) {
                             if ($file instanceof UploadedFile) {
@@ -90,32 +110,7 @@ class ContratoRepository implements ContratoContract {
                 'data_fim'=>$params['data_fim'],
                 'valor'=>$valorNumerico,
             ]);
-            foreach ( $all_documentos as $tipo_documento) {
-                foreach ($params as $key => $file) {
-                    if ($file instanceof UploadedFile) {
-                        $key = str_replace('_', ' ', $key);
-                        $path = $file->store('/public');
-                        $documentoExistente = DocumentoContrato::where('nome', $key)
-                            ->where('tipo', 'contrato')
-                            ->where('tipo_id', $contrato->id)
-                            ->first();
-                        if ($documentoExistente != null) {
-                            $documentoExistente->path = $path;
-                            $documentoExistente->save();
-                        } else {
-                            $arquivo = new DocumentoContrato([
-                                'nome' => $key,
-                                'tipo' => 'contrato',
-                                'tipo_id' => $contrato->id,
-                                'path' => $path,
-                                'contrato_id' => $contrato->id,
-                            ]);
-                            $arquivo->save();
-                        }
-                    }
-                }
-            }
-            $this->verificaSituacao($contrato->id);
+
             if($autoCommit) DB::commit();
             return true;
         } catch(Exception $ex) {
@@ -165,7 +160,7 @@ class ContratoRepository implements ContratoContract {
             $columnName = $params['columns'][$columnNumber]['data'];
             $query->orderBy($columnName, $dir);
         }else{
-            $query->orderBy('nome', 'asc');
+            $query->orderBy('valor', 'asc');
         }
         return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }

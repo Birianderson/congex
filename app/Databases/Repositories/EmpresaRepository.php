@@ -5,6 +5,7 @@ namespace App\Databases\Repositories;
 use App\Databases\Contracts\EmpresaContract;
 use App\Databases\Models\Empresa;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -116,6 +117,16 @@ class EmpresaRepository implements EmpresaContract {
     public function getById(int $id): Model
     {
         return Empresa::query()->where('id', $id)->firstOrFail();
+    }
+
+    /**
+     * Usado para busca no autocomplerar
+     * @param string $query
+     * @return Collection
+     */
+    public function getByQuery(string $query): Collection
+    {
+        return Empresa::query()->whereRaw('lower(nome) like ?', ["%{$query}%"])->get();
     }
 
 

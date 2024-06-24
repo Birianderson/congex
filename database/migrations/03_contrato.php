@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('data_fim');
             $table->bigInteger('valor');
             $table->string('oberservacao')->nullable();
-            $table->unsignedBigInteger('licitacao_id');
+            $table->unsignedBigInteger('licitacao_id')->nullable();
             $table->foreign('licitacao_id')->references('id')->on('licitacao');
             $table->unsignedBigInteger('empresa_id')->nullable();
             $table->foreign('empresa_id')->references('id')->on('empresa');
