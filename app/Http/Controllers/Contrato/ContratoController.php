@@ -36,17 +36,12 @@ class ContratoController extends Controller
 
     public function edit(int $id){
         $contrato = $this->repository->getById($id);
-        $documentos_contrato = $this->repository->getAllDocumentoContrato($id);
-        $all_documentos = $this->repository->getAllTipoDocumentoContrato();
-        return view('contrato.edit', compact('contrato', 'documentos_contrato','all_documentos'));
+        return response()->json($contrato);
     }
 
     public function update(ContratoRequest $request, int $id){
         $params = $request->except('_token');
-        $contrato = $this->repository->getById($id);
-        $documentos_contrato = $this->repository->getAllDocumentoContrato($id);
-        $all_documentos = $this->repository->getAllTipoDocumentoContrato();
-        $this->repository->update($id, $params, $contrato, $all_documentos,$documentos_contrato);
+        $this->repository->update($id,$params);
         return redirect(route("contrato.index", ));
     }
     public function historico($id){

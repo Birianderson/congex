@@ -87,7 +87,7 @@ export default {
 
 <style lang="scss" scoped>
 .v-money3 {
-    text-align: right;
+    text-align: left;
     border: solid 1px #aaa;
     background-color: #FFFFFF;
     background-image: none;

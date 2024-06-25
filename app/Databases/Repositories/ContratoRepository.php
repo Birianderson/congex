@@ -64,23 +64,6 @@ class ContratoRepository implements ContratoContract {
                     }
                 }
             }
-
-            /*
-                        foreach ($params as $key => $file) {
-                            if ($file instanceof UploadedFile) {
-                                $key = str_replace('_', ' ', $key);
-                                $path = $file->store('/public');
-                                $arquivo = new DocumentoContrato([
-                                    'nome' => $key,
-                                    'tipo' => 'contrato',
-                                    'path' => $path,
-                                    'contrato_id' => $contrato['id'],
-                                    'tipo_id' => $contrato['id']
-                                ]);
-                                $arquivo->save();
-                            }
-                        }
-            */
             if($autoCommit) DB::commit();
             return true;
         } catch(Exception $ex) {
@@ -92,23 +75,31 @@ class ContratoRepository implements ContratoContract {
     /**
      * @throws Exception
      */
-    public function update(int $id, array $params, Model $contrato, $all_documentos, $documentos_contrato , bool $autoCommit = true): bool{
+    public function update(int $id, array $params, bool $autoCommit = true): bool{
         if($autoCommit) DB::beginTransaction();
         try {
-            $valorNumerico = preg_replace("/[^0-9]/", "", $params['valor']);
-
-            Contrato::where('id',$id)->update([
+            $contrato = $this->getById($id);
+            $dataHoje = Carbon::today();
+            $dataInicio = Carbon::createFromFormat('Y-m-d', $params['data_inicio']);
+            $dataFim = Carbon::createFromFormat('Y-m-d', $params['data_fim']);
+            if ($dataInicio->isBefore($dataHoje) && $dataFim->isAfter($dataHoje)) {
+                $params['situacao'] = 'V';
+                $params['ativo'] = 'S';
+            } else {
+                $params['situacao'] = 'NV';
+                $params['ativo'] = 'N';
+            }
+            $contrato->update([
                 'numero' => $params['numero'],
-                'fiscal'=>$params['fiscal'],
                 'objeto'=>$params['objeto'],
-                'cnpj' => $params['cnpj'],
-                'empresa' => $params['empresa'],
-                'oberservacao' => $params['oberservacao'],
-                'licitacao_id'=>$params['licitacao_id'],
-                'situacao' => $params['situacao'],
+                'situacao'=>$params['situacao'],
+                'ativo' => $params['ativo'],
+                'empresa_id'=>$params['empresa_id'],
+                'oberservacao' => $params['observacao'],
+                'licitacao_id'=>$params['licitacao_id'] ?? null,
                 'data_inicio'=>$params['data_inicio'],
                 'data_fim'=>$params['data_fim'],
-                'valor'=>$valorNumerico,
+                'valor'=> $params['valor'],
             ]);
 
             if($autoCommit) DB::commit();
@@ -142,26 +133,35 @@ class ContratoRepository implements ContratoContract {
             throw new Exception($ex);
         }
     }
-    /**
-     * @param array $params
-     * @return LengthAwarePaginator
-     */
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Contrato::query();
+        $query = Contrato::query()->with(['empresa','responsabilidades']);
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
-        if(isset($params['search']['value']) && !empty($params['search']['value'])){
+
+        if (isset($params['search']['value']) && !empty($params['search']['value'])) {
             $search = strtolower($params['search']['value']);
-            $query->where('nome', 'like', '%'.$search.'%');
+            $query->whereHas('empresa', function ($q) use ($search) {
+                $q->where('nome', 'like', '%' . $search . '%');
+            });
         }
-        if(isset($params['order'][0]) && !empty($params['order'][0])){
+
+        if (isset($params['order'][0]) && !empty($params['order'][0])) {
             $columnNumber = $params['order'][0]['column'];
             $dir = $params['order'][0]['dir'];
             $columnName = $params['columns'][$columnNumber]['data'];
-            $query->orderBy($columnName, $dir);
-        }else{
+
+            // Handle ordering by empresa.nome
+            if ($columnName == 'empresa.nome') {
+                $query->join('empresas', 'contratos.empresa_id', '=', 'empresas.id')
+                    ->orderBy('empresas.nome', $dir)
+                    ->select('contratos.*'); // Ensure only contrato columns are selected
+            } else {
+                $query->orderBy($columnName, $dir);
+            }
+        } else {
             $query->orderBy('valor', 'asc');
         }
+
         return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }
 
@@ -169,10 +169,7 @@ class ContratoRepository implements ContratoContract {
     public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
         return Contrato::query()
-            ->with(['termo_aditivo', 'documento_contrato' => function ($query) {
-                $query->where('tipo', 'termo_aditivo');
-            }])
-            ->orderBy('empresa')
+            ->with(['empresa','responsabilidades'])
             ->where('id', $id)
             ->firstOrFail();
     }

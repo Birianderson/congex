@@ -14,5 +14,9 @@ class Responsabilidade extends Model
     protected $guarded = [];
     public string $sequence = 'pessoa_id_seq';
 
+    public function contrato()
+    {
+        return $this->hasMany(Contrato::class);
+    }
 }
 

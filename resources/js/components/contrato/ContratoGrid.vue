@@ -31,8 +31,18 @@ export default {
         let dt;
 
         const columns = ref([
-            {data: 'numero', title: 'Número', width: '40%',},
-            {data: 'valor', title: 'Valoe', width: '40%',},
+            {
+                data: null,
+                title: 'Empresa',
+                width: '40%',
+                render: (data, type, row) => {
+                    return row.empresa ? row.empresa.nome : '';
+                }
+            },
+            {data: 'numero', title: 'Número', width: '10%',},
+            {data: 'situacao', title: 'Situação', width: '10%',},
+            {data: 'data_inicio', title: 'Início Vigência', width: '10%',},
+            {data: 'data_fim', title: 'Término Vigência', width: '10%',},
             {
                 data: null,
                 title: 'Ações',
@@ -78,8 +88,9 @@ export default {
 
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('popup', {
-                        title: 'Editar Empresa',
-                        component: 'form-empresa',
+                        title: 'Editar Contrato',
+                        component: 'form-contrato',
+                        size: "xl",
                         data: {
                             id: `${id}`,
                         },
@@ -93,10 +104,10 @@ export default {
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('loading', true);
                     events.emit('popup', {
-                        title: `Deletar Empresa`,
+                        title: `Deletar Contrato`,
                         component: 'popup-delete',
                         data: {
-                            acao: '/empresa/delete/',
+                            acao: '/contrato/delete/',
                             id: `${id}`,
                         },
                     });

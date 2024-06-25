@@ -16,5 +16,16 @@ class Contrato extends Model
     protected $guarded = [];
     public string $sequence = 'contrato_id_seq';
 
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class);
+    }
+
+    public function responsabilidades()
+    {
+        return $this->hasMany(Responsabilidade::class, 'contrato_id');
+    }
+
 }
 

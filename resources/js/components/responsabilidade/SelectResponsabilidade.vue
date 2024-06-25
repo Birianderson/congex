@@ -92,6 +92,10 @@ export default {
             removeEntry,
         };
     },
+
+    props: {
+        data: { default: null, required: false }
+    }
 };
 </script>
 
