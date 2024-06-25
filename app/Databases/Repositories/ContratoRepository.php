@@ -102,6 +102,26 @@ class ContratoRepository implements ContratoContract {
                 'valor'=> $params['valor'],
             ]);
 
+            Responsabilidade::where('contrato_id', $id)->delete();
+
+            if (isset($params['cargo']) && isset($params['pessoa'])) {
+                $cargos = $params['cargo'];
+                $pessoas = $params['pessoa'];
+
+                foreach ($cargos as $index => $cargoId) {
+                    if (isset($pessoas[$index])) {
+                        $pessoaId = $pessoas[$index];
+
+                        $responsabilidade = new Responsabilidade([
+                            'contrato_id' => $contrato->id,
+                            'cargo_id' => $cargoId,
+                            'pessoa_id' => $pessoaId,
+                        ]);
+                        $responsabilidade->save();
+                    }
+                }
+            }
+
             if($autoCommit) DB::commit();
             return true;
         } catch(Exception $ex) {

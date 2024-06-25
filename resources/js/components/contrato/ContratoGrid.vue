@@ -118,6 +118,7 @@ export default {
                     events.emit('popup', {
                         title: 'Editar Contrato',
                         component: 'form-contrato',
+                        size: 'xl',
                         data: {
                             id: `${id}`,
                         },

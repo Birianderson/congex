@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col">
                     <label :for="'pessoa-' + index">Pessoa</label>
-                    <select class="form-select" :id="'pessoa-' + index" v-model="entry.pessoa" name="pessoa[]" >
+                    <select class="form-select" :id="'pessoa-' + index" v-model="entry.pessoa_id" name="pessoa[]" >
                         <option disabled value="">Selecione uma pessoa</option>
                         <option v-for="pessoa in pessoas" :key="pessoa.id" :value="pessoa.id">
                             {{ pessoa.nome }}
@@ -13,7 +13,7 @@
                 </div>
                 <div class="col">
                     <label :for="'cargo-' + index">Cargo</label>
-                    <select class="form-select" :id="'cargo-' + index" v-model="entry.cargo" name="cargo[]" :data-error-class="`cargo-${index}`">
+                    <select class="form-select" :id="'cargo-' + index" v-model="entry.cargo_id" name="cargo[]" :data-error-class="`cargo-${index}`">
                         <option disabled value="">Selecione um cargo</option>
                         <option v-for="cargo in cargos" :key="cargo.id" :value="cargo.id">
                             {{ cargo.nome }}
@@ -31,14 +31,20 @@
 
 <script>
 import axios from 'axios';
-import {ref, onMounted, computed} from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 export default {
-    setup() {
-        const entries = ref([{pessoa: '', cargo: ''}]);
+    props: {
+        modelValue: {
+            type: Array,
+            default: () => []
+        },
+    },
+    setup(props, { emit }) {
+        const entries = ref(props.modelValue.length ? [...props.modelValue] : [{ pessoa: '', cargo: '' }]);
         const pessoas = ref([]);
         const cargos = ref([]);
-        const disabled = ref(true);
+        const disabled = ref(entries.value.length <= 1);
 
         const fetchPessoas = async () => {
             try {
@@ -72,16 +78,24 @@ export default {
         });
 
         const addEntry = () => {
-            entries.value.push({pessoa: '', cargo: ''});
+            entries.value.push({ pessoa_id: '', cargo_id: '' });
             disabled.value = false;
         }
 
         const removeEntry = () => {
-            entries.value.splice(1);
-            if (entries.value.length === 1) {
-                disabled.value = true
+            entries.value.splice(entries.value.length - 1, 1);
+            if (entries.value.length <= 1) {
+                disabled.value = true;
             }
         };
+
+        watch(entries, (newEntries) => {
+            emit('update:modelValue', newEntries);
+        }, { deep: true });
+
+        watch(props.modelValue, (newValue) => {
+            entries.value = [...newValue];
+        });
 
         return {
             entries,
@@ -91,10 +105,6 @@ export default {
             addEntry,
             removeEntry,
         };
-    },
-
-    props: {
-        data: { default: null, required: false }
     }
 };
 </script>
