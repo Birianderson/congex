@@ -18,31 +18,60 @@
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import language from 'datatables.net-plugins/i18n/pt-BR.mjs';
-import {inject, onMounted, ref} from 'vue';
+import { inject, onMounted, ref } from 'vue';
+import moment from 'moment'; // Import moment.js for date handling
 
 DataTable.use(DataTablesCore);
 
 export default {
-    components: {DataTable, DataTablesCore},
+    components: { DataTable, DataTablesCore },
     setup() {
         const events = inject('events');
         const ready = ref(false);
         const mydatatable = ref();
         let dt;
 
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        };
+
+        const formatDate = (date) => {
+            return moment(date).format('DD/MM/YYYY');
+        };
+
         const columns = ref([
+            { data: 'numero', title: 'Número', width: '10%' },
+            { data: 'empresa.nome', title: 'Empresa', width: '20%' },
             {
-                data: null,
-                title: 'Empresa',
-                width: '40%',
+                data: 'data_inicio',
+                title: 'Início Vigência',
+                width: '15%',
+                render: (data) => formatDate(data)
+            },
+            {
+                data: 'data_fim',
+                title: 'Término Vigência',
+                width: '15%',
+                render: (data) => formatDate(data)
+            },
+            {
+                data: 'data_fim',
+                title: 'Dias a Vencer',
+                width: '15%',
                 render: (data, type, row) => {
-                    return row.empresa ? row.empresa.nome : '';
+                    const { color, text } = calculateDaysToExpire(row.data_fim);
+                    return `<span class="status-dot" style="background-color: ${color};"></span> ${text}`;
                 }
             },
-            {data: 'numero', title: 'Número', width: '10%',},
-            {data: 'situacao', title: 'Situação', width: '10%',},
-            {data: 'data_inicio', title: 'Início Vigência', width: '10%',},
-            {data: 'data_fim', title: 'Término Vigência', width: '10%',},
+            {
+                data: 'valor',
+                title: 'Montante do Contrato',
+                width: '15%',
+                render: (data) => formatCurrency(data)
+            },
             {
                 data: null,
                 title: 'Ações',
@@ -79,23 +108,21 @@ export default {
             events.on('reload', (data) => {
                 mydatatable.value.dt.ajax.url(`${ajax}`).load();
             });
-        })
+        });
 
         const aplicarEventos = async () => {
             let elements = document.querySelectorAll("[data-action=edit]");
             elements.forEach(item => {
                 item.addEventListener('click', (evt) => {
-
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('popup', {
                         title: 'Editar Contrato',
                         component: 'form-contrato',
-                        size: "xl",
                         data: {
                             id: `${id}`,
                         },
                     });
-                })
+                });
             });
 
             let deleteElements = document.querySelectorAll("[data-action=delete]");
@@ -104,27 +131,56 @@ export default {
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('loading', true);
                     events.emit('popup', {
-                        title: `Deletar Contrato`,
+                        title: `Deletar Empresa`,
                         component: 'popup-delete',
                         data: {
-                            acao: '/contrato/delete/',
+                            acao: '/empresa/delete/',
                             id: `${id}`,
                         },
                     });
-                })
-            })
-        }
+                });
+            });
+        };
+
+        const calculateDaysToExpire = (data_fim) => {
+            let today = moment().startOf('day');
+            let end = moment(data_fim).startOf('day');
+            let diffDays = end.diff(today, 'days');
+            let diffMonths = end.diff(today, 'months');
+            let color = '';
+            let text = '';
+
+            if (diffDays < 0) {
+                color = 'gray';
+                text = 'Vencido';
+            } else if (diffMonths >= 4) {
+                color = 'green';
+                text = `${diffMonths} meses e ${diffDays % 30} dias`;
+            } else if (diffMonths >= 1 && diffMonths < 4) {
+                color = '#FFD700';
+                text = `${diffMonths} meses e ${diffDays % 30} dias`;
+            } else if (diffDays < 30) {
+                color = 'red';
+                text = `${diffDays} dias`;
+            }
+            return { color, text };
+        };
 
         return {
-            ready, options, columns, ajax, mydatatable, aplicarEventos
+            ready, options, columns, ajax, mydatatable, aplicarEventos, calculateDaysToExpire
         }
-    },
+    }
 }
 </script>
-
 
 <style>
 @import 'datatables.net-bs5';
 
-
+.status-dot {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
 </style>

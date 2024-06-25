@@ -11,7 +11,7 @@
                     <label for="empresa_id" class="form-label" :class="{ 'required': !readOnly }">Empresa</label>
                     <input type="hidden" name="empresa_id" id="empresa_id" v-model="info.empresa_id" :data-error-class="`empresa-${info.id}`"/>
                     <input-autocomplete v-model="info.empresa_id"  @selectItem="(e) => info.empresa_id = e.id" data-url="/empresa/get-by-query?q=" data-label="nome" data-value="id" :class="`empresa-${info.id}`"></input-autocomplete>
-                    <p v-if="ready && info.empresa_id"> Empresa previamente selecionada: <strong>{{ info.empresa.nome }}</strong></p>
+                    <p v-if="ready && info.id"> Empresa previamente selecionada: <strong>{{ info.empresa.nome }}</strong></p>
                 </div>
             </div>
             <div class="">
