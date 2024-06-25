@@ -43,8 +43,8 @@ export default {
         };
 
         const columns = ref([
-            { data: 'numero', title: 'Número', width: '10%' },
             { data: 'empresa.nome', title: 'Empresa', width: '20%' },
+            { data: 'numero', title: 'Número', width: '10%' },
             {
                 data: 'data_inicio',
                 title: 'Início Vigência',

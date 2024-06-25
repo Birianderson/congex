@@ -11,16 +11,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-class ContratoRepository implements ContratoContract {
 
-    public function __construct(private Contrato $model){}
+class ContratoRepository implements ContratoContract
+{
+
+    public function __construct(private Contrato $model)
+    {
+    }
 
     /**
      * @throws Exception
      */
     public function create(array $params, bool $autoCommit = true): bool
     {
-        if($autoCommit) DB::beginTransaction();
+        if ($autoCommit) DB::beginTransaction();
         try {
             $dataHoje = Carbon::today();
             $dataInicio = Carbon::createFromFormat('Y-m-d', $params['data_inicio']);
@@ -35,15 +39,15 @@ class ContratoRepository implements ContratoContract {
 
             $contrato = new Contrato([
                 'numero' => $params['numero'],
-                'objeto'=>$params['objeto'],
-                'situacao'=>$params['situacao'],
+                'objeto' => $params['objeto'],
+                'situacao' => $params['situacao'],
                 'ativo' => $params['ativo'],
-                'empresa_id'=>$params['empresa_id'],
+                'empresa_id' => $params['empresa_id'],
                 'oberservacao' => $params['observacao'],
-                'licitacao_id'=>$params['licitacao_id'] ?? null,
-                'data_inicio'=>$params['data_inicio'],
-                'data_fim'=>$params['data_fim'],
-                'valor'=> $params['valor'],
+                'licitacao_id' => $params['licitacao_id'] ?? null,
+                'data_inicio' => $params['data_inicio'],
+                'data_fim' => $params['data_fim'],
+                'valor' => $params['valor'],
             ]);
             $contrato->save();
 
@@ -64,10 +68,10 @@ class ContratoRepository implements ContratoContract {
                     }
                 }
             }
-            if($autoCommit) DB::commit();
+            if ($autoCommit) DB::commit();
             return true;
-        } catch(Exception $ex) {
-            if($autoCommit) DB::rollBack();
+        } catch (Exception $ex) {
+            if ($autoCommit) DB::rollBack();
             throw new Exception($ex);
         }
     }
@@ -75,8 +79,9 @@ class ContratoRepository implements ContratoContract {
     /**
      * @throws Exception
      */
-    public function update(int $id, array $params, bool $autoCommit = true): bool{
-        if($autoCommit) DB::beginTransaction();
+    public function update(int $id, array $params, bool $autoCommit = true): bool
+    {
+        if ($autoCommit) DB::beginTransaction();
         try {
             $contrato = $this->getById($id);
             $dataHoje = Carbon::today();
@@ -91,15 +96,15 @@ class ContratoRepository implements ContratoContract {
             }
             $contrato->update([
                 'numero' => $params['numero'],
-                'objeto'=>$params['objeto'],
-                'situacao'=>$params['situacao'],
+                'objeto' => $params['objeto'],
+                'situacao' => $params['situacao'],
                 'ativo' => $params['ativo'],
-                'empresa_id'=>$params['empresa_id'],
+                'empresa_id' => $params['empresa_id'],
                 'oberservacao' => $params['observacao'],
-                'licitacao_id'=>$params['licitacao_id'] ?? null,
-                'data_inicio'=>$params['data_inicio'],
-                'data_fim'=>$params['data_fim'],
-                'valor'=> $params['valor'],
+                'licitacao_id' => $params['licitacao_id'] ?? null,
+                'data_inicio' => $params['data_inicio'],
+                'data_fim' => $params['data_fim'],
+                'valor' => $params['valor'],
             ]);
 
             Responsabilidade::where('contrato_id', $id)->delete();
@@ -122,16 +127,17 @@ class ContratoRepository implements ContratoContract {
                 }
             }
 
-            if($autoCommit) DB::commit();
+            if ($autoCommit) DB::commit();
             return true;
-        } catch(Exception $ex) {
-            if($autoCommit) DB::rollBack();
+        } catch (Exception $ex) {
+            if ($autoCommit) DB::rollBack();
             throw new Exception($ex);
         }
     }
 
-    public function destroy(int $id, bool $autoCommit = true): bool{
-        if($autoCommit) DB::beginTransaction();
+    public function destroy(int $id, bool $autoCommit = true): bool
+    {
+        if ($autoCommit) DB::beginTransaction();
         try {
             /// Obter o contrato pelo ID
             $contrato = Contrato::findOrFail($id);
@@ -146,16 +152,17 @@ class ContratoRepository implements ContratoContract {
             $contrato->delete();
 
             DB::commit();
-            if($autoCommit) DB::commit();
+            if ($autoCommit) DB::commit();
             return true;
-        }  catch (Exception $ex) {
+        } catch (Exception $ex) {
             DB::rollBack();
             throw new Exception($ex);
         }
     }
+
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Contrato::query()->with(['empresa','responsabilidades']);
+        $query = Contrato::query()->with(['empresa', 'responsabilidades']);
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
 
         if (isset($params['search']['value']) && !empty($params['search']['value'])) {
@@ -170,11 +177,9 @@ class ContratoRepository implements ContratoContract {
             $dir = $params['order'][0]['dir'];
             $columnName = $params['columns'][$columnNumber]['data'];
 
-            // Handle ordering by empresa.nome
             if ($columnName == 'empresa.nome') {
-                $query->join('empresas', 'contratos.empresa_id', '=', 'empresas.id')
-                    ->orderBy('empresas.nome', $dir)
-                    ->select('contratos.*'); // Ensure only contrato columns are selected
+                $query->join('empresa', 'contrato.empresa_id', '=', 'empresa.id')
+                    ->orderBy('empresa.nome', $dir);
             } else {
                 $query->orderBy($columnName, $dir);
             }
@@ -186,10 +191,11 @@ class ContratoRepository implements ContratoContract {
     }
 
 
+
     public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
         return Contrato::query()
-            ->with(['empresa','responsabilidades'])
+            ->with(['empresa', 'responsabilidades'])
             ->where('id', $id)
             ->firstOrFail();
     }
