@@ -44,23 +44,28 @@ export default {
 
         const columns = ref([
             { data: 'empresa.nome', title: 'Empresa', width: '20%' },
-            { data: 'numero', title: 'Número', width: '10%' },
+            { data: 'numero', title: 'Número', width: '8%' },
+            {
+                data: 'situacao',
+                title: 'Situação',
+                width: '10%',
+            },
             {
                 data: 'data_inicio',
                 title: 'Início Vigência',
-                width: '15%',
+                width: '12%',
                 render: (data) => formatDate(data)
             },
             {
                 data: 'data_fim',
                 title: 'Término Vigência',
-                width: '15%',
+                width: '12%',
                 render: (data) => formatDate(data)
             },
             {
                 data: 'data_fim',
                 title: 'Dias a Vencer',
-                width: '15%',
+                width: '12%',
                 render: (data, type, row) => {
                     const { color, text } = calculateDaysToExpire(row.data_fim);
                     return `<span class="status-dot" style="background-color: ${color};"></span> ${text}`;
@@ -78,11 +83,13 @@ export default {
                 orderable: false,
                 searchable: false,
                 className: 'dt-action',
-                width: '20%',
+                width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}"><i class="fa fa-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-secondary historico-btn" data-action="termo" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
+                        <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar Termo Aditivo"><i class="fa fa-book"></i></button>
+                        <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Contrato"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover Contrato"><i class="fa fa-trash"></i></button>
                     `;
                 }
             }
@@ -111,6 +118,15 @@ export default {
         });
 
         const aplicarEventos = async () => {
+            document.addEventListener('DOMContentLoaded', function () {
+                let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl, {
+                        placement: 'top'
+                    });
+                });
+            });
+
             let elements = document.querySelectorAll("[data-action=edit]");
             elements.forEach(item => {
                 item.addEventListener('click', (evt) => {
@@ -121,6 +137,25 @@ export default {
                         size: 'xl',
                         data: {
                             id: `${id}`,
+                        },
+                    });
+                });
+            });
+
+            let termoelements = document.querySelectorAll("[data-action=termo]");
+            termoelements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    let nome = evt.currentTarget.getAttribute('data-nome');
+                    let numero = evt.currentTarget.getAttribute('data-numero');
+                    events.emit('popup', {
+                        title: `Adicionar termo aditivo - ${nome} ${numero}`,
+                        component: 'form-termo-aditivo',
+                        size: 'xl',
+                        data: {
+                            id: `${id}`,
+                            nome: `${nome}`,
+                            numero: `${numero}`,
                         },
                     });
                 });

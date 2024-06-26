@@ -19,11 +19,9 @@ return new  class extends Migration
             $table->date('data_fim');
             $table->integer('numero');
             $table->bigInteger('valor');
-            $table->string('oberservacao')->nullable();
+            $table->string('observacao')->nullable();
             $table->unsignedBigInteger('contrato_id');
             $table->foreign('contrato_id')->references('id')->on('contrato');
-            $table->unsignedBigInteger('fase_termo_aditivo_id');
-            $table->foreign('fase_termo_aditivo_id')->references('id')->on('fase_termo_aditivo');
             $table->timestamps();
             $table->softDeletes();
         });

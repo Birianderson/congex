@@ -4,6 +4,7 @@ use App\Http\Controllers\Cargo\CargoController;
 use App\Http\Controllers\Contrato\ContratoController;
 use App\Http\Controllers\Empresa\EmpresaController;
 use App\Http\Controllers\Pessoa\PessoaController;
+use App\Http\Controllers\TermoAditivo\TermoAditivoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,16 @@ Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\Contr
     Route::get('/{id}',[ContratoController::class, 'edit'])->name('contrato.edit');
     Route::post('/{id}',[ContratoController::class, 'update'])->name('contrato.update');
     Route::post('/{id}/delete',[ContratoController::class, 'delete'])->name('contrato.delete');
+});
+
+Route::group(['prefix' => 'termo-aditivo', 'namespace' => 'App\Http\Controllers\TermoAditivoController'], function() {
+    Route::get('/', [TermoAditivoController::class, 'index'])->name('termo_aditivo.index');
+    Route::get('/list', [TermoAditivoController::class, 'list'])->name('termo_aditivo.list');
+    Route::post('/',[TermoAditivoController::class,'create'])->name('termo_aditivo.create');
+    Route::get('/historico/{id}',[TermoAditivoController::class, 'historico'])->name('termo_aditivo.historico');
+    Route::get('/{id}',[TermoAditivoController::class, 'edit'])->name('termo_aditivo.edit');
+    Route::post('/{id}',[TermoAditivoController::class, 'update'])->name('termo_aditivo.update');
+    Route::post('/{id}/delete',[TermoAditivoController::class, 'delete'])->name('termo_aditivo.delete');
 });
 
 Route::group(['prefix' => 'empresa', 'namespace' => 'App\Http\Controllers\EmpresaController'], function() {
