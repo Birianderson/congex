@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('pessoa', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->integer('cpf');
+            $table->string('cpf');
             $table->timestamps();
             $table->softDeletes();
         });

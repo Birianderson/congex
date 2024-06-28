@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('empresa', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->integer('cnpj');
+            $table->string('cnpj');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,7 +3,9 @@
 namespace App\Databases\Repositories;
 
 use App\Databases\Contracts\TermoAditivoContract;
+use App\Databases\Models\Contrato;
 use App\Databases\Models\TermoAditivo;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -42,7 +44,7 @@ class TermoAditivoRepository implements TermoAditivoContract {
             ]);
             $termo->save();
 
-
+            $this->verificaSituacao($termo->contrato_id);
             $autoCommit && DB::commit();
             return true;
         } catch (Exception $ex) {
@@ -131,5 +133,23 @@ class TermoAditivoRepository implements TermoAditivoContract {
         return TermoAditivo::query()->where('id', $id)->firstOrFail();
     }
 
+
+    public function verificaSituacao($contrato_id)
+    {
+        $contrato = Contrato::query()
+            ->where('id', '=',$contrato_id)
+            ->firstOrFail();
+        $dataHoje = Carbon::today();
+        $termos = TermoAditivo::where('contrato_id', $contrato_id)->orderby('numero')->get();
+        foreach ($termos as $termo) {
+            $dataInicio = Carbon::createFromFormat('Y-m-d', $termo->data_inicio);
+            $dataFim = Carbon::createFromFormat('Y-m-d', $termo->data_fim);
+            if ($dataInicio->isBefore($dataHoje) && $dataFim->isAfter($dataHoje) || $dataInicio->isSameDay($dataHoje) || $dataFim->isSameDay($dataHoje)) {
+                $contrato->situacao = 'V' . $termo->numero;
+            }
+        }
+
+        $contrato->save();
+    }
 
 }

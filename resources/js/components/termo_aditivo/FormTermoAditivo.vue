@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-6 mb-4">
                     <label for="data_inicio" class="form-label" :class="{ 'required': !readOnly }">Início da Vigência</label>
-                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" :min="contrato.data_fim" v-model="contrato.data_fim" />
+                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" :min="min_data_fim" v-model="min_data_fim" />
                 </div>
                 <div class="col-6 mb-4">
                     <label for="data_fim" class="form-label" :class="{ 'required': !readOnly }">Fim da Vigência</label>
@@ -16,7 +16,7 @@
             <div class="row">
                 <div class="col-6 mb-4">
                     <label for="valor" class="form-label" :class="{ 'required': !readOnly }">Valor</label>
-                    <input-money id="valor" name="valor" :value="contrato.valor"></input-money>
+                    <input-money id="valor" name="valor" :value="valor"></input-money>
                 </div>
                 <div class="col-6 mb-4">
                     <label for="observacao" class="form-label">Observação</label>
@@ -54,6 +54,8 @@ export default {
         const readOnly = ref(false);
         const contrato = ref({});
         const data_fim = ref({});
+        const min_data_fim = ref({});
+        const valor = ref({});
 
         const close = () => {
             events.emit('popup-close', true);
@@ -63,10 +65,16 @@ export default {
             try {
                 const response = await axios.get(`/contrato/${props.data.id}`);
                 contrato.value = response.data;
+                console.log(contrato.value)
+                if (contrato.value.termo_aditivos.length > 0) {
+                    min_data_fim.value = contrato.value.termo_aditivos[contrato.value.termo_aditivos.length - 1].data_fim
+                    data_fim.value = moment(min_data_fim.value).add(1, 'year').format('YYYY-MM-DD');
+                    valor.value = contrato.value.termo_aditivos[contrato.value.termo_aditivos.length - 1].valor
 
-                // Adiciona um ano à data_fim
-                if (contrato.value.data_fim) {
-                    data_fim.value = moment(contrato.value.data_fim).add(1, 'year').format('YYYY-MM-DD');
+                } else {
+                    min_data_fim.value = contrato.value.data_fim
+                    data_fim.value = moment(min_data_fim.value).add(1, 'year').format('YYYY-MM-DD');
+                    valor.value = contrato.value.valor
                 }
 
                 ready.value = true;
@@ -96,7 +104,7 @@ export default {
         });
 
         return {
-            ready, acao, readOnly, close, fetchContrato, props, contrato, data_fim
+            ready, acao, readOnly, close, fetchContrato, props, contrato, data_fim, min_data_fim, valor
         }
     },
     props: {

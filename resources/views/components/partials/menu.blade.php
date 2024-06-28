@@ -10,15 +10,15 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="{{route('contrato.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'contrato')) element-with-gradient text-white @endif">
-                <i class="fa fa-book me-2"></i>
-                Contratos
+            <a href="#" class="nav-link menu-text">
+                <i class="fa fa-file-text me-2"></i>
+                Licitações
             </a>
         </li>
         <li class="mt-2">
-            <a href="#" class="nav-link menu-text">
-                <i class="fa fa-file-text me-2"></i>
-                Licitação
+            <a href="{{route('contrato.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'contrato')) element-with-gradient text-white @endif">
+                <i class="fa fa-address-book me-2"></i>
+                Contratos
             </a>
         </li>
         <li class="mt-2">

@@ -2,7 +2,7 @@
     <div v-if="ready">
         <DataTable
             ref="mydatatable"
-            id="empresa"
+            id="contrato"
             :ajax="ajax"
             class="table table-hover table-responsive "
             width="100%"
@@ -19,8 +19,7 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import language from 'datatables.net-plugins/i18n/pt-BR.mjs';
 import { inject, onMounted, ref } from 'vue';
-import moment from 'moment'; // Import moment.js for date handling
-
+import moment from 'moment';
 DataTable.use(DataTablesCore);
 
 export default {
@@ -42,6 +41,19 @@ export default {
             return moment(date).format('DD/MM/YYYY');
         };
 
+        const formatSituacao = (situacao) => {
+            const situacaoMap = {
+                'NV': 'Não Vigente',
+                'V': 'Contrato Inicial',
+                'V1': '1° Termo Aditivo',
+                'V2': '2° Termo Aditivo',
+                'V3': '3° Termo Aditivo',
+                'V4': '4° Termo Aditivo',
+                'V5': '5° Termo Aditivo'
+            };
+            return situacaoMap[situacao] || situacao;
+        };
+
         const columns = ref([
             { data: 'empresa.nome', title: 'Empresa', width: '20%' },
             { data: 'numero', title: 'Número', width: '8%' },
@@ -49,6 +61,7 @@ export default {
                 data: 'situacao',
                 title: 'Situação',
                 width: '10%',
+                render: (data) => formatSituacao(data)
             },
             {
                 data: 'data_inicio',
@@ -57,22 +70,22 @@ export default {
                 render: (data) => formatDate(data)
             },
             {
-                data: 'data_fim',
+                data: 'data_fim_real',
                 title: 'Término Vigência',
                 width: '12%',
                 render: (data) => formatDate(data)
             },
             {
-                data: 'data_fim',
+                data: 'data_fim_real',
                 title: 'Dias a Vencer',
                 width: '12%',
                 render: (data, type, row) => {
-                    const { color, text } = calculateDaysToExpire(row.data_fim);
+                    const { color, text } = calculateDaysToExpire(row.data_fim_real);
                     return `<span class="status-dot" style="background-color: ${color};"></span> ${text}`;
                 }
             },
             {
-                data: 'valor',
+                data: 'valor_real',
                 title: 'Montante do Contrato',
                 width: '15%',
                 render: (data) => formatCurrency(data)
@@ -86,10 +99,10 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary historico-btn" data-action="termo" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
-                        <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar Termo Aditivo"><i class="fa fa-book"></i></button>
-                        <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Contrato"><i class="fa fa-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover Contrato"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-secondary historico-btn" data-action="historico"  data-id="${data.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
+                        <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar Termo Aditivo"><i class="fa fa-book"></i></button>
+                        <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover"><i class="fa fa-trash"></i></button>
                     `;
                 }
             }
@@ -118,17 +131,9 @@ export default {
         });
 
         const aplicarEventos = async () => {
-            document.addEventListener('DOMContentLoaded', function () {
-                let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                let tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl, {
-                        placement: 'top'
-                    });
-                });
-            });
 
-            let elements = document.querySelectorAll("[data-action=edit]");
-            elements.forEach(item => {
+            let editelements = document.querySelectorAll("[data-action=edit]");
+            editelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('popup', {
@@ -167,10 +172,10 @@ export default {
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('loading', true);
                     events.emit('popup', {
-                        title: `Deletar Empresa`,
+                        title: `Deletar Contrato`,
                         component: 'popup-delete',
                         data: {
-                            acao: '/empresa/delete/',
+                            acao: '/contrato/delete/',
                             id: `${id}`,
                         },
                     });

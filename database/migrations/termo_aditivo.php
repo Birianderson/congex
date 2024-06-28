@@ -19,6 +19,7 @@ return new  class extends Migration
             $table->date('data_fim');
             $table->integer('numero');
             $table->bigInteger('valor');
+            $table->char('ativo');
             $table->string('observacao')->nullable();
             $table->unsignedBigInteger('contrato_id');
             $table->foreign('contrato_id')->references('id')->on('contrato');

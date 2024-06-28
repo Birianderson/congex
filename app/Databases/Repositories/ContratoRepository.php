@@ -162,7 +162,25 @@ class ContratoRepository implements ContratoContract
 
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Contrato::query()->with(['empresa', 'responsabilidades']);
+        $query = Contrato::query()->with(['empresa', 'responsabilidades','termo_aditivos'])
+            ->selectRaw("
+                CONTRATO.*,
+                CASE
+                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '1')
+                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '2')
+                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
+                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
+                    ELSE contrato.DATA_FIM
+                END AS data_fim_real ,
+                CASE
+                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '1')
+                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '2')
+                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
+                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
+                    ELSE contrato.VALOR
+                END AS valor_real
+            ");
+
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
 
         if (isset($params['search']['value']) && !empty($params['search']['value'])) {
@@ -195,7 +213,7 @@ class ContratoRepository implements ContratoContract
     public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
         return Contrato::query()
-            ->with(['empresa', 'responsabilidades'])
+            ->with(['empresa', 'responsabilidades', 'termo_aditivos'])
             ->where('id', $id)
             ->firstOrFail();
     }
