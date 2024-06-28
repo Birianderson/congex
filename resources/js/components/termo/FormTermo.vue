@@ -50,7 +50,7 @@ export default {
     setup(props, { emit }) {
         const events = inject('events');
         const ready = ref(false);
-        const acao = ref('/termo-aditivo/');
+        const acao = ref('/termo/');
         const readOnly = ref(false);
         const contrato = ref({});
         const data_fim = ref({});
@@ -66,10 +66,10 @@ export default {
                 const response = await axios.get(`/contrato/${props.data.id}`);
                 contrato.value = response.data;
                 console.log(contrato.value)
-                if (contrato.value.termo_aditivos.length > 0) {
-                    min_data_fim.value = contrato.value.termo_aditivos[contrato.value.termo_aditivos.length - 1].data_fim
+                if (contrato.value.termos.length > 0) {
+                    min_data_fim.value = contrato.value.termos[contrato.value.termos.length - 1].data_fim
                     data_fim.value = moment(min_data_fim.value).add(1, 'year').format('YYYY-MM-DD');
-                    valor.value = contrato.value.termo_aditivos[contrato.value.termo_aditivos.length - 1].valor
+                    valor.value = contrato.value.termos[contrato.value.termos.length - 1].valor
 
                 } else {
                     min_data_fim.value = contrato.value.data_fim

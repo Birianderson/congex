@@ -24,7 +24,7 @@ DataTable.use(DataTablesCore);
 
 export default {
     components: { DataTable, DataTablesCore },
-    setup() {
+    setup(props) {
         const events = inject('events');
         const ready = ref(false);
         const mydatatable = ref();
@@ -64,27 +64,6 @@ export default {
                 render: (data) => formatSituacao(data)
             },
             {
-                data: 'data_inicio',
-                title: 'Início Vigência',
-                width: '12%',
-                render: (data) => formatDate(data)
-            },
-            {
-                data: 'data_fim_real',
-                title: 'Término Vigência',
-                width: '12%',
-                render: (data) => formatDate(data)
-            },
-            {
-                data: 'data_fim_real',
-                title: 'Dias a Vencer',
-                width: '12%',
-                render: (data, type, row) => {
-                    const { color, text } = calculateDaysToExpire(row.data_fim_real);
-                    return `<span class="status-dot" style="background-color: ${color};"></span> ${text}`;
-                }
-            },
-            {
                 data: 'valor_real',
                 title: 'Montante do Contrato',
                 width: '15%',
@@ -92,17 +71,14 @@ export default {
             },
             {
                 data: null,
-                title: 'Ações',
+                title: 'Ação',
                 orderable: false,
                 searchable: false,
                 className: 'dt-action',
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary historico-btn" data-action="historico"  data-id="${data.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
-                        <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar Termo"><i class="fa fa-book"></i></button>
-                        <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
-                        <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Pagamentos"><i class="fa fa-dollar"></i></button>
                     `;
                 }
             }
@@ -154,8 +130,8 @@ export default {
                     let nome = evt.currentTarget.getAttribute('data-nome');
                     let numero = evt.currentTarget.getAttribute('data-numero');
                     events.emit('popup', {
-                        title: `Adicionar termo - ${nome} ${numero}`,
-                        component: 'form-termo',
+                        title: `Adicionar termo aditivo - ${nome} ${numero}`,
+                        component: 'form-termo-aditivo',
                         size: 'xl',
                         data: {
                             id: `${id}`,
@@ -183,29 +159,6 @@ export default {
             });
         };
 
-        const calculateDaysToExpire = (data_fim) => {
-            let today = moment().startOf('day');
-            let end = moment(data_fim).startOf('day');
-            let diffDays = end.diff(today, 'days');
-            let diffMonths = end.diff(today, 'months');
-            let color = '';
-            let text = '';
-
-            if (diffDays < 0) {
-                color = 'gray';
-                text = 'Vencido';
-            } else if (diffMonths >= 4) {
-                color = 'green';
-                text = `${diffMonths} meses e ${diffDays % 30} dias`;
-            } else if (diffMonths >= 1 && diffMonths < 4) {
-                color = '#FFD700';
-                text = `${diffMonths} meses e ${diffDays % 30} dias`;
-            } else if (diffDays < 30) {
-                color = 'red';
-                text = `${diffDays} dias`;
-            }
-            return { color, text };
-        };
 
         return {
             ready, options, columns, ajax, mydatatable, aplicarEventos, calculateDaysToExpire
@@ -217,11 +170,4 @@ export default {
 <style>
 @import 'datatables.net-bs5';
 
-.status-dot {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    margin-right: 5px;
-}
 </style>

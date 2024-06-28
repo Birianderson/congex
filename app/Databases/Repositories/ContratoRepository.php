@@ -224,7 +224,7 @@ class ContratoRepository implements ContratoContract
     public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
         return Contrato::query()
-            ->with(['empresa', 'responsabilidades', 'TERMOs'])
+            ->with(['empresa', 'responsabilidades', 'termos'])
             ->where('id', $id)
             ->firstOrFail();
     }

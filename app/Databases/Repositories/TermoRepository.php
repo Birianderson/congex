@@ -26,7 +26,14 @@ class TermoRepository implements TermoContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-
+            $dataHoje = Carbon::today();
+            $dataInicio = Carbon::createFromFormat('Y-m-d', $params['data_inicio']);
+            $dataFim = Carbon::createFromFormat('Y-m-d', $params['data_fim']);
+            if ($dataInicio->isBefore($dataHoje) && $dataFim->isAfter($dataHoje)) {
+                $params['ativo'] = 'S';
+            } else {
+                $params['ativo'] = 'N';
+            }
             $ultima = Termo::query()->where('contrato_id',$params['contrato_id'])->orderBy('numero', 'desc')->first();
             if ($ultima == null) {
                 $params['numero'] = 1;
@@ -39,6 +46,7 @@ class TermoRepository implements TermoContract {
                 'observacao' => $params['observacao'],
                 'data_inicio'=>$params['data_inicio'],
                 'data_fim'=>$params['data_fim'],
+                'ativo' => $params['ativo'],
                 'valor'=>  $params['valor'],
                 'numero'=> $params['numero']
             ]);
@@ -108,22 +116,21 @@ class TermoRepository implements TermoContract {
      * @param array $params
      * @return LengthAwarePaginator
      */
+    public function getByContratoID($id): LengthAwarePaginator
+    {
+        $query = Termo::query()->where('contrato_id', $id);
+        $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
+        return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
+    }
+
+    /**
+     * @param array $params
+     * @return LengthAwarePaginator
+     */
     public function getAll(array $params): LengthAwarePaginator
     {
         $query = Termo::query();
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
-        if(isset($params['search']['value']) && !empty($params['search']['value'])){
-            $search = strtolower($params['search']['value']);
-            $query->where('nome', 'like', '%'.$search.'%');
-        }
-        if(isset($params['order'][0]) && !empty($params['order'][0])){
-            $columnNumber = $params['order'][0]['column'];
-            $dir = $params['order'][0]['dir'];
-            $columnName = $params['columns'][$columnNumber]['data'];
-            $query->orderBy($columnName, $dir);
-        }else{
-            $query->orderBy('nome', 'asc');
-        }
         return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }
 

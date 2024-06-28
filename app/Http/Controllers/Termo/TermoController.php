@@ -24,6 +24,16 @@ class TermoController extends Controller
     }
 
 
+    public function getbycontratoid($id): JsonResponse
+    {
+        $dados = $this->repository->getByContratoID($id);
+        return response()->json([
+            'data' => $dados->all(),
+            'recordsFiltered' => $dados->total(),
+            'recordsTotal' => $dados->total()
+        ]);
+    }
+
     public function create(TermoRequest $request){
         $params = $request->except('_token');
         $this->repository->create($params);

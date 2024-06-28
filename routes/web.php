@@ -25,6 +25,7 @@ Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\Contr
 Route::group(['prefix' => 'termo', 'namespace' => 'App\Http\Controllers\TermoController'], function() {
     Route::get('/', [TermoController::class, 'index'])->name('termo.index');
     Route::get('/list', [TermoController::class, 'list'])->name('termo.list');
+    Route::get('/getByContratoId/{id}', [TermoController::class, 'getbycontratoid'])->name('termo.list');
     Route::post('/',[TermoController::class,'create'])->name('termo.create');
     Route::get('/historico/{id}',[TermoController::class, 'historico'])->name('termo.historico');
     Route::get('/{id}',[TermoController::class, 'edit'])->name('termo.edit');
