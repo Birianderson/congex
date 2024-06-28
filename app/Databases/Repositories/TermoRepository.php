@@ -2,18 +2,18 @@
 
 namespace App\Databases\Repositories;
 
-use App\Databases\Contracts\TermoAditivoContract;
+use App\Databases\Contracts\TermoContract;
 use App\Databases\Models\Contrato;
-use App\Databases\Models\TermoAditivo;
+use App\Databases\Models\Termo;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class TermoAditivoRepository implements TermoAditivoContract {
+class TermoRepository implements TermoContract {
 
-    public function __construct(private TermoAditivo $model){}
+    public function __construct(private Termo $model){}
 
     /**
      * Salvar novo categoria
@@ -27,14 +27,14 @@ class TermoAditivoRepository implements TermoAditivoContract {
         $autoCommit && DB::beginTransaction();
         try {
 
-            $ultima = TermoAditivo::query()->where('contrato_id',$params['contrato_id'])->orderBy('numero', 'desc')->first();
+            $ultima = Termo::query()->where('contrato_id',$params['contrato_id'])->orderBy('numero', 'desc')->first();
             if ($ultima == null) {
                 $params['numero'] = 1;
             } else {
                 $numero = $ultima->numero + 1 ?? 1;
                 $params['numero'] = $numero;
             }
-            $termo = new TermoAditivo([
+            $termo = new Termo([
                 'contrato_id' => $params['contrato_id'],
                 'observacao' => $params['observacao'],
                 'data_inicio'=>$params['data_inicio'],
@@ -66,8 +66,8 @@ class TermoAditivoRepository implements TermoAditivoContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $TermoAditivo = $this->getById($id);
-            $TermoAditivo->update([
+            $Termo = $this->getById($id);
+            $Termo->update([
                 'nome' => $params['nome'],
                 'cpf' => $params['cpf'],
             ]);
@@ -91,8 +91,8 @@ class TermoAditivoRepository implements TermoAditivoContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $TermoAditivo = $this->getById($id);
-            $TermoAditivo->delete();
+            $Termo = $this->getById($id);
+            $Termo->delete();
             $autoCommit && DB::commit();
         } catch (Exception $ex) {
             $autoCommit && DB::rollBack();
@@ -110,7 +110,7 @@ class TermoAditivoRepository implements TermoAditivoContract {
      */
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = TermoAditivo::query();
+        $query = Termo::query();
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -130,7 +130,7 @@ class TermoAditivoRepository implements TermoAditivoContract {
 
     public function getById(int $id): Model
     {
-        return TermoAditivo::query()->where('id', $id)->firstOrFail();
+        return Termo::query()->where('id', $id)->firstOrFail();
     }
 
 
@@ -140,7 +140,7 @@ class TermoAditivoRepository implements TermoAditivoContract {
             ->where('id', '=',$contrato_id)
             ->firstOrFail();
         $dataHoje = Carbon::today();
-        $termos = TermoAditivo::where('contrato_id', $contrato_id)->orderby('numero')->get();
+        $termos = Termo::where('contrato_id', $contrato_id)->orderby('numero')->get();
         foreach ($termos as $termo) {
             $dataInicio = Carbon::createFromFormat('Y-m-d', $termo->data_inicio);
             $dataFim = Carbon::createFromFormat('Y-m-d', $termo->data_fim);

@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\TermoAditivo;
+namespace App\Http\Controllers\Termo;
 
-use App\Databases\Contracts\TermoAditivoContract;
+use App\Databases\Contracts\TermoContract;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\TermoAditivoRequest;
+use App\Http\Requests\TermoRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class TermoAditivoController extends Controller
+class TermoController extends Controller
 {
-    public function __construct(private TermoAditivoContract $repository){}
+    public function __construct(private TermoContract $repository){}
 
     public function list(Request $request): JsonResponse
     {
@@ -24,7 +24,7 @@ class TermoAditivoController extends Controller
     }
 
 
-    public function create(TermoAditivoRequest $request){
+    public function create(TermoRequest $request){
         $params = $request->except('_token');
         $this->repository->create($params);
         return response()->json('success', 201);
@@ -32,14 +32,14 @@ class TermoAditivoController extends Controller
 
     public function edit(int $id): JsonResponse
     {
-        $TermoAditivo = $this->repository->getById($id);
-        return response()->json($TermoAditivo);
+        $Termo = $this->repository->getById($id);
+        return response()->json($Termo);
     }
 
     /**
      *
      */
-    public function update(TermoAditivoRequest $request, int $id): JsonResponse
+    public function update(TermoRequest $request, int $id): JsonResponse
     {
         $params = $request->except('_token');
         $this->repository->update($id, $params);

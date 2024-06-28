@@ -18,10 +18,6 @@ return new class extends Migration
             $table->string('numero');
             $table->text('objeto')->nullable();
             $table->string('situacao');
-            $table->char('ativo');
-            $table->date('data_inicio');
-            $table->date('data_fim');
-            $table->bigInteger('valor');
             $table->string('observacao')->nullable();
             $table->unsignedBigInteger('licitacao_id')->nullable();
             $table->foreign('licitacao_id')->references('id')->on('licitacao');

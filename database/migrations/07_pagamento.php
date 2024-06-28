@@ -23,8 +23,8 @@ return new class extends Migration
             $table->float('valor_total_pago');
             $table->bigInteger('empenho');
             $table->string('observacao');
-            $table->unsignedBigInteger('contrato_id');
-            $table->foreign('contrato_id')->references('id')->on('contrato');
+            $table->unsignedBigInteger('termo_id');
+            $table->foreign('termo_id')->references('id')->on('termo');
             $table->unsignedBigInteger('termo_aditivo_id');
             $table->foreign('termo_aditivo_id')->references('id')->on('termo_aditivo');
             $table->timestamps();

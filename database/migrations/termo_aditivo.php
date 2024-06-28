@@ -13,7 +13,7 @@ return new  class extends Migration
      */
     public function up()
     {
-        Schema::create('termo_aditivo', function (Blueprint $table) {
+        Schema::create('termo', function (Blueprint $table) {
             $table->id();
             $table->date('data_inicio');
             $table->date('data_fim');

@@ -22,9 +22,9 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="#" class="nav-link menu-text">
+            <a href="{{route('pagamento.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'pagamento')) element-with-gradient text-white @endif">
                 <i class="fa fa-dollar me-2"></i>
-                Pagamentos
+                Controle Financeiro
             </a>
         </li>
         <li class="mt-2">
