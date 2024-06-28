@@ -42,7 +42,7 @@ class ContratoController extends Controller
     public function update(ContratoRequest $request, int $id){
         $params = $request->except('_token');
         $this->repository->update($id,$params);
-        return redirect(route("contrato.index", ));
+        return response()->json('success', 201);
     }
     public function historico($id){
         $contrato = $this->repository->getById($id);
@@ -53,7 +53,7 @@ class ContratoController extends Controller
     }
     public function delete(int $id){
         $this->repository->destroy($id);
-        return redirect(route("contrato.index"));
+        return response()->json('success', 201);
     }
 
 }

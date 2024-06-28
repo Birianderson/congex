@@ -19,7 +19,7 @@ Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\Contr
     Route::get('/historico/{id}',[ContratoController::class, 'historico'])->name('contrato.historico');
     Route::get('/{id}',[ContratoController::class, 'edit'])->name('contrato.edit');
     Route::post('/{id}',[ContratoController::class, 'update'])->name('contrato.update');
-    Route::post('/{id}/delete',[ContratoController::class, 'delete'])->name('contrato.delete');
+    Route::delete('/delete/{id}',[ContratoController::class, 'delete'])->name('contrato.delete');
 });
 
 Route::group(['prefix' => 'termo', 'namespace' => 'App\Http\Controllers\TermoController'], function() {

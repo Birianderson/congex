@@ -27,9 +27,9 @@ class Contrato extends Model
         return $this->hasMany(Responsabilidade::class, 'contrato_id');
     }
 
-    public function termo_aditivos()
+    public function termos()
     {
-        return $this->hasMany(TermoAditivo::class, 'contrato_id')->orderBy('numero');
+        return $this->hasMany(Termo::class, 'contrato_id')->orderBy('numero');
     }
 
 }

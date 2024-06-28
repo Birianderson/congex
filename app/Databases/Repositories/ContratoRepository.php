@@ -5,6 +5,7 @@ namespace App\Databases\Repositories;
 use App\Databases\Contracts\ContratoContract;
 use App\Databases\Models\Contrato;
 use App\Databases\Models\Responsabilidade;
+use App\Databases\Models\Termo;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +31,7 @@ class ContratoRepository implements ContratoContract
             $dataInicio = Carbon::createFromFormat('Y-m-d', $params['data_inicio']);
             $dataFim = Carbon::createFromFormat('Y-m-d', $params['data_fim']);
             if ($dataInicio->isBefore($dataHoje) && $dataFim->isAfter($dataHoje)) {
-                $params['situacao'] = 'V';
+                $params['situacao'] = 'V0';
                 $params['ativo'] = 'S';
             } else {
                 $params['situacao'] = 'NV';
@@ -41,15 +42,22 @@ class ContratoRepository implements ContratoContract
                 'numero' => $params['numero'],
                 'objeto' => $params['objeto'],
                 'situacao' => $params['situacao'],
-                'ativo' => $params['ativo'],
                 'empresa_id' => $params['empresa_id'],
                 'observacao' => $params['observacao'],
                 'licitacao_id' => $params['licitacao_id'] ?? null,
-                'data_inicio' => $params['data_inicio'],
-                'data_fim' => $params['data_fim'],
-                'valor' => $params['valor'],
             ]);
             $contrato->save();
+
+            $termo = new Termo([
+                'contrato_id' => $contrato->id,
+                'observacao' => $params['observacao'],
+                'data_inicio'=>$params['data_inicio'],
+                'ativo' => $params['ativo'],
+                'data_fim'=>$params['data_fim'],
+                'valor'=>  $params['valor'],
+                'numero'=> '0',
+            ]);
+            $termo->save();
 
             if (isset($params['cargo']) && isset($params['pessoa'])) {
                 $cargos = $params['cargo'];
@@ -141,14 +149,7 @@ class ContratoRepository implements ContratoContract
         try {
             /// Obter o contrato pelo ID
             $contrato = Contrato::findOrFail($id);
-
-            // Excluir os "filhos" relacionados ao contrato
-            $contrato->nota_fiscal()->delete();
-            $contrato->documento_contrato()->delete();
-            $contrato->termo_aditivo()->delete();
-            $contrato->notificacao()->delete();
-
-            // Excluir o contrato
+            $contrato->termos()->delete();
             $contrato->delete();
 
             DB::commit();
@@ -162,22 +163,32 @@ class ContratoRepository implements ContratoContract
 
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Contrato::query()->with(['empresa', 'responsabilidades','termo_aditivos'])
+        $query = Contrato::query()->with(['empresa', 'responsabilidades','termos'])
             ->selectRaw("
                 CONTRATO.*,
                 CASE
-                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '1')
-                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '2')
-                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
-                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.data_fim FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
-                    ELSE contrato.DATA_FIM
+                    WHEN contrato.situacao = 'NV' THEN (SELECT ta.data_inicio FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V0' THEN (SELECT ta.data_inicio FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.data_inicio FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.data_inicio FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.data_inicio FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.data_inicio FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                END AS data_inicio ,
+                CASE
+                    WHEN contrato.situacao = 'NV' THEN (SELECT ta.data_fim FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V0' THEN (SELECT ta.data_fim FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.data_fim FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '1')
+                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.data_fim FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '2')
+                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.data_fim FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
+                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.data_fim FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
                 END AS data_fim_real ,
                 CASE
-                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '1')
-                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '2')
-                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
-                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.VALOR FROM TERMO_ADITIVO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
-                    ELSE contrato.VALOR
+                    WHEN contrato.situacao = 'NV' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V0' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '0')
+                    WHEN contrato.situacao = 'V1' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '1')
+                    WHEN contrato.situacao = 'V2' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '2')
+                    WHEN contrato.situacao = 'V3' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
+                    WHEN contrato.situacao = 'V4' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
                 END AS valor_real
             ");
 
@@ -213,7 +224,7 @@ class ContratoRepository implements ContratoContract
     public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
         return Contrato::query()
-            ->with(['empresa', 'responsabilidades', 'termo_aditivos'])
+            ->with(['empresa', 'responsabilidades', 'TERMOs'])
             ->where('id', $id)
             ->firstOrFail();
     }
