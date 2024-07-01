@@ -3,7 +3,9 @@
 namespace App\Databases\Repositories;
 
 use App\Databases\Contracts\PagamentoContract;
+use App\Databases\Models\Contrato;
 use App\Databases\Models\Pagamento;
+use App\Databases\Models\Termo;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -21,13 +23,20 @@ class PagamentoRepository implements PagamentoContract {
      * @return bool
      * @throws Exception
      */
-    public function create(array $params, bool $autoCommit = true): bool
+    public function createEmpenho(array $params, bool $autoCommit = true): bool
     {
         $autoCommit && DB::beginTransaction();
         try {
             $Pagamento = new Pagamento([
-                'nome' => $params['nome'],
-                'cnpj' => $params['cnpj'],
+                'exercicio' => $params['exercicio'],
+                'termo_de_referencia' => $params['termo_de_referencia'],
+                'data_vigencia' => $params['data_vigencia'],
+                'valor_empenho' => $params['valor_empenho'],
+                'valor_liquidacao' => $params['valor_liquidacao'],
+                'valor_total_pago' =>0,
+                'empenho' => $params['empenho'],
+                'termo_id' => $params['termo_id'],
+                'observacao' => $params['observacao'] ?? '',
             ]);
             $Pagamento->save();
 
@@ -94,9 +103,9 @@ class PagamentoRepository implements PagamentoContract {
      * @param array $params
      * @return LengthAwarePaginator
      */
-    public function getAll(array $params): LengthAwarePaginator
+    public function getAll(array $params, $termo_id): LengthAwarePaginator
     {
-        $query = Pagamento::query();
+        $query = Pagamento::query()->where('termo_id', $termo_id);
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -129,5 +138,14 @@ class PagamentoRepository implements PagamentoContract {
         return Pagamento::query()->whereRaw('lower(nome) like ?', ["%{$query}%"])->get();
     }
 
+    public function getContratoById(int $id): Model
+    {
+        return Contrato::query()->where('id', $id)->firstOrFail();
+    }
+
+    public function getTermoById(int $id): Model
+    {
+        return Termo::query()->where('id', $id)->firstOrFail();
+    }
 
 }

@@ -15,8 +15,10 @@ class PagamentoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'max:255', 'min:5'],
-            'cnpj' => ['required'],
+            'exercicio' => ['required'],
+            'data_vigencia' => ['required'],
+            'termo_de_referencia' => ['required'],
+            'empenho' => ['required'],
         ];
     }
 

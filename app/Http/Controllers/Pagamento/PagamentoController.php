@@ -21,15 +21,38 @@ class PagamentoController extends Controller
 
     public function termo($id_contrato): View
     {
-        $contrato = Contrato::findOrFail($id_contrato);
+        $contrato = $this->repository->getContratoById($id_contrato);
         $nome = $contrato->empresa->nome;
         $numero_contrato = $contrato->numero;
         return view('pagamento.termo', compact('id_contrato','nome','numero_contrato'));
     }
 
-    public function list(Request $request): JsonResponse
+    public function empenho($id_contrato, $id_termo): View
     {
-        $dados = $this->repository->getAll($request->all());
+        $contrato = $this->repository->getContratoById($id_contrato);
+        $termo = $this->repository->getTermoById($id_termo);
+        $nome = $contrato->empresa->nome;
+        $numero_contrato = $contrato->numero;
+
+        // Mapeamento dos termos aditivos
+        $termoMap = [
+            '0' => 'Contrato Inicial',
+            '1' => '1° Termo Aditivo',
+            '2' => '2° Termo Aditivo',
+            '3' => '3° Termo Aditivo',
+            '4' => '4° Termo Aditivo',
+            '5' => '5° Termo Aditivo'
+        ];
+
+        // Obtendo a string correspondente ao número do termo
+        $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
+
+        return view('pagamento.empenho', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
+    }
+
+    public function list(Request $request, $termo_id): JsonResponse
+    {
+        $dados = $this->repository->getAll($request->all(), $termo_id);
         return response()->json([
             'data' => $dados->all(),
             'recordsFiltered' => $dados->total(),
@@ -38,11 +61,12 @@ class PagamentoController extends Controller
     }
 
 
-    public function create(PagamentoRequest $request){
+    public function createEmpenho(PagamentoRequest $request){
         $params = $request->except('_token');
-        $this->repository->create($params);
+        $this->repository->createEmpenho($params);
         return response()->json('success', 201);
     }
+
 
     public function edit(int $id): JsonResponse
     {

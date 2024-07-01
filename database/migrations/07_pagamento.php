@@ -25,8 +25,6 @@ return new class extends Migration
             $table->string('observacao');
             $table->unsignedBigInteger('termo_id');
             $table->foreign('termo_id')->references('id')->on('termo');
-            $table->unsignedBigInteger('termo_aditivo_id');
-            $table->foreign('termo_aditivo_id')->references('id')->on('termo_aditivo');
             $table->timestamps();
             $table->softDeletes();
         });

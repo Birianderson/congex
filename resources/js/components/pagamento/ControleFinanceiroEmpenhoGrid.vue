@@ -8,6 +8,7 @@
             width="100%"
             :options="options"
             :columns="columns"
+            @draw="aplicarEventos"
         >
         </DataTable>
     </div>
@@ -18,8 +19,6 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import language from 'datatables.net-plugins/i18n/pt-BR.mjs';
 import { inject, onMounted, ref } from 'vue';
-import moment from 'moment';
-import axios from "axios";
 DataTable.use(DataTablesCore);
 
 export default {
@@ -38,28 +37,37 @@ export default {
             }).format(value);
         };
 
-        const formatSituacao = (situacao) => {
-            const situacaoMap = {
-                '0': 'Contrato Inicial',
-                '1': '1° Termo Aditivo',
-                '2': '2° Termo Aditivo',
-                '3': '3° Termo Aditivo',
-                '4': '4° Termo Aditivo',
-                '5': '5° Termo Aditivo'
-            };
-            return situacaoMap[situacao] || situacao;
-        };
-
         const columns = ref([
             {
-                data: 'numero',
-                title: 'Termo',
+                data: 'exercicio',
+                title: 'Exercício',
                 width: '10%',
-                render: (data) => formatSituacao(data)
             },
             {
-                data: 'valor',
-                title: 'Montante do Contrato',
+                data: 'termo_de_referencia',
+                title: 'Termo de Referência',
+                width: '10%',
+            },
+            {
+                data: 'empenho',
+                title: 'Número Empenho',
+                width: '15%',
+            },
+            {
+                data: 'valor_empenho',
+                title: 'Valor Empenhado',
+                width: '15%',
+                render: (data) => formatCurrency(data)
+            },
+            {
+                data: 'valor_liquidacao',
+                title: 'Valor Liquidado',
+                width: '15%',
+                render: (data) => formatCurrency(data)
+            },
+            {
+                data: 'valor_total_pago',
+                title: 'Valor Pago',
                 width: '15%',
                 render: (data) => formatCurrency(data)
             },
@@ -72,11 +80,30 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <a href="/pagamento/termo/${parseInt(row.contrato_id)}/empenho/${row.id}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Pagamentos"><i class="fa fa-dollar"></i></a>
+                    <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empenho}" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar Nota Fiscal"><i class="fa fa-file-text"></i></button>
                     `;
                 }
             }
         ]);
+
+        const aplicarEventos = async () => {
+            let termoelements = document.querySelectorAll("[data-action=termo]");
+            termoelements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    let nome = evt.currentTarget.getAttribute('data-nome');
+                    events.emit('popup', {
+                        title: `Adicionar nota fiscal ao empenho - ${nome}`,
+                        component: 'form-nota-fiscal',
+                        size: 'xl',
+                        data: {
+                            id: `${id}`,
+                            nome: `${nome}`,
+                        },
+                    });
+                });
+            });
+        };
 
         const options = {
             serverSide: true,
@@ -91,7 +118,7 @@ export default {
             },
         };
 
-        const ajax = `/termo/getByContratoId/${props.data}`;
+        const ajax = `/pagamento/list/${props.data}`;
 
         onMounted(() => {
             ready.value = true;
@@ -102,7 +129,7 @@ export default {
 
 
         return {
-            ready, options, columns, ajax, mydatatable,
+            ready, options, columns, ajax, mydatatable, aplicarEventos
         }
     },
     props: {
