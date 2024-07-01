@@ -58,15 +58,13 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
 import { inject, onMounted, ref } from 'vue';
-import moment from 'moment';
 
 export default {
     setup(props, { emit }) {
         const events = inject('events');
         const ready = ref(false);
-        const acao = ref('/pagamento/');
+        const acao = ref('/pagamento/nota-fiscal/');
         const readOnly = ref(false);
 
         const close = () => {

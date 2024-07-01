@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Pagamento;
+namespace App\Http\Controllers\Empenho;
 
-use App\Databases\Contracts\PagamentoContract;
+use App\Databases\Contracts\EmpenhoContract;
 use App\Databases\Models\Contrato;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PagamentoRequest;
+use App\Http\Requests\EmpenhoRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class PagamentoController extends Controller
+class EmpenhoController extends Controller
 {
-    public function __construct(private PagamentoContract $repository){}
+    public function __construct(private EmpenhoContract $repository){}
 
     public function index(Request $request): View
     {
@@ -46,13 +46,14 @@ class PagamentoController extends Controller
         return view('pagamento.empenho', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
     }
 
-    public function notaFiscal($id_contrato, $id_termo, $id): View
+    public function notaFiscal($id_contrato, $id_termo, $id_pagamento): View
     {
         $contrato = $this->repository->getContratoById($id_contrato);
         $termo = $this->repository->getTermoById($id_termo);
         $nome = $contrato->empresa->nome;
         $numero_contrato = $contrato->numero;
-
+        $pagamento = $this->repository->getById($id_pagamento);
+        $numero_empenho = $pagamento->empenho;
         $termoMap = [
             '0' => 'Contrato Inicial',
             '1' => '1° Termo Aditivo',
@@ -63,7 +64,7 @@ class PagamentoController extends Controller
         ];
         $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
 
-        return view('pagamento.notafiscal', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
+        return view('nota_fiscal.index', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_pagamento','numero_empenho'));
     }
 
     public function list(Request $request, $termo_id): JsonResponse
@@ -76,9 +77,9 @@ class PagamentoController extends Controller
         ]);
     }
 
-    public function listNotas(Request $request, $termo_id): JsonResponse
+    public function listNotas(Request $request, $pagamento_id): JsonResponse
     {
-        $dados = $this->repository->getAll($request->all(), $termo_id);
+        $dados = $this->repository->getAllNotas($request->all(), $pagamento_id);
         return response()->json([
             'data' => $dados->all(),
             'recordsFiltered' => $dados->total(),
@@ -87,7 +88,7 @@ class PagamentoController extends Controller
     }
 
 
-    public function createEmpenho(PagamentoRequest $request){
+    public function createEmpenho(EmpenhoRequest $request){
         $params = $request->except('_token');
         $this->repository->createEmpenho($params);
         return response()->json('success', 201);
@@ -108,7 +109,7 @@ class PagamentoController extends Controller
     /**
      *
      */
-    public function update(PagamentoRequest $request, int $id): JsonResponse
+    public function update(EmpenhoRequest $request, int $id): JsonResponse
     {
         $params = $request->except('_token');
         $this->repository->update($id, $params);

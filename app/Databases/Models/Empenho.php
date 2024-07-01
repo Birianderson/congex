@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Pagamento extends Model
+class Empenho extends Model
 {
     use SoftDeletes;
     protected $table = 'pagamento';

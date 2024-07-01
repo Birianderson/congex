@@ -23,8 +23,8 @@ return new class extends Migration
             $table->float('ordem_servico')->nullable();
             $table->string('observacao')->nullable();
             $table->string('ci')->nullable();
-            $table->unsignedBigInteger('pagamento_id')->nullable();
-            $table->foreign('pagamento_id')->references('id')->on('pagamento');
+            $table->unsignedBigInteger('empenho_id')->nullable();
+            $table->foreign('empenho_id')->references('id')->on('empenho');
             $table->timestamps();
             $table->softDeletes();
         });

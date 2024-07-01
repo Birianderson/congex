@@ -6,7 +6,7 @@ use App\Http\Requests\Traits\CustomAttributesTrait;
 use App\Http\Requests\Traits\CustomMessagesTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class PagamentoRequest extends FormRequest
+class EmpenhoRequest extends FormRequest
 {
 
     /**

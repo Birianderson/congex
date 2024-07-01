@@ -2,9 +2,10 @@
 
 namespace App\Databases\Repositories;
 
-use App\Databases\Contracts\PagamentoContract;
+use App\Databases\Contracts\EmpenhoContract;
 use App\Databases\Models\Contrato;
-use App\Databases\Models\Pagamento;
+use App\Databases\Models\NotaFiscal;
+use App\Databases\Models\Empenho;
 use App\Databases\Models\Termo;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,9 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
-class PagamentoRepository implements PagamentoContract {
+class EmpenhoRepository implements EmpenhoContract {
 
-    public function __construct(private Pagamento $model){}
+    public function __construct(private Empenho $model){}
 
     /**
      * Salvar novo categoria
@@ -27,7 +28,7 @@ class PagamentoRepository implements PagamentoContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $Pagamento = new Pagamento([
+            $Empenho = new Empenho([
                 'exercicio' => $params['exercicio'],
                 'termo_de_referencia' => $params['termo_de_referencia'],
                 'data_vigencia' => $params['data_vigencia'],
@@ -38,7 +39,7 @@ class PagamentoRepository implements PagamentoContract {
                 'termo_id' => $params['termo_id'],
                 'observacao' => $params['observacao'] ?? '',
             ]);
-            $Pagamento->save();
+            $Empenho->save();
 
             $autoCommit && DB::commit();
             return true;
@@ -50,7 +51,7 @@ class PagamentoRepository implements PagamentoContract {
 
 
     /**
-     * Atualizar Pagamento
+     * Atualizar Empenho
      * @param int $id
      * @param array $params
      * @param bool $autoCommit
@@ -61,8 +62,8 @@ class PagamentoRepository implements PagamentoContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $Pagamento = $this->getById($id);
-            $Pagamento->update([
+            $Empenho = $this->getById($id);
+            $Empenho->update([
                 'nome' => $params['nome'],
                 'cnpj' => $params['cnpj'],
             ]);
@@ -86,8 +87,8 @@ class PagamentoRepository implements PagamentoContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
-            $Pagamento = $this->getById($id);
-            $Pagamento->delete();
+            $Empenho = $this->getById($id);
+            $Empenho->delete();
             $autoCommit && DB::commit();
         } catch (Exception $ex) {
             $autoCommit && DB::rollBack();
@@ -103,9 +104,9 @@ class PagamentoRepository implements PagamentoContract {
      * @param array $params
      * @return LengthAwarePaginator
      */
-    public function getAllPagamentos(array $params, $termo_id): LengthAwarePaginator
+    public function getAllEmpenhos(array $params, $termo_id): LengthAwarePaginator
     {
-        $query = Pagamento::query()->where('termo_id', $termo_id)->with('termo');
+        $query = Empenho::query()->where('termo_id', $termo_id)->with('termo');
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -126,9 +127,9 @@ class PagamentoRepository implements PagamentoContract {
      * @param array $params
      * @return LengthAwarePaginator
      */
-    public function getAllNotas(array $params, $termo_id): LengthAwarePaginator
+    public function getAllNotas(array $params, $Empenho_id): LengthAwarePaginator
     {
-        $query = Pagamento::query()->where('termo_id', $termo_id)->with('termo');
+        $query = NotaFiscal::query()->where('Empenho_id', $Empenho_id)->with('Empenho');
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -148,7 +149,7 @@ class PagamentoRepository implements PagamentoContract {
 
     public function getById(int $id): Model
     {
-        return Pagamento::query()->where('id', $id)->firstOrFail();
+        return Empenho::query()->where('id', $id)->firstOrFail();
     }
 
     /**
@@ -158,7 +159,7 @@ class PagamentoRepository implements PagamentoContract {
      */
     public function getByQuery(string $query): Collection
     {
-        return Pagamento::query()->whereRaw('lower(nome) like ?', ["%{$query}%"])->get();
+        return Empenho::query()->whereRaw('lower(nome) like ?', ["%{$query}%"])->get();
     }
 
     public function getContratoById(int $id): Model
@@ -171,7 +172,7 @@ class PagamentoRepository implements PagamentoContract {
         return Termo::query()->where('id', $id)->firstOrFail();
     }
 
-    public function getPagamentoById(int $id): Model
+    public function getEmpenhoById(int $id): Model
     {
         return Termo::query()->where('id', $id)->firstOrFail();
     }

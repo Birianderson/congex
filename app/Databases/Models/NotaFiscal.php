@@ -16,7 +16,7 @@ class NotaFiscal extends Model
 
     public function pagamentos()
     {
-        return $this->belongsTo(Pagamento::class);
+        return $this->belongsTo(Empenho::class);
     }
 }
 

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('pagamento', function (Blueprint $table) {
+        Schema::create('empenho', function (Blueprint $table) {
             $table->id();
             $table->string('exercicio');
             $table->string('termo_de_referencia');
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::drop('empenho');
     }
 };
