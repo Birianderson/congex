@@ -14,5 +14,9 @@ class Pagamento extends Model
     protected $guarded = [];
     public string $sequence = 'pagamento_id_seq';
 
+    public function termo()
+    {
+        return $this->belongsTo(Termo::class);
+    }
 }
 

@@ -103,9 +103,32 @@ class PagamentoRepository implements PagamentoContract {
      * @param array $params
      * @return LengthAwarePaginator
      */
-    public function getAll(array $params, $termo_id): LengthAwarePaginator
+    public function getAllPagamentos(array $params, $termo_id): LengthAwarePaginator
     {
-        $query = Pagamento::query()->where('termo_id', $termo_id);
+        $query = Pagamento::query()->where('termo_id', $termo_id)->with('termo');
+        $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
+        if(isset($params['search']['value']) && !empty($params['search']['value'])){
+            $search = strtolower($params['search']['value']);
+            $query->where('nome', 'like', '%'.$search.'%');
+        }
+        if(isset($params['order'][0]) && !empty($params['order'][0])){
+            $columnNumber = $params['order'][0]['column'];
+            $dir = $params['order'][0]['dir'];
+            $columnName = $params['columns'][$columnNumber]['data'];
+            $query->orderBy($columnName, $dir);
+        }else{
+            $query->orderBy('nome', 'asc');
+        }
+        return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
+    }
+
+    /**
+     * @param array $params
+     * @return LengthAwarePaginator
+     */
+    public function getAllNotas(array $params, $termo_id): LengthAwarePaginator
+    {
+        $query = Pagamento::query()->where('termo_id', $termo_id)->with('termo');
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -144,6 +167,11 @@ class PagamentoRepository implements PagamentoContract {
     }
 
     public function getTermoById(int $id): Model
+    {
+        return Termo::query()->where('id', $id)->firstOrFail();
+    }
+
+    public function getPagamentoById(int $id): Model
     {
         return Termo::query()->where('id', $id)->firstOrFail();
     }

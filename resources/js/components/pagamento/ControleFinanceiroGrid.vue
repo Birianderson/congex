@@ -8,6 +8,7 @@
             width="100%"
             :options="options"
             :columns="columns"
+            @draw="aplicarEventos"
         >
         </DataTable>
     </div>
@@ -73,11 +74,32 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <a href="/pagamento/termo/${parseInt(row.id)}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Pagamentos"><i class="fa fa-dollar"></i></a>
+                        <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Termos"><i class="fa fa-search"></i></button>
+                        <a href="/pagamento/termo/${parseInt(row.id)}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Termos do Contrato"><i class="fa fa-book"></i></a>
                     `;
                 }
             }
         ]);
+
+        const aplicarEventos = async () => {
+
+            let termoelements = document.querySelectorAll("[data-action=termo]");
+            termoelements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    let nome = evt.currentTarget.getAttribute('data-nome');
+                    let numero = evt.currentTarget.getAttribute('data-numero');
+                    events.emit('popup', {
+                        title: `Visualizar Termos - ${nome} ${numero}`,
+                        component: 'controle-financeiro-termo-grid',
+                        size: 'xl',
+                        data: {
+                            id: `${id}`,
+                        },
+                    });
+                });
+            });
+        };
 
         const options = {
             serverSide: true,
@@ -102,7 +124,7 @@ export default {
         });
 
         return {
-            ready, options, columns, ajax, mydatatable,
+            ready, options, columns, ajax, mydatatable, aplicarEventos
         }
     }
 }

@@ -49,8 +49,10 @@ Route::group(['prefix' => 'pagamento', 'namespace' => 'App\Http\Controllers\Paga
     Route::get('/', [PagamentoController::class, 'index'])->name('pagamento.index');
     Route::get('/add', [PagamentoController::class, 'add'])->name('pagamento.add');
     Route::get('/list/{termo_id}', [PagamentoController::class, 'list'])->name('pagamento.list');
+    Route::get('/listNotas/{pagamento_id}', [PagamentoController::class, 'listNotas'])->name('pagamento.listNotas');
     Route::get('/termo/{id}', [PagamentoController::class, 'termo'])->name('pagamento.termo');
     Route::get('/termo/{contrato_id}/empenho/{termo_id}', [PagamentoController::class, 'empenho'])->name('pagamento.termo');
+    Route::get('/termo/{contrato_id}/empenho/{termo_id}/nota-fiscal/{empenho_id}', [PagamentoController::class, 'notaFiscal'])->name('pagamento.nota');
     Route::post('/',[PagamentoController::class,'createEmpenho'])->name('pagamento.createEmpenho');
     Route::get('/get-by-query', [PagamentoController::class, 'getByQuery'])->name('pagamento.get-by-query');
     Route::get('/historico/{id}',[PagamentoController::class, 'historico'])->name('pagamento.historico');

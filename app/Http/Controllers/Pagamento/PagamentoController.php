@@ -33,8 +33,6 @@ class PagamentoController extends Controller
         $termo = $this->repository->getTermoById($id_termo);
         $nome = $contrato->empresa->nome;
         $numero_contrato = $contrato->numero;
-
-        // Mapeamento dos termos aditivos
         $termoMap = [
             '0' => 'Contrato Inicial',
             '1' => '1° Termo Aditivo',
@@ -43,14 +41,42 @@ class PagamentoController extends Controller
             '4' => '4° Termo Aditivo',
             '5' => '5° Termo Aditivo'
         ];
-
-        // Obtendo a string correspondente ao número do termo
         $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
 
         return view('pagamento.empenho', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
     }
 
+    public function notaFiscal($id_contrato, $id_termo, $id): View
+    {
+        $contrato = $this->repository->getContratoById($id_contrato);
+        $termo = $this->repository->getTermoById($id_termo);
+        $nome = $contrato->empresa->nome;
+        $numero_contrato = $contrato->numero;
+
+        $termoMap = [
+            '0' => 'Contrato Inicial',
+            '1' => '1° Termo Aditivo',
+            '2' => '2° Termo Aditivo',
+            '3' => '3° Termo Aditivo',
+            '4' => '4° Termo Aditivo',
+            '5' => '5° Termo Aditivo'
+        ];
+        $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
+
+        return view('pagamento.notafiscal', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
+    }
+
     public function list(Request $request, $termo_id): JsonResponse
+    {
+        $dados = $this->repository->getAllPagamentos($request->all(), $termo_id);
+        return response()->json([
+            'data' => $dados->all(),
+            'recordsFiltered' => $dados->total(),
+            'recordsTotal' => $dados->total()
+        ]);
+    }
+
+    public function listNotas(Request $request, $termo_id): JsonResponse
     {
         $dados = $this->repository->getAll($request->all(), $termo_id);
         return response()->json([
