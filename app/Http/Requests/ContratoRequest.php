@@ -18,7 +18,7 @@ class ContratoRequest extends FormRequest
             'pessoa' => ['required'],
             'data_inicio' => ['required'],
             'data_fim' => ['required'],
-            'valor' => ['required', 'numeric', 'min:0.01'],
+            'valor' => ['required', 'numeric'],
         ];
     }
 

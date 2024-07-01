@@ -9,7 +9,7 @@ use App\Databases\Models\Termo;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\UploadedFile;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
@@ -106,15 +106,19 @@ class ContratoRepository implements ContratoContract
                 'numero' => $params['numero'],
                 'objeto' => $params['objeto'],
                 'situacao' => $params['situacao'],
-                'ativo' => $params['ativo'],
                 'empresa_id' => $params['empresa_id'],
                 'observacao' => $params['observacao'],
                 'licitacao_id' => $params['licitacao_id'] ?? null,
-                'data_inicio' => $params['data_inicio'],
-                'data_fim' => $params['data_fim'],
-                'valor' => $params['valor'],
             ]);
 
+            $termo = $this->getTermoByContratoId($contrato->id);
+            $termo->update([
+                'observacao' => $params['observacao'],
+                'data_inicio'=>$params['data_inicio'],
+                'ativo' => $params['ativo'],
+                'data_fim'=>$params['data_fim'],
+                'valor'=>  $params['valor'],
+            ]);
             Responsabilidade::where('contrato_id', $id)->delete();
 
             if (isset($params['cargo']) && isset($params['pessoa'])) {
@@ -134,7 +138,7 @@ class ContratoRepository implements ContratoContract
                     }
                 }
             }
-
+            $this->verificaSituacao($contrato->id);
             if ($autoCommit) DB::commit();
             return true;
         } catch (Exception $ex) {
@@ -221,12 +225,37 @@ class ContratoRepository implements ContratoContract
 
 
 
-    public function getById(int $id): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+    public function getById(int $id): Builder|Model
     {
         return Contrato::query()
             ->with(['empresa', 'responsabilidades', 'termos'])
             ->where('id', $id)
             ->firstOrFail();
+    }
+
+    public function getTermoByContratoId(int $contrato_id): Builder|Model
+    {
+        return Termo::query()
+            ->where('contrato_id', $contrato_id)
+            ->firstOrFail();
+    }
+
+    public function verificaSituacao($contrato_id)
+    {
+        $contrato = Contrato::query()
+            ->where('id', '=',$contrato_id)
+            ->firstOrFail();
+        $dataHoje = Carbon::today();
+        $termos = Termo::where('contrato_id', $contrato_id)->orderby('numero')->get();
+        foreach ($termos as $termo) {
+            $dataInicio = Carbon::createFromFormat('Y-m-d', $termo->data_inicio);
+            $dataFim = Carbon::createFromFormat('Y-m-d', $termo->data_fim);
+            if ($dataInicio->isBefore($dataHoje) && $dataFim->isAfter($dataHoje) || $dataInicio->isSameDay($dataHoje) || $dataFim->isSameDay($dataHoje)) {
+                $contrato->situacao = 'V' . $termo->numero;
+            }
+        }
+
+        $contrato->save();
     }
 
 }

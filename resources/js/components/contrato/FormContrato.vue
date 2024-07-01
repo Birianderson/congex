@@ -26,21 +26,21 @@
             <div class="row">
                 <div class="col-6 mb-4">
                     <label for="data_inicio" class="form-label" :class="{ 'required': !readOnly }">Início da Vigência</label>
-                    <input type="date" class="form-control " id="data_inicio" name="data_inicio" v-model="info.data_inicio" />
+                    <input type="date" class="form-control " id="data_inicio" name="data_inicio" v-model="info.termos[0].data_inicio" />
                 </div>
                 <div class="col-6 mb-4">
                     <label for="data_fim" class="form-label" :class="{ 'required': !readOnly }">Fim da Vigência</label>
-                    <input type="date" class="form-control " id="data_fim" name="data_fim" v-model="info.data_fim" />
+                    <input type="date" class="form-control " id="data_fim" name="data_fim" v-model="info.termos[0].data_fim" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-6 mb-4">
                     <label for="valor" class="form-label" :class="{ 'required': !readOnly }">Valor</label>
-                    <input-money id="valor" name="valor" :value="info.valor"></input-money>
+                    <input-money id="valor" name="valor" :value="info.termos[0].valor"></input-money>
                 </div>
                 <div class="col-6 mb-4">
                     <label for="observacao" class="form-label">Observação</label>
-                    <input type="text" class="form-control " id="observacao" name="observacao" v-model="info.observacao" />
+                    <input type="text" class="form-control " id="observacao" name="observacao" v-model="info.termos[0].observacao" />
                 </div>
             </div>
             <select-responsabilidade v-model="info.responsabilidades"></select-responsabilidade>
@@ -84,7 +84,6 @@ export default {
                 const response = await axios.get(`${acao.value}${props.data.id}`);
                 acao.value += props.data.id;
                 info.value = response.data;
-                console.log(info.value)
             } catch (err) {
                 emit('notification', {
                     type: 'error',
