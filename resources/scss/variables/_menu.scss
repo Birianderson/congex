@@ -27,3 +27,60 @@
 .nav-link.collapsed .fa-chevron-down {
     transform: rotate(-90deg);
 }
+
+.color-text-chart-0 {
+    color: $color-end-0
+}
+
+.color-text-chart-1 {
+    color: $color-end-1
+}
+
+.color-text-chart-2 {
+    color: $color-end-2
+}
+
+.color-text-chart-3 {
+    color: $color-end-3
+}
+
+.color-text-chart-4 {
+    color: $color-end-4
+}
+
+.color-text-chart-5 {
+    color: $color-end-5
+}
+
+.element-with-gradient-0 {
+    background: linear-gradient(72deg, $color-start-0 22%, $color-end-0 77%) !important;
+}
+
+.element-with-gradient-1 {
+    background: linear-gradient(72deg, $color-start-1 22%, $color-end-1 77%) !important;
+}
+
+.element-with-gradient-2 {
+    background: linear-gradient(72deg, $color-start-2 22%, $color-end-2 77%) !important;
+}
+
+.element-with-gradient-3 {
+    background: linear-gradient(72deg, $color-start-3 22%, $color-end-3 77%) !important;
+}
+
+.element-with-gradient-4 {
+    background: linear-gradient(72deg, $color-start-4 22%, $color-end-4 77%) !important;
+}
+
+.element-with-gradient-5 {
+    background: linear-gradient(72deg, $color-start-5 22%, $color-end-5 77%) !important;
+}
+
+.shadow-termo{
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.border-radius-termo{
+    border-radius: 20px;
+}
+

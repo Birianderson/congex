@@ -5,6 +5,7 @@ use App\Http\Controllers\Contrato\ContratoController;
 use App\Http\Controllers\Empresa\EmpresaController;
 use App\Http\Controllers\Empenho\EmpenhoController;
 use App\Http\Controllers\NotaFiscal\NotaFiscalController;
+use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Pessoa\PessoaController;
 use App\Http\Controllers\Termo\TermoController;
 use Illuminate\Support\Facades\Route;
@@ -87,4 +88,8 @@ Route::group(['prefix' => 'cargo', 'namespace' => 'App\Http\Controllers\CargoCon
     Route::get('/{id}',[CargoController::class, 'edit'])->name('cargo.edit');
     Route::post('/{id}',[CargoController::class, 'update'])->name('cargo.update');
     Route::delete('/delete/{id}',[CargoController::class, 'delete'])->name('cargo.delete');
+});
+
+Route::group(['prefix' => 'dashboard', 'namespace' => 'App\Http\Controllers\DashboardController'], function() {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 });

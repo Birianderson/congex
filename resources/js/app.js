@@ -7,6 +7,7 @@ const app = createApp({});
 import Toast from "vue-toastification";
 import VueTheMask from 'vue-the-mask'
 import DataTable from 'datatables.net-vue3';
+import VueApexCharts from "vue3-apexcharts";
 const components = import.meta.glob('./components/**/*.vue', {eager: true});
 
 Object.entries(components).forEach(([path, definition]) => {
@@ -15,6 +16,7 @@ Object.entries(components).forEach(([path, definition]) => {
         app.component(componentName, definition.default)
     }
 })
+app.use(VueApexCharts);
 app.use(VueTheMask);
 app.use(Toast, {});
 app.provide('events', mitt());

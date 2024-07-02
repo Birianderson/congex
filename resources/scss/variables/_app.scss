@@ -89,9 +89,38 @@ $dark:          $gray-900 !default;
 // Definindo as variáveis de cor
 $color-start: rgba(115,103,240, 0.5046393557422969);
 $color-end: rgba(115,103,240, 1);
+// Vigente
+$color-start-0: rgba(115, 103, 240, 0.5046393557422969); // Cor inicial para a situação "Vigente"
+$color-end-0: rgba(115, 103, 240, 1); // Cor final para a situação "Vigente"
+
+// 1° Termo Aditivo
+$color-start-1: rgba(134, 133, 252, 0.5046393557422969); // Cor inicial para a situação "1° Termo Aditivo"
+$color-end-1: rgba(134, 133, 252, 1); // Cor final para a situação "1° Termo Aditivo"
+
+// 2° Termo Aditivo
+$color-start-2: rgba(49, 196, 234, 0.5046393557422969); // Cor inicial para a situação "2° Termo Aditivo"
+$color-end-2: rgba(49, 196, 234, 1); // Cor final para a situação "2° Termo Aditivo"
+
+// 3° Termo Aditivo
+$color-start-3: rgba(251, 170, 37, 0.5046393557422969); // Cor inicial para a situação "3° Termo Aditivo"
+$color-end-3: rgba(251, 170, 37, 1); // Cor final para a situação "3° Termo Aditivo"
+
+// 4° Termo Aditivo
+$color-start-4: rgba(202, 82, 92, 0.5046393557422969); // Cor inicial para a situação "4° Termo Aditivo"
+$color-end-4: rgba(202, 82, 92, 1); // Cor final para a situação "4° Termo Aditivo"
+
+// Vencido
+$color-start-5: rgba(130, 0, 35, 0.5046393557422969); // Cor inicial para a situação "Vencido"
+$color-end-5: rgba(130, 0, 35, 1);
 
 // Definindo a variável para o gradiente
 $gradient-background: linear-gradient(72deg, $color-start 22%, $color-end 77%);
+$gradient-background-0: linear-gradient(72deg, $color-start-0 22%, $color-end-0 77%);
+$gradient-background-1: linear-gradient(72deg, $color-start-1 22%, $color-end-1 77%);
+$gradient-background-2: linear-gradient(72deg, $color-start-2 22%, $color-end-2 77%);
+$gradient-background-3: linear-gradient(72deg, $color-start-3 22%, $color-end-3 77%);
+$gradient-background-4: linear-gradient(72deg, $color-start-4 22%, $color-end-4 77%);
+$gradient-background-5: linear-gradient(72deg, $color-start-5 22%, $color-end-5 77%);
 
 
 $theme-colors: (
