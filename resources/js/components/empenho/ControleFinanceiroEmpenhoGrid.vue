@@ -172,7 +172,7 @@ export default {
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('loading', true);
                     events.emit('popup', {
-                        title: `Deletar Empresa`,
+                        title: `Deletar Empenho`,
                         component: 'popup-delete',
                         data: {
                             acao: '/empenho/delete/',
