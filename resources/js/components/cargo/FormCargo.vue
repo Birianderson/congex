@@ -47,7 +47,7 @@ export default {
             } catch (err) {
                 emit('notification', {
                     type: 'error',
-                    message: 'Não foi possível recuperar os dados dos Ficais.'
+                    message: 'Não foi possível recuperar os dados dos Cargos.'
                 });
             }
             ready.value = true;
@@ -64,7 +64,7 @@ export default {
                     events.emit('reload', true);
                     events.emit('notification', {
                         type: 'success',
-                        message: 'Cargo salva com Sucesso!'
+                        message: 'Cargo salvo com Sucesso!'
                     });
                     emit('reload');
                     emit('close', true);

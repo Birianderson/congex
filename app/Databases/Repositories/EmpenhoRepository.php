@@ -94,7 +94,9 @@ class EmpenhoRepository implements EmpenhoContract {
         $autoCommit && DB::beginTransaction();
         try {
             $Empenho = $this->getById($id);
+            $id_termo = $Empenho->termo_id;
             $Empenho->delete();
+            $this->verifyValorPagoAtDelete($id_termo);
             $autoCommit && DB::commit();
         } catch (Exception $ex) {
             $autoCommit && DB::rollBack();
@@ -183,4 +185,17 @@ class EmpenhoRepository implements EmpenhoContract {
         return Termo::query()->where('id', $id)->firstOrFail();
     }
 
+    public function verifyValorPagoAtDelete(int $id_termo): Model
+    {
+        $termo = Termo::query()->where('id', $id_termo)->firstOrFail();
+        $valorPagotermo = Empenho::query()
+            ->where('id_termo', $id_termo)
+            ->sum('valor_total_pago');
+
+        // Atualiza o valor pago no empenho
+        $termo->valor_pago = $valorPagotermo;
+        $termo->save();
+
+        return $termo;
+    }
 }

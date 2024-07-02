@@ -55,6 +55,7 @@ class ContratoRepository implements ContratoContract
                 'ativo' => $params['ativo'],
                 'data_fim'=>$params['data_fim'],
                 'valor'=>  $params['valor'],
+                'valor_pago'=>  0,
                 'numero'=> '0',
             ]);
             $termo->save();

@@ -19,6 +19,7 @@ return new  class extends Migration
             $table->date('data_fim');
             $table->integer('numero');
             $table->bigInteger('valor');
+            $table->bigInteger('valor_pago');
             $table->char('ativo');
             $table->string('observacao')->nullable();
             $table->unsignedBigInteger('contrato_id');
@@ -35,6 +36,6 @@ return new  class extends Migration
      */
     public function down()
     {
-        Schema::drop('termo_aditivo');
+        Schema::drop('termo');
     }
 };

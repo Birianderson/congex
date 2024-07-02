@@ -48,6 +48,7 @@ class TermoRepository implements TermoContract {
                 'data_fim'=>$params['data_fim'],
                 'ativo' => $params['ativo'],
                 'valor'=>  $params['valor'],
+                'valor_pago'=>  0,
                 'numero'=> $params['numero']
             ]);
             $termo->save();

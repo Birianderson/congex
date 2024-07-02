@@ -66,6 +66,12 @@ export default {
                 render: (data) => formatCurrency(data)
             },
             {
+                data: 'valor_pago',
+                title: 'Valor Pago',
+                width: '15%',
+                render: (data) => formatCurrency(data)
+            },
+            {
                 data: null,
                 title: 'Ação',
                 orderable: false,

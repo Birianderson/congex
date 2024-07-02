@@ -37,7 +37,7 @@ class NotaFiscalRepository implements NotaFiscalContract {
                 'ci' => $params['ci'],
             ]);
             $NotaFiscal->save();
-
+            $this->verifyValorPago($NotaFiscal->id);
             $autoCommit && DB::commit();
             return true;
         } catch (Exception $ex) {
@@ -70,6 +70,7 @@ class NotaFiscalRepository implements NotaFiscalContract {
                 'observacao' => $params['observacao'],
                 'ci' => $params['ci'],
             ]);
+            $this->verifyValorPago($NotaFiscal->id);
             $autoCommit && DB::commit();
             return true;
         } catch (Exception $ex) {
@@ -91,7 +92,9 @@ class NotaFiscalRepository implements NotaFiscalContract {
         $autoCommit && DB::beginTransaction();
         try {
             $NotaFiscal = $this->getById($id);
+            $id_empenho = $NotaFiscal->empenho_id;
             $NotaFiscal->delete();
+            $this->verifyValorPagoAtDelete($id_empenho);
             $autoCommit && DB::commit();
         } catch (Exception $ex) {
             $autoCommit && DB::rollBack();
@@ -126,7 +129,55 @@ class NotaFiscalRepository implements NotaFiscalContract {
         return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }
 
+    public function verifyValorPago(int $id): Model
+    {
+        // Recupera a nota fiscal com o empenho e termo associados
+        $nota = NotaFiscal::query()->where('id', $id)->with('empenho.termo')->firstOrFail();
 
+        // Soma os valores de todas as notas fiscais associadas ao mesmo empenho
+        $valorPagoEmpenho = NotaFiscal::query()
+            ->where('empenho_id', $nota->empenho_id)
+            ->sum('valor');
+
+        // Atualiza o valor pago no empenho
+        $nota->empenho->valor_total_pago = $valorPagoEmpenho;
+        $nota->empenho->save();
+
+        // Soma os valores pagos de todos os empenhos associados ao mesmo termo
+        $valorPagoTermo = Empenho::query()
+            ->where('termo_id', $nota->empenho->termo_id)
+            ->sum('valor_total_pago');
+
+        // Atualiza o valor pago no termo
+        $nota->empenho->termo->valor_pago = $valorPagoTermo;
+        $nota->empenho->termo->save();
+
+        return $nota;
+    }
+
+    public function verifyValorPagoAtDelete(int $id_empenho): Model
+    {
+        $empenho = Empenho::query()->where('id', $id_empenho)->with('termo')->firstOrFail();
+        // Soma os valores de todas as notas fiscais associadas ao mesmo empenho
+        $valorPagoEmpenho = NotaFiscal::query()
+            ->where('empenho_id', $id_empenho)
+            ->sum('valor');
+
+        // Atualiza o valor pago no empenho
+        $empenho->valor_total_pago = $valorPagoEmpenho;
+        $empenho->save();
+
+        // Soma os valores pagos de todos os empenhos associados ao mesmo termo
+        $valorPagoTermo = Empenho::query()
+            ->where('termo_id', $empenho->termo_id)
+            ->sum('valor_total_pago');
+
+        // Atualiza o valor pago no termo
+        $empenho->termo->valor_pago = $valorPagoTermo;
+        $empenho->termo->save();
+
+        return $empenho;
+    }
     public function getById(int $id): Model
     {
         return NotaFiscal::query()->where('id', $id)->firstOrFail();

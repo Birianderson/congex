@@ -130,7 +130,9 @@ export default {
             if (props.data) {
                 await loadData();
             } else {
+                info.value.termos = [{}];
                 ready.value = true;
+
             }
         });
 
