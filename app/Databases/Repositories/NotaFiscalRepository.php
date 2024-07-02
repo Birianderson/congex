@@ -3,6 +3,7 @@
 namespace App\Databases\Repositories;
 
 use App\Databases\Contracts\NotaFiscalContract;
+use App\Databases\Models\Empenho;
 use App\Databases\Models\NotaFiscal;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
@@ -25,8 +26,15 @@ class NotaFiscalRepository implements NotaFiscalContract {
         $autoCommit && DB::beginTransaction();
         try {
             $NotaFiscal = new NotaFiscal([
-                'nome' => $params['nome'],
-                'cpf' => $params['cpf'],
+                'valor' => $params['valor'],
+                'data_pagamento' => $params['data_pagamento'],
+                'data_liquidacao' => $params['data_liquidacao'],
+                'liquidacao' => $params['liquidacao'],
+                'nfe' => $params['nfe'],
+                'empenho_id' => $params['empenho_id'],
+                'ordem_servico' => $params['ordem_servico'],
+                'observacao' => $params['observacao'],
+                'ci' => $params['ci'],
             ]);
             $NotaFiscal->save();
 
@@ -53,8 +61,14 @@ class NotaFiscalRepository implements NotaFiscalContract {
         try {
             $NotaFiscal = $this->getById($id);
             $NotaFiscal->update([
-                'nome' => $params['nome'],
-                'cpf' => $params['cpf'],
+                'valor' => $params['valor'],
+                'data_pagamento' => $params['data_pagamento'],
+                'data_liquidacao' => $params['data_liquidacao'],
+                'liquidacao' => $params['liquidacao'],
+                'nfe' => $params['nfe'],
+                'ordem_servico' => $params['ordem_servico'],
+                'observacao' => $params['observacao'],
+                'ci' => $params['ci'],
             ]);
             $autoCommit && DB::commit();
             return true;
@@ -93,9 +107,9 @@ class NotaFiscalRepository implements NotaFiscalContract {
      * @param array $params
      * @return LengthAwarePaginator
      */
-    public function getAll(array $params): LengthAwarePaginator
+    public function getAll(array $params, $id): LengthAwarePaginator
     {
-        $query = NotaFiscal::query();
+        $query = NotaFiscal::query()->where('empenho_id', $id);
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);
@@ -116,6 +130,11 @@ class NotaFiscalRepository implements NotaFiscalContract {
     public function getById(int $id): Model
     {
         return NotaFiscal::query()->where('id', $id)->firstOrFail();
+    }
+
+    public function getEmpenhoById(int $id): Model
+    {
+        return Empenho::query()->where('id', $id)->with('termo.contrato.empresa')->firstOrFail();
     }
 
 

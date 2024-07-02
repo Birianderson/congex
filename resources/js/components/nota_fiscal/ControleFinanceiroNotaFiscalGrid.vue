@@ -19,6 +19,7 @@ import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import language from 'datatables.net-plugins/i18n/pt-BR.mjs';
 import { inject, onMounted, ref } from 'vue';
+import moment from "moment/moment";
 DataTable.use(DataTablesCore);
 
 export default {
@@ -27,7 +28,6 @@ export default {
         const events = inject('events');
         const ready = ref(false);
         const mydatatable = ref();
-        const empresas = ref();
         const ajax = ref();
         const columnsSelected = ref([])
         const optionsSelected = ref([])
@@ -42,35 +42,34 @@ export default {
 
         const columns = ref([
             {
-                data: 'exercicio',
-                title: 'Exercício',
+                data: 'data_pagamento',
+                title: 'Data de Pagamento',
+                width: '10%',
+                render: (data) => formatDate(data)
+            },
+            {
+                data: 'liquidacao',
+                title: 'Liquidação',
                 width: '10%',
             },
             {
-                data: 'termo_de_referencia',
-                title: 'Termo de Referência',
-                width: '10%',
-            },
-            {
-                data: 'empenho',
-                title: 'Número Empenho',
+                data: 'nfe',
+                title: 'Número da NFE',
                 width: '15%',
             },
             {
-                data: 'valor_empenho',
-                title: 'Valor Empenhado',
+                data: 'ordem_servico',
+                title: 'Ordem de Seviço',
                 width: '15%',
-                render: (data) => formatCurrency(data)
             },
             {
-                data: 'valor_liquidacao',
-                title: 'Valor Liquidado',
+                data: 'ci',
+                title: 'CI',
                 width: '15%',
-                render: (data) => formatCurrency(data)
             },
             {
-                data: 'valor_total_pago',
-                title: 'Valor Pago',
+                data: 'valor',
+                title: 'Valor',
                 width: '15%',
                 render: (data) => formatCurrency(data)
             },
@@ -83,49 +82,52 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                    <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Notas Fiscais"><i class="fa fa-search"></i></button>
-                    <a href="/pagamento/termo/${parseInt(row.contrato_id)}/empenho/${row.id}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Notas Fiscais"><i class="fa fa-dollar"></i></a>
+                    <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar"><i class="fa fa-trash" ></i></button>
                     `;
                 }
             }
         ]);
 
+        const formatDate = (date) => {
+            return moment(date).format('DD/MM/YYYY');
+        };
+
         const columnsReadOnly = ref([
             {
-                data: 'exercicio',
-                title: 'Exercício',
+                data: 'data_pagamento',
+                title: 'Data de Pagamento',
                 width: '10%',
                 sortable: false,
+                render: (data) => formatDate(data)
             },
             {
-                data: 'termo_de_referencia',
-                title: 'Termo de Referência',
+                data: 'liquidacao',
+                title: 'Liquidação',
+                sortable: false,
                 width: '10%',
-                sortable: false,
             },
             {
-                data: 'empenho',
-                title: 'Número Empenho',
+                data: 'nfe',
+                title: 'Número da NFE',
+                sortable: false,
                 width: '15%',
-                sortable: false,
             },
             {
-                data: 'valor_empenho',
-                title: 'Valor Empenhado',
+                data: 'ordem_servico',
+                title: 'Ordem de Seviço',
+                sortable: false,
                 width: '15%',
-                sortable: false,
-                render: (data) => formatCurrency(data)
             },
             {
-                data: 'valor_liquidacao',
-                title: 'Valor Liquidado',
+                data: 'ci',
+                title: 'CI',
+                sortable: false,
                 width: '15%',
-                sortable: false,
-                render: (data) => formatCurrency(data)
             },
             {
-                data: 'valor_total_pago',
-                title: 'Valor Pago',
+                data: 'valor',
+                title: 'Valor',
                 width: '15%',
                 sortable: false,
                 render: (data) => formatCurrency(data)
@@ -133,22 +135,37 @@ export default {
         ]);
 
         const aplicarEventos = async () => {
-            let termoelements = document.querySelectorAll("[data-action=termo]");
-            termoelements.forEach(item => {
+
+            let editelements = document.querySelectorAll("[data-action=edit]");
+            editelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
                     let id = evt.currentTarget.getAttribute('data-id');
-                    let nome = evt.currentTarget.getAttribute('data-nome');
                     events.emit('popup', {
-                        title: `Adicionar nota fiscal ao empenho - ${nome}`,
+                        title: 'Editar Nota Fiscal',
                         component: 'form-nota-fiscal',
                         size: 'xl',
                         data: {
-                            id: `${id}`,
-                            nome: `${nome}`,
+                            id_nota: `${id}`,
                         },
                     });
                 });
             });
+
+            let deleteElements = document.querySelectorAll("[data-action=delete]");
+            deleteElements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    events.emit('loading', true);
+                    events.emit('popup', {
+                        title: `Deletar Nota Fiscal`,
+                        component: 'popup-delete',
+                        data: {
+                            acao: '/nota-fiscal/delete/',
+                            id: `${id}`,
+                        },
+                    });
+                })
+            })
         };
 
         const options = {
@@ -182,17 +199,17 @@ export default {
             console.log(props)
             ready.value = true;
             if (props.data.id){
-                ajax.value = `/pagamento/listNotas/${props.data.id}`;
+                ajax.value = `/nota-fiscal/list/${props.data.id}`;
                 columnsSelected.value = columnsReadOnly;
                 optionsSelected.value = optionsReadOnly;
 
             }else {
-                ajax.value = `/pagamento/listNotas/${props.data}`;
+                ajax.value = `/nota-fiscal/list/${props.data}`;
                 columnsSelected.value = columns;
                 optionsSelected.value = options;
             }
             events.on('reload', (data) => {
-                mydatatable.value.dt.ajax.url(`${ajax}`).load();
+                mydatatable.value.dt.ajax.url(`${ajax.value}`).load();
             });
         });
 

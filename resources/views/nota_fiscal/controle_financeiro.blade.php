@@ -5,12 +5,12 @@
         </div>
         <div class="p-5">
             <div class="d-flex justify-content-end">
-                <popup-button data="{{$id_pagamento}}" id="nota_fiscal" title="Nova Nota Fiscal" component="form-nota-fiscal" action="/contrato/" size="xl" type="primary">
+                <popup-button data="{{$id_empenho}}" id="nota_fiscal" title="Nova Nota Fiscal" component="form-nota-fiscal" action="/contrato/" size="xl" type="primary">
                     <i class="fa fa-plus"></i>
                     Nova Nota Fiscal
                 </popup-button>
             </div>
-            <controle-financeiro-nota-fiscal data="{{$id_pagamento}}"></controle-financeiro-nota-fiscal>
+            <controle-financeiro-nota-fiscal-grid data="{{$id_empenho}}"></controle-financeiro-nota-fiscal-grid>
         </div>
     </div>
 </x-app-layout>

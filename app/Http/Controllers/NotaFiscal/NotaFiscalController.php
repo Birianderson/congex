@@ -13,14 +13,29 @@ class NotaFiscalController extends Controller
 {
     public function __construct(private NotaFiscalContract $repository){}
 
-    public function index(Request $request): View
+    public function index($id_empenho): View
     {
-        return view('NotaFiscal.index');
+        $empenho = $this->repository->getEmpenhoById($id_empenho);
+        $termo = $empenho->termo;
+        $nome = $empenho->termo->contrato->empresa->nome;
+        $numero_contrato = $empenho->termo->contrato->numero;
+        $numero_empenho = $empenho->empenho;
+        $termoMap = [
+            '0' => 'Contrato Inicial',
+            '1' => '1° Termo Aditivo',
+            '2' => '2° Termo Aditivo',
+            '3' => '3° Termo Aditivo',
+            '4' => '4° Termo Aditivo',
+            '5' => '5° Termo Aditivo'
+        ];
+        $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
+
+        return view('nota_fiscal.controle_financeiro', compact('nome', 'numero_contrato', 'termoStr','id_empenho','numero_empenho'));
     }
 
-    public function list(Request $request): JsonResponse
+    public function list(Request $request, $id): JsonResponse
     {
-        $dados = $this->repository->getAll($request->all());
+        $dados = $this->repository->getAll($request->all(), $id);
         return response()->json([
             'data' => $dados->all(),
             'recordsFiltered' => $dados->total(),

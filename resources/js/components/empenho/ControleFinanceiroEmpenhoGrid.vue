@@ -82,8 +82,8 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                    <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Notas Fiscais"><i class="fa fa-search"></i></button>
-                    <a href="/pagamento/termo/${parseInt(row.termo.contrato_id)}/empenho/${row.termo_id}/nota-fiscal/${row.id}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Notas Fiscais"><i class="fa fa-dollar"></i></a>
+                    <button class="btn btn-sm btn-secondary termo-btn" data-action="visualizar" data-id="${row.id}" data-numero="${row.empenho}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Notas Fiscais"><i class="fa fa-search"></i></button>
+                    <a href="/nota-fiscal/controle_financeiro/${parseInt(row.id)}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Notas Fiscais"><i class="fa fa-dollar"></i></a>
                     <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
                     <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar"><i class="fa fa-trash" ></i></button>
                     `;
@@ -150,18 +150,17 @@ export default {
                 });
             });
 
-            let termoelements = document.querySelectorAll("[data-action=termo]");
+            let termoelements = document.querySelectorAll("[data-action=visualizar]");
             termoelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
                     let id = evt.currentTarget.getAttribute('data-id');
-                    let nome = evt.currentTarget.getAttribute('data-nome');
+                    let numero = evt.currentTarget.getAttribute('data-numero');
                     events.emit('popup', {
-                        title: `Adicionar nota fiscal ao empenho - ${nome}`,
-                        component: 'form-nota-fiscal',
+                        title: `Visualizar Notas do Empenho de N° - ${numero}`,
+                        component: 'controle-financeiro-nota-fiscal-grid',
                         size: 'xl',
                         data: {
                             id: `${id}`,
-                            nome: `${nome}`,
                         },
                     });
                 });

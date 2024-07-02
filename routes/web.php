@@ -59,8 +59,8 @@ Route::group(['prefix' => 'empenho', 'namespace' => 'App\Http\Controllers\Empenh
 });
 
 Route::group(['prefix' => 'nota-fiscal', 'namespace' => 'App\Http\Controllers\PessoaController'], function() {
-    Route::get('/', [NotaFiscalController::class, 'index'])->name('nota_fiscal.index');
-    Route::get('/list', [NotaFiscalController::class, 'list'])->name('nota_fiscal.list');
+    Route::get('/controle_financeiro/{id_empenho}', [NotaFiscalController::class, 'index'])->name('nota_fiscal.controle_financeiro');
+    Route::get('/list/{id}', [NotaFiscalController::class, 'list'])->name('nota_fiscal.list');
     Route::post('/',[NotaFiscalController::class,'create'])->name('nota_fiscal.create');
     Route::get('/historico/{id}',[NotaFiscalController::class, 'historico'])->name('nota_fiscal.historico');
     Route::get('/{id}',[NotaFiscalController::class, 'edit'])->name('nota_fiscal.edit');

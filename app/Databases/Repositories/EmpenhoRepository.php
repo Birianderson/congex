@@ -155,7 +155,7 @@ class EmpenhoRepository implements EmpenhoContract {
 
     public function getById(int $id): Model
     {
-        return Empenho::query()->where('id', $id)->firstOrFail();
+        return Empenho::query()->where('id', $id)->with('termo.contrato')->firstOrFail();
     }
 
     /**

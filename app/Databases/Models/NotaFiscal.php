@@ -14,7 +14,7 @@ class NotaFiscal extends Model
     protected $guarded = [];
     public string $sequence = 'nota_fiscal_id_seq';
 
-    public function pagamentos()
+    public function empenho()
     {
         return $this->belongsTo(Empenho::class);
     }
