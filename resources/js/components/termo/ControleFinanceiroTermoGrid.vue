@@ -18,20 +18,18 @@
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import language from 'datatables.net-plugins/i18n/pt-BR.mjs';
-import {inject, onMounted, readonly, ref} from 'vue';
+import {inject, onMounted, ref} from 'vue';
 DataTable.use(DataTablesCore);
 
 export default {
-    methods: {readonly},
     components: { DataTable, DataTablesCore },
     setup(props) {
         const events = inject('events');
         const ready = ref(false);
         const mydatatable = ref();
-        let dt;
         const ajax = ref();
-        const columnsSelected = ref([])
-        const optionsSelected = ref([])
+        const columnsSelected = ref([]);
+        const optionsSelected = ref([]);
 
         const formatCurrency = (value) => {
             return new Intl.NumberFormat('pt-BR', {
@@ -52,24 +50,48 @@ export default {
             return situacaoMap[situacao] || situacao;
         };
 
+        const renderProgressBar = (valorPago, valorTotal) => {
+            const percentage = (valorPago / valorTotal) * 100;
+            let progressBarColor = '';
+
+            if (percentage <= 30) {
+                progressBarColor = 'bg-danger';
+            } else if (percentage <= 60) {
+                progressBarColor = 'bg-warning';
+            } else {
+                progressBarColor = 'bg-success';
+            }
+
+            return `
+                <div class="progress" style="height: 20px;">
+                    <div class="progress-bar ${progressBarColor}" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100">${percentage.toFixed(2)}%</div>
+                </div>
+            `;
+        };
+
         const columns = ref([
             {
                 data: 'numero',
                 title: 'Termo',
                 width: '10%',
+                sortable: false,
                 render: (data) => formatSituacao(data)
             },
             {
                 data: 'valor',
                 title: 'Montante do Contrato',
                 width: '15%',
+                sortable: false,
                 render: (data) => formatCurrency(data)
             },
             {
-                data: 'valor_pago',
-                title: 'Valor Pago',
-                width: '15%',
-                render: (data) => formatCurrency(data)
+                data: null,
+                title: 'Progresso do Pagamento',
+                sortable: false,
+                searchable: false,
+                className: 'dt-center',
+                width: '20%',
+                render: (data, type, row) => renderProgressBar(row.valor_pago, row.valor)
             },
             {
                 data: null,
@@ -88,7 +110,6 @@ export default {
         ]);
 
         const aplicarEventos = async () => {
-
             let empenhoelements = document.querySelectorAll("[data-action=empenho]");
             empenhoelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
@@ -99,9 +120,7 @@ export default {
                         title: `Visualizar Empenhos`,
                         component: 'controle-financeiro-empenho-grid',
                         size: 'xl',
-                        data: {
-                            id: `${id}`,
-                        },
+                        data: { id: `${id}` },
                     });
                 });
             });
@@ -122,6 +141,15 @@ export default {
                 sortable: false,
                 render: (data) => formatCurrency(data)
             },
+            {
+                data: null,
+                title: 'Progresso do Pagamento',
+                sortable: false,
+                searchable: false,
+                className: 'dt-center',
+                width: '20%',
+                render: (data, type, row) => renderProgressBar(row.valor_pago, row.valor)
+            }
         ]);
 
         const options = {
@@ -129,11 +157,11 @@ export default {
             processing: true,
             language: language,
             layout: {
-                topStart: 'search',
+                topStart: null,
                 topEnd: null,
-                bottom2: 'info',
-                bottomStart: 'pageLength',
-                bottomEnd: 'paging'
+                bottom2: null,
+                bottomStart: null,
+                bottomEnd: null
             },
         };
 
@@ -152,21 +180,19 @@ export default {
 
         onMounted(() => {
             ready.value = true;
-            if (props.data.id){
-                 ajax.value = `/termo/getByContratoId/${props.data.id}`;
+            if (props.data.id) {
+                ajax.value = `/termo/getByContratoId/${props.data.id}`;
                 columnsSelected.value = columnsReadOnly;
                 optionsSelected.value = optionsReadOnly;
-
-            }else {
-                 ajax.value = `/termo/getByContratoId/${props.data}`;
+            } else {
+                ajax.value = `/termo/getByContratoId/${props.data}`;
                 columnsSelected.value = columns;
                 optionsSelected.value = options;
             }
-            events.on('reload', (data) => {
-                mydatatable.value.dt.ajax.url(`${ajax}`).load();
+            events.on('reload', () => {
+                mydatatable.value.dt.ajax.url(ajax.value).load();
             });
         });
-
 
         return {
             ready, options, columns, ajax, mydatatable, columnsSelected, optionsSelected, aplicarEventos
@@ -178,7 +204,12 @@ export default {
 }
 </script>
 
+
 <style>
 @import '../../../../node_modules/datatables.net-bs5';
 
+.progress-bar {
+    transition: width 0.6s ease;
+}
 </style>
+
