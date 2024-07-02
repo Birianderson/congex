@@ -14,20 +14,7 @@ class EmpenhoController extends Controller
 {
     public function __construct(private EmpenhoContract $repository){}
 
-    public function index(Request $request): View
-    {
-        return view('pagamento.index');
-    }
-
-    public function termo($id_contrato): View
-    {
-        $contrato = $this->repository->getContratoById($id_contrato);
-        $nome = $contrato->empresa->nome;
-        $numero_contrato = $contrato->numero;
-        return view('pagamento.termo', compact('id_contrato','nome','numero_contrato'));
-    }
-
-    public function empenho($id_contrato, $id_termo): View
+    public function index($id_contrato, $id_termo): View
     {
         $contrato = $this->repository->getContratoById($id_contrato);
         $termo = $this->repository->getTermoById($id_termo);
@@ -43,17 +30,17 @@ class EmpenhoController extends Controller
         ];
         $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
 
-        return view('pagamento.empenho', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
+        return view('empenho.controle_financeiro', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
     }
 
-    public function notaFiscal($id_contrato, $id_termo, $id_pagamento): View
+    public function notaFiscal($id_contrato, $id_termo, $id_empenho): View
     {
         $contrato = $this->repository->getContratoById($id_contrato);
         $termo = $this->repository->getTermoById($id_termo);
         $nome = $contrato->empresa->nome;
         $numero_contrato = $contrato->numero;
-        $pagamento = $this->repository->getById($id_pagamento);
-        $numero_empenho = $pagamento->empenho;
+        $empenho = $this->repository->getById($id_empenho);
+        $numero_empenho = $empenho->empenho;
         $termoMap = [
             '0' => 'Contrato Inicial',
             '1' => '1° Termo Aditivo',
@@ -64,12 +51,12 @@ class EmpenhoController extends Controller
         ];
         $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
 
-        return view('nota_fiscal.index', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_pagamento','numero_empenho'));
+        return view('nota_fiscal.index', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_empenho','numero_empenho'));
     }
 
     public function list(Request $request, $termo_id): JsonResponse
     {
-        $dados = $this->repository->getAllPagamentos($request->all(), $termo_id);
+        $dados = $this->repository->getAllEmpenhos($request->all(), $termo_id);
         return response()->json([
             'data' => $dados->all(),
             'recordsFiltered' => $dados->total(),
@@ -77,9 +64,9 @@ class EmpenhoController extends Controller
         ]);
     }
 
-    public function listNotas(Request $request, $pagamento_id): JsonResponse
+    public function listNotas(Request $request, $empenho_id): JsonResponse
     {
-        $dados = $this->repository->getAllNotas($request->all(), $pagamento_id);
+        $dados = $this->repository->getAllNotas($request->all(), $empenho_id);
         return response()->json([
             'data' => $dados->all(),
             'recordsFiltered' => $dados->total(),
@@ -88,17 +75,17 @@ class EmpenhoController extends Controller
     }
 
 
-    public function createEmpenho(EmpenhoRequest $request){
+    public function create(EmpenhoRequest $request){
         $params = $request->except('_token');
-        $this->repository->createEmpenho($params);
+        $this->repository->create($params);
         return response()->json('success', 201);
     }
 
 
     public function edit(int $id): JsonResponse
     {
-        $Pagamento = $this->repository->getById($id);
-        return response()->json($Pagamento);
+        $empenho = $this->repository->getById($id);
+        return response()->json($empenho);
     }
 
     public function getByQuery(Request $request): JsonResponse {

@@ -4,6 +4,7 @@ use App\Http\Controllers\Cargo\CargoController;
 use App\Http\Controllers\Contrato\ContratoController;
 use App\Http\Controllers\Empresa\EmpresaController;
 use App\Http\Controllers\Empenho\EmpenhoController;
+use App\Http\Controllers\NotaFiscal\NotaFiscalController;
 use App\Http\Controllers\Pessoa\PessoaController;
 use App\Http\Controllers\Termo\TermoController;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\ContratoController'], function() {
     Route::get('/', [ContratoController::class, 'index'])->name('contrato.index');
+    Route::get('/controle_financeiro', [ContratoController::class, 'controle_financeiro'])->name('contrato.controle_financeiro');
     Route::get('/list', [ContratoController::class, 'list'])->name('contrato.list');
     Route::post('/',[ContratoController::class,'create'])->name('contrato.create');
     Route::get('/historico/{id}',[ContratoController::class, 'historico'])->name('contrato.historico');
@@ -23,7 +25,7 @@ Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\Contr
 });
 
 Route::group(['prefix' => 'termo', 'namespace' => 'App\Http\Controllers\TermoController'], function() {
-    Route::get('/', [TermoController::class, 'index'])->name('termo.index');
+    Route::get('/controle_financeiro/{id}', [TermoController::class, 'index'])->name('termo.controle_financeiro');
     Route::get('/list', [TermoController::class, 'list'])->name('termo.list');
     Route::get('/getByContratoId/{id}', [TermoController::class, 'getbycontratoid'])->name('termo.list');
     Route::post('/',[TermoController::class,'create'])->name('termo.create');
@@ -46,30 +48,24 @@ Route::group(['prefix' => 'empresa', 'namespace' => 'App\Http\Controllers\Empres
 });
 
 Route::group(['prefix' => 'empenho', 'namespace' => 'App\Http\Controllers\EmpenhoController'], function() {
-    Route::get('/', [EmpenhoController::class, 'index'])->name('empenho.index');
-    Route::get('/add', [EmpenhoController::class, 'add'])->name('empenho.add');
+    Route::get('/controle_financeiro/{id_contrato}/termo/{id_termo}', [EmpenhoController::class, 'index'])->name('empenho.controle_financeiro');
     Route::get('/list/{termo_id}', [EmpenhoController::class, 'list'])->name('empenho.list');
-    Route::get('/listNotas/{empenho_id}', [EmpenhoController::class, 'listNotas'])->name('empenho.listNotas');
     Route::get('/termo/{id}', [EmpenhoController::class, 'termo'])->name('empenho.termo');
-    Route::get('/termo/{contrato_id}/empenho/{termo_id}', [EmpenhoController::class, 'empenho'])->name('empenho.termo');
-    Route::get('/termo/{contrato_id}/empenho/{termo_id}/nota-fiscal/{empenho_id}', [EmpenhoController::class, 'notaFiscal'])->name('empenho.nota');
-    Route::post('/',[EmpenhoController::class,'createEmpenho'])->name('empenho.createEmpenho');
-    Route::post('/nota-fiscal',[EmpenhoController::class,'createNotaFiscal'])->name('empenho.createNotaFiscal');
+    Route::post('/',[EmpenhoController::class,'create'])->name('empenho.create');
     Route::get('/get-by-query', [EmpenhoController::class, 'getByQuery'])->name('empenho.get-by-query');
-    Route::get('/historico/{id}',[EmpenhoController::class, 'historico'])->name('empenho.historico');
     Route::get('/{id}',[EmpenhoController::class, 'edit'])->name('empenho.edit');
     Route::post('/{id}',[EmpenhoController::class, 'update'])->name('empenho.update');
     Route::delete('/delete/{id}',[EmpenhoController::class, 'delete'])->name('empenho.delete');
 });
 
 Route::group(['prefix' => 'nota-fiscal', 'namespace' => 'App\Http\Controllers\PessoaController'], function() {
-    Route::get('/', [PessoaController::class, 'index'])->name('pessoa.index');
-    Route::get('/list', [PessoaController::class, 'list'])->name('pessoa.list');
-    Route::post('/',[PessoaController::class,'create'])->name('pessoa.create');
-    Route::get('/historico/{id}',[PessoaController::class, 'historico'])->name('pessoa.historico');
-    Route::get('/{id}',[PessoaController::class, 'edit'])->name('pessoa.edit');
-    Route::post('/{id}',[PessoaController::class, 'update'])->name('pessoa.update');
-    Route::delete('/delete/{id}',[PessoaController::class, 'delete'])->name('pessoa.delete');
+    Route::get('/', [NotaFiscalController::class, 'index'])->name('nota_fiscal.index');
+    Route::get('/list', [NotaFiscalController::class, 'list'])->name('nota_fiscal.list');
+    Route::post('/',[NotaFiscalController::class,'create'])->name('nota_fiscal.create');
+    Route::get('/historico/{id}',[NotaFiscalController::class, 'historico'])->name('nota_fiscal.historico');
+    Route::get('/{id}',[NotaFiscalController::class, 'edit'])->name('nota_fiscal.edit');
+    Route::post('/{id}',[NotaFiscalController::class, 'update'])->name('nota_fiscal.update');
+    Route::delete('/delete/{id}',[NotaFiscalController::class, 'delete'])->name('nota_fiscal.delete');
 });
 
 Route::group(['prefix' => 'pessoa', 'namespace' => 'App\Http\Controllers\PessoaController'], function() {

@@ -134,6 +134,11 @@ class TermoRepository implements TermoContract {
         return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }
 
+    public function getContratoById(int $id): Model
+    {
+        return Contrato::query()->where('id', $id)->firstOrFail();
+    }
+
 
     public function getById(int $id): Model
     {

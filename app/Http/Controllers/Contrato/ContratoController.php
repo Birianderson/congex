@@ -8,15 +8,22 @@ use App\Http\Requests\ContratoRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 class ContratoController extends Controller
 {
     public function __construct(private ContratoContract $repository){}
 
-    public function index(Request $request)
+    public function index()
     {
         return view('contrato.index');
     }
+
+    public function controle_financeiro(): View
+    {
+        return view('contrato.controle_financeiro');
+    }
+
 
     public function list(Request $request): JsonResponse
     {

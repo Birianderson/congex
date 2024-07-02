@@ -16,13 +16,13 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="{{route('contrato.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'contrato')) element-with-gradient text-white @endif">
+            <a href="{{route('contrato.index')}}" class="nav-link menu-text @if((str_contains(request()->route()->getName(), 'contrato')) && !str_contains(request()->route()->getName(), 'financeiro')) element-with-gradient text-white @endif">
                 <i class="fa fa-address-book me-2"></i>
                 Contratos
             </a>
         </li>
         <li class="mt-2">
-            <a href="{{route('empenho.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'empenho')) element-with-gradient text-white @endif">
+            <a href="{{route('contrato.controle_financeiro')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'controle_financeiro')) element-with-gradient text-white @endif">
                 <i class="fa fa-dollar me-2"></i>
                 Controle Financeiro
             </a>

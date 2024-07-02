@@ -20,7 +20,7 @@ class Termo extends Model
     }
 
 
-    public function pagamentos()
+    public function empenhos()
     {
         return $this->hasMany(Empenho::class, 'termo_id')->orderBy('numero');
     }

@@ -24,7 +24,7 @@ class EmpenhoRepository implements EmpenhoContract {
      * @return bool
      * @throws Exception
      */
-    public function createEmpenho(array $params, bool $autoCommit = true): bool
+    public function create(array $params, bool $autoCommit = true): bool
     {
         $autoCommit && DB::beginTransaction();
         try {
@@ -64,8 +64,14 @@ class EmpenhoRepository implements EmpenhoContract {
         try {
             $Empenho = $this->getById($id);
             $Empenho->update([
-                'nome' => $params['nome'],
-                'cnpj' => $params['cnpj'],
+                'exercicio' => $params['exercicio'],
+                'termo_de_referencia' => $params['termo_de_referencia'],
+                'data_vigencia' => $params['data_vigencia'],
+                'valor_empenho' => $params['valor_empenho'],
+                'valor_liquidacao' => $params['valor_liquidacao'],
+                'valor_total_pago' =>0,
+                'empenho' => $params['empenho'],
+                'observacao' => $params['observacao'] ?? '',
             ]);
             $autoCommit && DB::commit();
             return true;
@@ -129,7 +135,7 @@ class EmpenhoRepository implements EmpenhoContract {
      */
     public function getAllNotas(array $params, $Empenho_id): LengthAwarePaginator
     {
-        $query = NotaFiscal::query()->where('Empenho_id', $Empenho_id)->with('Empenho');
+        $query = NotaFiscal::query()->where('empenho_id', $Empenho_id)->with('Empenho');
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
         if(isset($params['search']['value']) && !empty($params['search']['value'])){
             $search = strtolower($params['search']['value']);

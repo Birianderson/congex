@@ -4,7 +4,7 @@
             <div class="ps-3">Controle Financeiro</div>
         </div>
         <div class="p-5">
-            <controle-financeiro-grid></controle-financeiro-grid>
+            <controle-financeiro-contrato-grid></controle-financeiro-contrato-grid>
         </div>
     </div>
 </x-app-layout>

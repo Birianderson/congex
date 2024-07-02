@@ -6,8 +6,8 @@
             :ajax="ajax"
             class="table table-hover table-responsive "
             width="100%"
-            :options="optionsSelected"
-            :columns="columnsSelected"
+            :options="options"
+            :columns="columns"
             @draw="aplicarEventos"
         >
         </DataTable>
@@ -18,20 +18,17 @@
 import DataTable from 'datatables.net-vue3';
 import DataTablesCore from 'datatables.net-bs5';
 import language from 'datatables.net-plugins/i18n/pt-BR.mjs';
-import {inject, onMounted, readonly, ref} from 'vue';
+import { inject, onMounted, ref } from 'vue';
+import moment from 'moment';
 DataTable.use(DataTablesCore);
 
 export default {
-    methods: {readonly},
     components: { DataTable, DataTablesCore },
-    setup(props) {
+    setup() {
         const events = inject('events');
         const ready = ref(false);
         const mydatatable = ref();
         let dt;
-        const ajax = ref();
-        const columnsSelected = ref([])
-        const optionsSelected = ref([])
 
         const formatCurrency = (value) => {
             return new Intl.NumberFormat('pt-BR', {
@@ -42,25 +39,28 @@ export default {
 
         const formatSituacao = (situacao) => {
             const situacaoMap = {
-                '0': 'Contrato Inicial',
-                '1': '1° Termo Aditivo',
-                '2': '2° Termo Aditivo',
-                '3': '3° Termo Aditivo',
-                '4': '4° Termo Aditivo',
-                '5': '5° Termo Aditivo'
+                'NV': 'Não Vigente',
+                'V': 'Contrato Inicial',
+                'V1': '1° Termo Aditivo',
+                'V2': '2° Termo Aditivo',
+                'V3': '3° Termo Aditivo',
+                'V4': '4° Termo Aditivo',
+                'V5': '5° Termo Aditivo'
             };
             return situacaoMap[situacao] || situacao;
         };
 
         const columns = ref([
+            { data: 'empresa.nome', title: 'Empresa', width: '20%' },
+            { data: 'numero', title: 'Número', width: '8%' },
             {
-                data: 'numero',
-                title: 'Termo',
+                data: 'situacao',
+                title: 'Situação',
                 width: '10%',
                 render: (data) => formatSituacao(data)
             },
             {
-                data: 'valor',
+                data: 'valor_real',
                 title: 'Montante do Contrato',
                 width: '15%',
                 render: (data) => formatCurrency(data)
@@ -74,8 +74,8 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary termo-btn" data-action="empenho" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Empenhos"><i class="fa fa-search"></i></button>
-                        <a href="/pagamento/termo/${parseInt(row.contrato_id)}/empenho/${row.id}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Empenhos"><i class="fa fa-folder"></i></a>
+                        <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Termos"><i class="fa fa-search"></i></button>
+                        <a href="/termo/controle_financeiro/${parseInt(row.id)}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Termos do Contrato"><i class="fa fa-book"></i></a>
                     `;
                 }
             }
@@ -83,15 +83,15 @@ export default {
 
         const aplicarEventos = async () => {
 
-            let empenhoelements = document.querySelectorAll("[data-action=empenho]");
-            empenhoelements.forEach(item => {
+            let termoelements = document.querySelectorAll("[data-action=termo]");
+            termoelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
                     let id = evt.currentTarget.getAttribute('data-id');
                     let nome = evt.currentTarget.getAttribute('data-nome');
                     let numero = evt.currentTarget.getAttribute('data-numero');
                     events.emit('popup', {
-                        title: `Visualizar Empenhos`,
-                        component: 'controle-financeiro-empenho-grid',
+                        title: `Visualizar Termos - ${nome} ${numero}`,
+                        component: 'controle-financeiro-termo-grid',
                         size: 'xl',
                         data: {
                             id: `${id}`,
@@ -100,23 +100,6 @@ export default {
                 });
             });
         };
-
-        const columnsReadOnly = ref([
-            {
-                data: 'numero',
-                title: 'Termo',
-                width: '10%',
-                sortable: false,
-                render: (data) => formatSituacao(data)
-            },
-            {
-                data: 'valor',
-                title: 'Montante do Contrato',
-                width: '15%',
-                sortable: false,
-                render: (data) => formatCurrency(data)
-            },
-        ]);
 
         const options = {
             serverSide: true,
@@ -131,48 +114,23 @@ export default {
             },
         };
 
-        const optionsReadOnly = {
-            serverSide: true,
-            processing: true,
-            language: language,
-            layout: {
-                topStart: null,
-                topEnd: null,
-                bottom2: null,
-                bottomStart: null,
-                bottomEnd: null
-            },
-        };
+        const ajax = '/contrato/list';
 
         onMounted(() => {
             ready.value = true;
-            if (props.data.id){
-                 ajax.value = `/termo/getByContratoId/${props.data.id}`;
-                columnsSelected.value = columnsReadOnly;
-                optionsSelected.value = optionsReadOnly;
-
-            }else {
-                 ajax.value = `/termo/getByContratoId/${props.data}`;
-                columnsSelected.value = columns;
-                optionsSelected.value = options;
-            }
             events.on('reload', (data) => {
                 mydatatable.value.dt.ajax.url(`${ajax}`).load();
             });
         });
 
-
         return {
-            ready, options, columns, ajax, mydatatable, columnsSelected, optionsSelected, aplicarEventos
+            ready, options, columns, ajax, mydatatable, aplicarEventos
         }
-    },
-    props: {
-        data: { default: null, required: true }
     }
 }
 </script>
 
 <style>
-@import 'datatables.net-bs5';
+@import '../../../../node_modules/datatables.net-bs5';
 
 </style>

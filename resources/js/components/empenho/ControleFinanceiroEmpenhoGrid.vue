@@ -27,7 +27,6 @@ export default {
         const events = inject('events');
         const ready = ref(false);
         const mydatatable = ref();
-        const empresas = ref();
         const ajax = ref();
         const columnsSelected = ref([])
         const optionsSelected = ref([])
@@ -85,6 +84,8 @@ export default {
                     return `
                     <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Notas Fiscais"><i class="fa fa-search"></i></button>
                     <a href="/pagamento/termo/${parseInt(row.termo.contrato_id)}/empenho/${row.termo_id}/nota-fiscal/${row.id}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Notas Fiscais"><i class="fa fa-dollar"></i></a>
+                    <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar"><i class="fa fa-trash" ></i></button>
                     `;
                 }
             }
@@ -133,6 +134,22 @@ export default {
         ]);
 
         const aplicarEventos = async () => {
+
+            let editelements = document.querySelectorAll("[data-action=edit]");
+            editelements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    events.emit('popup', {
+                        title: 'Editar Empenho',
+                        component: 'form-empenho',
+                        size: 'xl',
+                        data: {
+                            id_empenho: `${id}`,
+                        },
+                    });
+                });
+            });
+
             let termoelements = document.querySelectorAll("[data-action=termo]");
             termoelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
@@ -149,6 +166,22 @@ export default {
                     });
                 });
             });
+
+            let deleteElements = document.querySelectorAll("[data-action=delete]");
+            deleteElements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    events.emit('loading', true);
+                    events.emit('popup', {
+                        title: `Deletar Empresa`,
+                        component: 'popup-delete',
+                        data: {
+                            acao: '/empenho/delete/',
+                            id: `${id}`,
+                        },
+                    });
+                })
+            })
         };
 
         const options = {
@@ -179,20 +212,19 @@ export default {
 
 
         onMounted(() => {
-            console.log(props)
             ready.value = true;
             if (props.data.id){
-                ajax.value = `/pagamento/list/${props.data.id}`;
+                ajax.value = `/empenho/list/${props.data.id}`;
                 columnsSelected.value = columnsReadOnly;
                 optionsSelected.value = optionsReadOnly;
 
             }else {
-                ajax.value = `/pagamento/list/${props.data}`;
+                ajax.value = `/empenho/list/${props.data}`;
                 columnsSelected.value = columns;
                 optionsSelected.value = options;
             }
             events.on('reload', (data) => {
-                mydatatable.value.dt.ajax.url(`${ajax}`).load();
+                mydatatable.value.dt.ajax.url(`${ajax.value}`).load();
             });
         });
 

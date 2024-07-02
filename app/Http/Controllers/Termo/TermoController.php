@@ -13,6 +13,14 @@ class TermoController extends Controller
 {
     public function __construct(private TermoContract $repository){}
 
+
+    public function index($id_contrato): View
+    {
+        $contrato = $this->repository->getContratoById($id_contrato);
+        $nome = $contrato->empresa->nome;
+        $numero_contrato = $contrato->numero;
+        return view('termo.index', compact('id_contrato','nome','numero_contrato'));
+    }
     public function list(Request $request): JsonResponse
     {
         $dados = $this->repository->getAll($request->all());

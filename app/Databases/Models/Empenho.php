@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Empenho extends Model
 {
     use SoftDeletes;
-    protected $table = 'pagamento';
+    protected $table = 'empenho';
     protected $primaryKey = 'id';
     protected $guarded = [];
-    public string $sequence = 'pagamento_id_seq';
+    public string $sequence = 'empenho_id_seq';
 
     public function termo()
     {

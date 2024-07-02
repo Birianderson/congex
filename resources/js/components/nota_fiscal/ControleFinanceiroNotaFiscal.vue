@@ -208,6 +208,6 @@ export default {
 </script>
 
 <style>
-@import 'datatables.net-bs5';
+@import '../../../../node_modules/datatables.net-bs5';
 
 </style>
