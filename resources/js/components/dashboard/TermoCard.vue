@@ -5,9 +5,9 @@
          :class="onhover ? 'element-with-gradient-' + numero + ' text-white' : ''">
         <div class="card-body">
             <div class="row">
-                <div class="col-8">
+                <div class="col-9">
                     <div>
-                        <div class="text-xl mb-0">{{ titulo }}</div>
+                        <div class="mb-0">{{ titulo }}</div>
                         <h2 class="font-weight-bolder mb-0" :class="onhover ? 'text-white' : ''">
                             {{ numero_contratos }}
                             <small class="text-sm"
@@ -17,8 +17,8 @@
                         </h2>
                     </div>
                 </div>
-                <div class="col-4 align-content-center border-radius-termo"
-                     :class="!onhover ? 'element-with-gradient-' + numero + ' text-white' : ''">
+                <div class="col-3 align-content-center border-radius-termo"
+                     :class="!onhover ? 'element-with-gradient-' + numero + ' text-white shadow-box' : ''">
                     <div class="text-center">
                         <i class="fa fa-book" aria-hidden="true"></i>
                     </div>
@@ -48,4 +48,16 @@ const toggleHover = (hovered) => {
 </script>
 
 <style scoped>
+.card {
+    transition: background-color 2.6s ease, color 0.6s ease;
+}
+
+.element-with-gradient-0, .element-with-gradient-1, .element-with-gradient-2,
+.element-with-gradient-3, .element-with-gradient-4, .element-with-gradient-5 {
+    transition: background-color 0.6s ease, color 0.6s ease;
+}
+
+.text-white {
+    transition: color 0.6s ease;
+}
 </style>

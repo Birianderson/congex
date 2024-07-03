@@ -73,6 +73,7 @@ class EmpenhoRepository implements EmpenhoContract {
                 'empenho' => $params['empenho'],
                 'observacao' => $params['observacao'] ?? '',
             ]);
+            $this->verifyValorPago($Empenho->id);
             $autoCommit && DB::commit();
             return true;
         } catch (Exception $ex) {
@@ -197,5 +198,29 @@ class EmpenhoRepository implements EmpenhoContract {
         $termo->save();
 
         return $termo;
+    }
+
+    public function verifyValorPago(int $id_empenho): Model
+    {
+        $empenho = Empenho::query()->where('id', $id_empenho)->with('termo')->firstOrFail();
+        // Soma os valores de todas as notas fiscais associadas ao mesmo empenho
+        $valorPagoEmpenho = NotaFiscal::query()
+            ->where('empenho_id', $id_empenho)
+            ->sum('valor');
+
+        // Atualiza o valor pago no empenho
+        $empenho->valor_total_pago = $valorPagoEmpenho;
+        $empenho->save();
+
+        // Soma os valores pagos de todos os empenhos associados ao mesmo termo
+        $valorPagoTermo = Empenho::query()
+            ->where('termo_id', $empenho->termo_id)
+            ->sum('valor_total_pago');
+
+        // Atualiza o valor pago no termo
+        $empenho->termo->valor_pago = $valorPagoTermo;
+        $empenho->termo->save();
+
+        return $empenho;
     }
 }
