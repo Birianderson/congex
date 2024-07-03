@@ -40,7 +40,7 @@ export default {
         const formatSituacao = (situacao) => {
             const situacaoMap = {
                 'NV': 'Não Vigente',
-                'V': 'Contrato Inicial',
+                'V0': 'Contrato Inicial',
                 'V1': '1° Termo Aditivo',
                 'V2': '2° Termo Aditivo',
                 'V3': '3° Termo Aditivo',
