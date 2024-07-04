@@ -113,6 +113,18 @@ $color-end-4: rgba(250, 150, 40, 1); // Cor final para a situação "4° Termo A
 $color-start-5: rgba(230, 50, 50, 0.5); // Cor inicial para a situação "Vencido"
 $color-end-5: rgba(230, 50, 50, 1); // Cor final para a situação "Vencido"
 
+// Definindo as cores em RGBA
+$color-start-6: rgba(115, 103, 240, 0.5); // #7367F0 com opacidade 0.5
+$color-end-6: rgba(115, 103, 240, 1); // #7367F0 com opacidade 1
+
+$color-start-7: rgba(23, 162, 184, 0.5); // #17a2b8 com opacidade 0.5
+$color-end-7: rgba(23, 162, 184, 1); // #17a2b8 com opacidade 1
+
+$color-start-8: rgba(108, 117, 125, 0.5); // #6c757d com opacidade 0.5
+$color-end-8: rgba(108, 117, 125, 1); // #6c757d com opacidade 1
+
+
+
 
 // Definindo a variável para o gradiente
 $gradient-background: linear-gradient(72deg, $color-start 22%, $color-end 77%);
@@ -122,6 +134,9 @@ $gradient-background-2: linear-gradient(72deg, $color-start-2 22%, $color-end-2 
 $gradient-background-3: linear-gradient(72deg, $color-start-3 22%, $color-end-3 77%);
 $gradient-background-4: linear-gradient(72deg, $color-start-4 22%, $color-end-4 77%);
 $gradient-background-5: linear-gradient(72deg, $color-start-5 22%, $color-end-5 77%);
+$gradient-background-6: linear-gradient(72deg, $color-start-5 22%, $color-end-5 77%);
+$gradient-background-7: linear-gradient(72deg, $color-start-6 22%, $color-end-6 77%);
+$gradient-background-8: linear-gradient(72deg, $color-start-7 22%, $color-end-7 77%);
 
 
 $theme-colors: (

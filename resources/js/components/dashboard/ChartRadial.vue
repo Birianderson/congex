@@ -11,7 +11,7 @@ const props = defineProps({
 
 });
 
-const series = [76];
+const series = [100];
 const chartOptions = {
     chart: {
         type: 'radialBar',

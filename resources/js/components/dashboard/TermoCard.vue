@@ -34,7 +34,6 @@ import { defineProps, ref } from "vue";
 const props = defineProps({
     numero: { required: true },
     titulo: { required: true },
-    valor_total: { required: true },
     numero_contratos: { required: true },
     porcentagem_contratos: { required: true },
 });

@@ -52,6 +52,18 @@
     color: $color-end-5
 }
 
+.color-text-chart-6 {
+    color: $color-end-6
+}
+
+.color-text-chart-7 {
+    color: $color-end-7
+}
+
+.color-text-chart-8 {
+    color: $color-end-8
+}
+
 .element-with-gradient-0 {
     background: linear-gradient(72deg, $color-start-0 22%, $color-end-0 77%) !important;
 }
@@ -76,12 +88,31 @@
     background: linear-gradient(72deg, $color-start-5 22%, $color-end-5 77%) !important;
 }
 
+.element-with-gradient-6 {
+    background: linear-gradient(72deg, $color-start-6 22%, $color-end-6 77%) !important;
+}
+
+.element-with-gradient-7 {
+    background: linear-gradient(72deg, $color-start-7 22%, $color-end-7 77%) !important;
+}
+
+.element-with-gradient-8 {
+    background: linear-gradient(72deg, $color-start-8 22%, $color-end-8 77%) !important;
+}
+
+
 .shadow-termo{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card-height {
     min-height: 158px;
+}
+
+.icon-size-dash {
+    height: 50px;
+    font-size: 30px;
+    width: 58px;
 }
 
 .shadow-box{
