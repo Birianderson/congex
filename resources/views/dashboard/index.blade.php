@@ -5,7 +5,7 @@
         nomes-contratos="{{ $nomesContratos }}"
         status-contratos="{{ json_encode($statusContratos) }}"
         total-contratos="{{ json_encode($totalContratos) }}"
-        valortotalformatado="{{ json_encode($valortotalformatado) }}"
         porcentagens="{{ json_encode($porcentagens) }}"
+        valor-total="{{json_encode($valortotal)}}"
     ></dashboard>
 </x-app-layout>

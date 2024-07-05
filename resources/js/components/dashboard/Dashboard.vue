@@ -71,7 +71,7 @@
                                 <div class="todos" id="gerencia"></div>
                                 <h5 class="mt-3">Gerência de Risco</h5>
                                 <span class="fw-semibold d-block mb-1">Valor dos contratos selecionados</span>
-                                <h3 id="ValorSelecionado" class=" card-title text-nowrap mb-2">R$ {{
+                                <h3 id="ValorSelecionado" class=" card-title text-nowrap mb-2">{{
                                         valortotalformatadoData
                                     }} </h3>
                             </div>
@@ -140,13 +140,14 @@ const props = defineProps({
     nomesContratos: {type: [Array, String], required: true},
     statusContratos: {type: [Array, String], required: true},
     totalContratos: {type: [Array, String], required: true},
-    valortotalformatado: {type: [Array, String], required: true},
     porcentagens: {type: [Array, String], required: true},
+    valorTotal: {type: [Array, String], required: true},
 });
 
 const dataPizzaData = ref([]);
 const valoresContratosData = ref([]);
 const valoresFiltradosContratosData = ref([]);
+const valorTotal = ref([]);
 const coresFiltradas = ref([]);
 const nomesContratosData = ref([]);
 const nomeFiltradosContratosData = ref([]);
@@ -154,6 +155,7 @@ const statusContratosData = ref([]);
 const totalContratosData = ref('');
 const valortotalformatadoData = ref([]);
 const porcentagensData = ref([]);
+const porcentagensRadial = ref([]);
 const ready = ref(false);
 const selecionado = ref(6);
 
@@ -235,20 +237,23 @@ onMounted(() => {
         else {
             coresFiltradas.value = ['#6d6bfc'];
         }
-
+        const somaValores = valoresFiltradosContratosData.value.reduce((acc, currentValue) => acc + currentValue, 0);
+        porcentagensRadial.value = parseInt((somaValores/valorTotal.value)*100)
+        valortotalformatadoData.value = formatarRealBrasileiro(somaValores);
         nomesContratosData.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratosData.value = JSON.stringify(valoresFiltradosContratosData.value);
-        console.log(valoresContratosData.value, 'contratos value')
-        console.log(nomesContratosData.value, 'nomes contratos')
         events.emit('updateCharts',[nomesContratosData.value, valoresContratosData.value, coresFiltradas.value, [data]])
+        events.emit('updateRadialCharts',[porcentagensRadial.value, coresFiltradas.value]);
     });
     try {
+        valorTotal.value = Array.isArray(props.valorTotal) ? props.valorTotal : JSON.parse(props.valorTotal);
+        console.log(valorTotal.value)
         dataPizzaData.value = Array.isArray(props.dataPizza) ? props.dataPizza : JSON.parse(props.dataPizza);
         valoresContratosData.value = Array.isArray(props.valoresContratos) ? props.valoresContratos : JSON.parse(props.valoresContratos);
         nomesContratosData.value = props.nomesContratos;
         statusContratosData.value = Array.isArray(props.statusContratos) ? props.statusContratos : JSON.parse(props.statusContratos);
         totalContratosData.value = props.totalContratos;
-        valortotalformatadoData.value = Array.isArray(props.valortotalformatado) ? props.valortotalformatado : JSON.parse(props.valortotalformatado);
+        valortotalformatadoData.value = formatarRealBrasileiro(valorTotal.value);
         porcentagensData.value = Array.isArray(props.porcentagens) ? props.porcentagens : JSON.parse(props.porcentagens);
         valoresContratosData.value = [{
             data: valoresContratosData.value
@@ -258,6 +263,9 @@ onMounted(() => {
         console.error("Error parsing props: ", error);
     }
 });
+const formatarRealBrasileiro = (valor) => {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
 </script>
 
 <style scoped>

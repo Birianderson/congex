@@ -87,7 +87,6 @@ class DashboardController extends Controller
             $porcentagens[] = $porcentagemFormatada;
         }
 
-        $valortotalformatado = number_format($valortotal, 2, ',', '.');
 
         $series = array_values($statusCount);
 
@@ -103,7 +102,7 @@ class DashboardController extends Controller
         $valoresContratos = json_encode($valoresContratos);
         $nomesContratos = json_encode($nomesContratos);
 
-        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos','valortotalformatado', 'porcentagens'));
+        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal'));
     }
 }
 
