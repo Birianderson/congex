@@ -119,12 +119,13 @@
             <div class="col-6">
                 <div class="card  shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">VALOR MONETÁRIO DOS CONTRATOS</h5>
-                    <bar-chart id="valor" :series="valoresContratosData[0]" :labels="nomesContratosData"></bar-chart>
+                    <bar-chart-valor id="valor" :series="valoresContratosData[0]" :labels="nomesContratosData"></bar-chart-valor>
                 </div>
             </div>
             <div class="col-6">
                 <div class="card shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">RISCO POR CONTRATO</h5>
+                    <bar-chart-risco id="risco" :series="riscoContratos[0]" :labels="nomesContratosData"></bar-chart-risco>
                 </div>
             </div>
         </div>
@@ -142,12 +143,15 @@ const props = defineProps({
     totalContratos: {type: [Array, String], required: true},
     porcentagens: {type: [Array, String], required: true},
     valorTotal: {type: [Array, String], required: true},
+    riscoContratos: {type: [Array, String], required: true},
 });
 
 const dataPizzaData = ref([]);
 const valoresContratosData = ref([]);
 const valoresFiltradosContratosData = ref([]);
 const valorTotal = ref([]);
+const riscoContratos = ref([]);
+const riscoFiltradosContratos = ref([]);
 const coresFiltradas = ref([]);
 const nomesContratosData = ref([]);
 const nomeFiltradosContratosData = ref([]);
@@ -170,14 +174,19 @@ onMounted(() => {
         let status = JSON.parse(props.statusContratos);
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
+        riscoFiltradosContratos.value = [];
         let valoresContratosArray = JSON.parse(props.valoresContratos);
         valoresContratosArray = JSON.parse(valoresContratosArray);
         let nomesContratosArray = JSON.parse(props.nomesContratos);
-
+        let riscoFiltradoArray =  JSON.parse(props.riscoContratos);
+        riscoFiltradoArray = JSON.parse(riscoFiltradoArray);
+        console.log(riscoFiltradoArray, 'riscoFiltradoArray')
+        console.log(riscoFiltradoArray, 'riscoFiltradoArray')
         if (data === 0) {
             coresFiltradas.value = ['#00b478ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
+                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -187,6 +196,7 @@ onMounted(() => {
             coresFiltradas.value = ['#00a0a0ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
+                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -196,6 +206,7 @@ onMounted(() => {
             coresFiltradas.value = ['#008cc8ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
+                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -205,6 +216,7 @@ onMounted(() => {
             coresFiltradas.value = ['#f0b450ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
+                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -214,6 +226,7 @@ onMounted(() => {
             coresFiltradas.value = ['#fa9628ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
+                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -223,16 +236,21 @@ onMounted(() => {
             coresFiltradas.value = ['#fa641eff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
+                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
                 }
             }
         }else if (data === 6) {
-            coresFiltradas.value = ['#7367F0'];
-            nomeFiltradosContratosData.value = JSON.parse(props.nomesContratos);
+            riscoFiltradosContratos.value = JSON.parse(props.riscoContratos);
+            riscoFiltradosContratos.value = JSON.parse(riscoFiltradosContratos.value);
+
             valoresFiltradosContratosData.value = JSON.parse(props.valoresContratos);
             valoresFiltradosContratosData.value = JSON.parse(valoresFiltradosContratosData.value);
+
+            coresFiltradas.value = ['#7367F0'];
+            nomeFiltradosContratosData.value = JSON.parse(props.nomesContratos);
         }
         else {
             coresFiltradas.value = ['#6d6bfc'];
@@ -242,12 +260,14 @@ onMounted(() => {
         valortotalformatadoData.value = formatarRealBrasileiro(somaValores);
         nomesContratosData.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratosData.value = JSON.stringify(valoresFiltradosContratosData.value);
-        events.emit('updateCharts',[nomesContratosData.value, valoresContratosData.value, coresFiltradas.value, [data]])
+        riscoContratos.value = JSON.stringify(riscoFiltradosContratos.value);
+        events.emit('updateBarraChartsValor',[nomesContratosData.value, valoresContratosData.value, coresFiltradas.value, [data]])
+        events.emit('updateBarraChartsRisco',[nomesContratosData.value, riscoContratos.value, coresFiltradas.value, [data]])
         events.emit('updateRadialCharts',[porcentagensRadial.value, coresFiltradas.value]);
     });
     try {
         valorTotal.value = Array.isArray(props.valorTotal) ? props.valorTotal : JSON.parse(props.valorTotal);
-        console.log(valorTotal.value)
+        riscoContratos.value = Array.isArray(props.riscoContratos) ? props.riscoContratos : JSON.parse(props.riscoContratos);
         dataPizzaData.value = Array.isArray(props.dataPizza) ? props.dataPizza : JSON.parse(props.dataPizza);
         valoresContratosData.value = Array.isArray(props.valoresContratos) ? props.valoresContratos : JSON.parse(props.valoresContratos);
         nomesContratosData.value = props.nomesContratos;
@@ -258,6 +278,9 @@ onMounted(() => {
         valoresContratosData.value = [{
             data: valoresContratosData.value
         }];
+        riscoContratos.value = [{
+            data: riscoContratos.value
+        }]
         ready.value = true;
     } catch (error) {
         console.error("Error parsing props: ", error);

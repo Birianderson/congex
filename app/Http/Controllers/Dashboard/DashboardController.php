@@ -12,7 +12,7 @@ class DashboardController extends Controller
 
     public function index(Request $request){
 
-        $contratos = Contrato::query()->with(['empresa', 'responsabilidades','termos'])
+        $contratos = Contrato::query()->with(['empresa', 'responsabilidades','termos', 'risco'])
             ->selectRaw("
                 CONTRATO.*,
                 CASE
@@ -42,6 +42,7 @@ class DashboardController extends Controller
             ")->orderBy('valor_real')->get();
          $valoresContratos = [];
         $nomesContratos = [];
+        $riscoContratos = [];
         $statusCount = [
             'V0' => 0,
             'V1' => 0,
@@ -69,6 +70,7 @@ class DashboardController extends Controller
             $status = $contrato->situacao;
             $valortotal = $valortotal + $contrato->valor_real;
             $valoresContratos[] = $contrato->valor_real;
+            $riscoContratos[] = $contrato->risco->pontuacao ?? 0;
             $nomesContratos[] = $contrato->empresa->nome . ' - N° '. $contrato->numero;
             $statusContratos[] = $contrato->situacao;
             if (array_key_exists($status, $statusCount)) {
@@ -101,8 +103,9 @@ class DashboardController extends Controller
         $totalContratos = count($valoresContratos);
         $valoresContratos = json_encode($valoresContratos);
         $nomesContratos = json_encode($nomesContratos);
+        $riscoContratos = json_encode($riscoContratos);
 
-        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal'));
+        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos'));
     }
 }
 

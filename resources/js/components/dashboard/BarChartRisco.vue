@@ -22,7 +22,7 @@ const chartOptions = ref({})
 const ready = ref(false);
 const events = inject('events');
 onMounted(() => {
-    events.on("updateCharts", (data) => {
+    events.on("updateBarraChartsRisco", (data) => {
         numero.value = data[3]
         cores.value = [data[2]]
         valores.value = JSON.parse(data[1]);
@@ -74,6 +74,7 @@ onMounted(() => {
         };
     });
     try {
+        console.log(props)
         valores.value = JSON.parse(props.series.data);
         formattedValores.value = [{
             data: valores.value,
