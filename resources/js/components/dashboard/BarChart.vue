@@ -14,6 +14,8 @@ const props = defineProps({
 
 let valores = ref([]);
 let nomes = ref([]);
+let cores = ref([]);
+let numero = ref([]);
 let formattedValores = ref([]);
 let labels = ref([]);
 const chartOptions = ref({})
@@ -21,6 +23,8 @@ const ready = ref(false);
 const events = inject('events');
 onMounted(() => {
     events.on("updateCharts", (data) => {
+        numero.value = data[3]
+        cores.value = [data[2]]
         valores.value = JSON.parse(data[1]);
         formattedValores.value = [{
             data: valores.value,
@@ -39,7 +43,7 @@ onMounted(() => {
                     horizontal: true,
                 }
             },
-            colors: ['#7367F0'],
+            colors: cores.value[0][0],
             xaxis: {
                 categories: nomes,
                 showDuplicates: true,
@@ -59,9 +63,8 @@ onMounted(() => {
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
                     return `
           <div class="card">
-            <div class="bg-primary p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
+            <div class="element-with-gradient-${numero.value[0]} p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
             <div class="p-3">
-              <span class="bx bx-radio-circle text-primary"></span>
               <span class="text-end"> ${formatarvalor(series[seriesIndex][dataPointIndex].toString())} </span>
             </div>
           </div>

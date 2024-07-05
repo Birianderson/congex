@@ -147,6 +147,7 @@ const props = defineProps({
 const dataPizzaData = ref([]);
 const valoresContratosData = ref([]);
 const valoresFiltradosContratosData = ref([]);
+const coresFiltradas = ref([]);
 const nomesContratosData = ref([]);
 const nomeFiltradosContratosData = ref([]);
 const statusContratosData = ref([]);
@@ -170,17 +171,76 @@ onMounted(() => {
         let valoresContratosArray = JSON.parse(props.valoresContratos);
         valoresContratosArray = JSON.parse(valoresContratosArray);
         let nomesContratosArray = JSON.parse(props.nomesContratos);
-        for (let i = 0; i < status.length; i++) {
-            if (status[i] == 'V' + data) {
-                valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
-                nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
-                countArray++;
-            }
-        }
-        nomesContratosData.value = JSON.stringify(nomeFiltradosContratosData.value);
 
+        if (data === 0) {
+            coresFiltradas.value = ['#00b478ff'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'V' + data) {
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        } else if (data === 1) {
+            coresFiltradas.value = ['#00a0a0ff'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'V' + data) {
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        } else if (data === 2) {
+            coresFiltradas.value = ['#008cc8ff'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'V' + data) {
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        } else if (data === 3) {
+            coresFiltradas.value = ['#f0b450ff'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'V' + data) {
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        } else if (data === 4) {
+            coresFiltradas.value = ['#fa9628ff'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'V' + data) {
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        } else if (data === 5) {
+            coresFiltradas.value = ['#fa641eff'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'V' + data) {
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        }else if (data === 6) {
+            coresFiltradas.value = ['#7367F0'];
+            nomeFiltradosContratosData.value = JSON.parse(props.nomesContratos);
+            valoresFiltradosContratosData.value = JSON.parse(props.valoresContratos);
+            valoresFiltradosContratosData.value = JSON.parse(valoresFiltradosContratosData.value);
+        }
+        else {
+            coresFiltradas.value = ['#6d6bfc'];
+        }
+
+        nomesContratosData.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratosData.value = JSON.stringify(valoresFiltradosContratosData.value);
-        events.emit('updateCharts',[nomesContratosData.value, valoresContratosData.value])
+        console.log(valoresContratosData.value, 'contratos value')
+        console.log(nomesContratosData.value, 'nomes contratos')
+        events.emit('updateCharts',[nomesContratosData.value, valoresContratosData.value, coresFiltradas.value, [data]])
     });
     try {
         dataPizzaData.value = Array.isArray(props.dataPizza) ? props.dataPizza : JSON.parse(props.dataPizza);
