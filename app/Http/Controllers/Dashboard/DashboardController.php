@@ -39,27 +39,27 @@ class DashboardController extends Controller
                     WHEN contrato.situacao = 'V3' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '3')
                     WHEN contrato.situacao = 'V4' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
                 END AS valor_real
-            ")->get();
+            ")->orderBy('valor_real')->get();
          $valoresContratos = [];
         $nomesContratos = [];
         $statusCount = [
             'V0' => 0,
-            'NV' => 0,
             'V1' => 0,
             'V2' => 0,
             'V3' => 0,
             'V4' => 0,
             'V5' => 0,
+            'NV' => 0,
         ];
 
         $labelMapping = [
             'V0' => 'Contrato Inicial',
-            'NV' => 'Não Vigente',
             'V1' => 'Vigente 1 termo',
             'V2' => 'Vigente 2 termo',
             'V3' => 'Vigente 3 termo',
             'V4' => 'Vigente 4 termo',
             'V5' => 'Vigente 5 termo',
+            'NV' => 'Não Vigente',
         ];
         $valortotal = 0;
         $dividendo = 0;
