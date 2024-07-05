@@ -28,7 +28,7 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="#" class="nav-link menu-text">
+            <a href="{{route('risco.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'risco')) element-with-gradient text-white @endif">
                 <i class="fa fa-warning me-2"></i>
                 Controle de Risco
             </a>

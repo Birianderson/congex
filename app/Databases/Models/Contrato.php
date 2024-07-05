@@ -22,6 +22,11 @@ class Contrato extends Model
         return $this->belongsTo(Empresa::class);
     }
 
+    public function risco()
+    {
+        return $this->hasOne(RiscoContrato::class, 'contrato_id');
+    }
+
     public function responsabilidades()
     {
         return $this->hasMany(Responsabilidade::class, 'contrato_id');

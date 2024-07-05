@@ -168,7 +168,7 @@ class ContratoRepository implements ContratoContract
 
     public function getAll(array $params): LengthAwarePaginator
     {
-        $query = Contrato::query()->with(['empresa', 'responsabilidades','termos'])
+        $query = Contrato::query()->with(['empresa', 'responsabilidades','termos','risco'])
             ->selectRaw("
                 CONTRATO.*,
                 CASE

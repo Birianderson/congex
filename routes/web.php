@@ -7,6 +7,7 @@ use App\Http\Controllers\Empenho\EmpenhoController;
 use App\Http\Controllers\NotaFiscal\NotaFiscalController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Pessoa\PessoaController;
+use App\Http\Controllers\RiscoContrato\RiscoContratoController;
 use App\Http\Controllers\Termo\TermoController;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +90,17 @@ Route::group(['prefix' => 'cargo', 'namespace' => 'App\Http\Controllers\CargoCon
     Route::post('/{id}',[CargoController::class, 'update'])->name('cargo.update');
     Route::delete('/delete/{id}',[CargoController::class, 'delete'])->name('cargo.delete');
 });
+
+Route::group(['prefix' => 'risco-contrato', 'namespace' => 'App\Http\Controllers\RiscoContratoController'], function() {
+    Route::get('/', [RiscoContratoController::class, 'index'])->name('risco.index');
+    Route::get('/list', [RiscoContratoController::class, 'list'])->name('risco.list');
+    Route::post('/create/{id_contrato}',[RiscoContratoController::class,'create'])->name('risco.create');
+    Route::get('/historico/{id}',[RiscoContratoController::class, 'historico'])->name('risco.historico');
+    Route::get('/{id}',[RiscoContratoController::class, 'edit'])->name('risco.edit');
+    Route::post('/update/{id_contrato}',[RiscoContratoController::class, 'update'])->name('risco.update');
+    Route::delete('/delete/{id}',[RiscoContratoController::class, 'delete'])->name('risco.delete');
+});
+
 
 Route::group(['prefix' => 'dashboard', 'namespace' => 'App\Http\Controllers\DashboardController'], function() {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
