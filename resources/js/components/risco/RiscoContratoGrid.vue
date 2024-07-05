@@ -63,23 +63,32 @@ export default {
             {
                 data: 'situacao',
                 title: 'Termo',
-                width: '10%',
+                width: '12%',
                 render: (data) => formatSituacao(data)
+            },
+            {
+                data: 'data_fim_real',
+                title: 'Dias a Vencer',
+                width: '15%',
+                render: (data, type, row) => {
+                    const { color, text } = calculateDaysToExpire(row.data_fim_real);
+                    return `<span class="status-dot" style="background-color: ${color};"></span> ${text}`;
+                }
             },
             {
                 data: 'risco.situacao',
                 title: 'Ações do Risco',
-                width: '15%',
+                width: '12%',
             },
             {
                 data: 'risco.possibilidades',
                 title: 'Tratamento',
-                width: '15%',
+                width: '12%',
             },
             {
                 data: 'risco.pontuacao',
                 title: 'Pontuação do Risco',
-                width: '15%',
+                width: '12%',
                 render: (data) => {
                     if (data === null) {
                         return ''; // Retorna uma string vazia se data for null
@@ -158,6 +167,30 @@ export default {
         };
 
         const ajax = '/contrato/list';
+
+        const calculateDaysToExpire = (data_fim) => {
+            let today = moment().startOf('day');
+            let end = moment(data_fim).startOf('day');
+            let diffDays = end.diff(today, 'days');
+            let diffMonths = end.diff(today, 'months');
+            let color = '';
+            let text = '';
+
+            if (diffDays < 0) {
+                color = 'gray';
+                text = 'Vencido';
+            } else if (diffMonths >= 4) {
+                color = 'green';
+                text = `${diffMonths} meses e ${diffDays % 30} dias`;
+            } else if (diffMonths >= 1 && diffMonths < 4) {
+                color = '#FFD700';
+                text = `${diffMonths} meses e ${diffDays % 30} dias`;
+            } else if (diffDays < 30) {
+                color = 'red';
+                text = `${diffDays} dias`;
+            }
+            return { color, text };
+        };
 
         onMounted(() => {
             ready.value = true;
