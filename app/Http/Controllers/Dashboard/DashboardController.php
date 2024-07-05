@@ -69,7 +69,7 @@ class DashboardController extends Controller
             $status = $contrato->situacao;
             $valortotal = $valortotal + $contrato->valor_real;
             $valoresContratos[] = $contrato->valor_real;
-            $nomesContratos[] = $contrato->empresa->nome;
+            $nomesContratos[] = $contrato->empresa->nome . ' - N° '. $contrato->numero;
             $statusContratos[] = $contrato->situacao;
             if (array_key_exists($status, $statusCount)) {
                 $statusCount[$status]++;
