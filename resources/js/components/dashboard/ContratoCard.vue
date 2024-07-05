@@ -37,8 +37,8 @@ const onhover = ref(false);
 
 onMounted(() => {
     onhover.value = parseInt(props.selecionado) === parseInt(props.numero);
+    selecionado.value = onhover.value;
     events.on("selecionaCard", (data) => {
-        selecionado.value = parseInt(data);
         onhover.value = parseInt(data) === parseInt(props.numero);
         selecionado.value = onhover.value;
     });
@@ -46,7 +46,7 @@ onMounted(() => {
 
 
 const toggleHover = (hovered) => {
-    onhover.value = hovered;
+        onhover.value = hovered;
 };
 
 </script>
