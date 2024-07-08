@@ -118,5 +118,10 @@ class TipoArquivoRepository implements TipoArquivoContract {
         return TipoArquivo::query()->where('id', $id)->firstOrFail();
     }
 
+    public function getByTabela(string $tabela): array|\Illuminate\Database\Eloquent\Collection
+    {
+        return TipoArquivo::query()->where('tabela', $tabela)->get();
+    }
+
 
 }

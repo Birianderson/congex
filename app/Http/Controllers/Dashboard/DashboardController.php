@@ -83,10 +83,15 @@ class DashboardController extends Controller
 
         // Calcula a porcentagem para cada valor
         $porcentagens = [];
-        foreach ($statusCount as $value) {
-            $porcentagem = ($value / $total) * 100;
-            $porcentagemFormatada = number_format($porcentagem, 1);
-            $porcentagens[] = $porcentagemFormatada;
+        if ($total > 0) {
+            foreach ($statusCount as $value) {
+                $porcentagem = ($value / $total) * 100;
+                $porcentagemFormatada = number_format($porcentagem, 1);
+                $porcentagens[] = $porcentagemFormatada;
+            }
+        } else {
+            $statusContratos[] = array_fill(0, count($statusCount), '0.0');
+            $porcentagens = array_fill(0, count($statusCount), '0.0');
         }
 
 

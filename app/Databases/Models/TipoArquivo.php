@@ -14,15 +14,10 @@ class TipoArquivo extends Model
     protected $guarded = [];
     public string $sequence = 'termo_id_seq';
 
-    public function termo()
+    public function arquvios()
     {
-        return $this->belongsTo(Termo::class);
+        return $this->hasMany(Arquivo::class, 'tipo_arquivo_id');
     }
 
-
-    public function empenho()
-    {
-        return $this->belongsTo(Empenho::class);
-    }
 }
 

@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->string('tabela');
+            $table->integer('chave');
             $table->string('descricao');
             $table->string('path');
             $table->unsignedBigInteger('tipo_arquivo_id')->nullable();
-            $table->foreign('tipo_arquivo_id')->references('id')->on('tipo_arquivo_id');
+            $table->foreign('tipo_arquivo_id')->references('id')->on('tipo_arquivo');
             $table->timestamps();
             $table->softDeletes();
         });

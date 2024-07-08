@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Contrato;
 
 use App\Databases\Contracts\ContratoContract;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArquivoRequest;
 use App\Http\Requests\ContratoRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,6 +42,19 @@ class ContratoController extends Controller
         return response()->json('success', 201);
     }
 
+    public function get_arquivos(int $id): JsonResponse
+    {
+        $arquivos = $this->repository->getArquivos($id);
+        return response()->json($arquivos);
+    }
+
+    public function create_arquivos(ArquivoRequest $request): JsonResponse
+    {
+        $params = $request->except('_token');
+        $this->repository->createArquivos($params);
+        return response()->json('success', 201);
+    }
+
     public function edit(int $id){
         $contrato = $this->repository->getById($id);
         return response()->json($contrato);
@@ -62,6 +76,18 @@ class ContratoController extends Controller
         $this->repository->destroy($id);
         return response()->json('success', 201);
     }
+
+    public function download($file) {
+        $filePath = storage_path('app/public/' . base64_decode($file));
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'Arquivo não encontrado.'], 404);
+        }
+
+        return response()->download($filePath);
+    }
+
+
 
 }
 

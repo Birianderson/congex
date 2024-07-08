@@ -20,9 +20,12 @@ Route::group(['prefix' => 'contrato', 'namespace' => 'App\Http\Controllers\Contr
     Route::get('/', [ContratoController::class, 'index'])->name('contrato.index');
     Route::get('/controle_financeiro', [ContratoController::class, 'controle_financeiro'])->name('contrato.controle_financeiro');
     Route::get('/list', [ContratoController::class, 'list'])->name('contrato.list');
+    Route::get('/get_arquivos/{id}',[ContratoController::class, 'get_arquivos'])->name('contrato.get_arquivos');
+    Route::post('/create_arquivos/{id}',[ContratoController::class, 'create_arquivos'])->name('contrato.create_arquivos');
     Route::post('/',[ContratoController::class,'create'])->name('contrato.create');
     Route::get('/historico/{id}',[ContratoController::class, 'historico'])->name('contrato.historico');
     Route::get('/{id}',[ContratoController::class, 'edit'])->name('contrato.edit');
+    Route::get('/download/{file}',[ContratoController::class, 'download'])->name('contrato.download');
     Route::post('/{id}',[ContratoController::class, 'update'])->name('contrato.update');
     Route::delete('/delete/{id}',[ContratoController::class, 'delete'])->name('contrato.delete');
 });
@@ -105,6 +108,7 @@ Route::group(['prefix' => 'risco-contrato', 'namespace' => 'App\Http\Controllers
 Route::group(['prefix' => 'tipo-arquivo', 'namespace' => 'App\Http\Controllers\TipoArquivoController'], function() {
     Route::get('/', [TipoArquivoController::class, 'index'])->name('tipo-arquivo.index');
     Route::get('/list', [TipoArquivoController::class, 'list'])->name('tipo-arquivo.list');
+    Route::get('/getByTabela/{tabela}',[TipoArquivoController::class, 'getByTabela'])->name('tipo-arquivo.getByTabela');
     Route::post('/',[TipoArquivoController::class,'create'])->name('tipo-arquivo.create');
     Route::get('/historico/{id}',[TipoArquivoController::class, 'historico'])->name('tipo-arquivo.historico');
     Route::get('/{id}',[TipoArquivoController::class, 'edit'])->name('tipo-arquivo.edit');

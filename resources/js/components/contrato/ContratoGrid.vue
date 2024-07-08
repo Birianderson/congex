@@ -100,7 +100,7 @@ export default {
                 render: (data, type, row) => {
                     return `
                         <button class="btn btn-sm btn-secondary historico-btn" data-action="historico"  data-id="${data.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
-                        <button class="btn btn-sm btn-info termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Adicionar Termo"><i class="fa fa-book"></i></button>
+                        <button class="btn btn-sm btn-info termo-btn" data-action="arquivos" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Arquivos"><i class="fa fa-paperclip"></i></button>
                         <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
                         <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover"><i class="fa fa-trash"></i></button>
                     `;
@@ -147,20 +147,24 @@ export default {
                 });
             });
 
-            let termoelements = document.querySelectorAll("[data-action=termo]");
-            termoelements.forEach(item => {
+            let arquivoselements = document.querySelectorAll("[data-action=arquivos]");
+            arquivoselements.forEach(item => {
                 item.addEventListener('click', (evt) => {
                     let id = evt.currentTarget.getAttribute('data-id');
                     let nome = evt.currentTarget.getAttribute('data-nome');
                     let numero = evt.currentTarget.getAttribute('data-numero');
                     events.emit('popup', {
-                        title: `Adicionar termo - ${nome} ${numero}`,
-                        component: 'form-termo',
+                        title: `Arquivos do Contrato - ${nome} ${numero}`,
+                        component: 'form-arquivos',
                         size: 'xl',
                         data: {
                             id: `${id}`,
                             nome: `${nome}`,
                             numero: `${numero}`,
+                            acao: '/contrato/create_arquivos/',
+                            loadData: '/contrato/get_arquivos/',
+                            fetchTipoArquivo: '/tipo-arquivo/getByTabela/contrato',
+                            getDownloadUrl: '/contrato/download/'
                         },
                     });
                 });

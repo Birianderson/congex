@@ -29,6 +29,12 @@ class TipoArquivoController extends Controller
         ]);
     }
 
+    public function getByTabela(string $tabela): JsonResponse
+    {
+        $TipoArquivo = $this->repository->getByTabela($tabela);
+        return response()->json($TipoArquivo);
+    }
+
 
     public function create(TipoArquivoRequest $request){
         $params = $request->except('_token');

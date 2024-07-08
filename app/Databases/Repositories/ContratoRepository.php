@@ -3,11 +3,13 @@
 namespace App\Databases\Repositories;
 
 use App\Databases\Contracts\ContratoContract;
+use App\Databases\Models\Arquivo;
 use App\Databases\Models\Contrato;
 use App\Databases\Models\Responsabilidade;
 use App\Databases\Models\Termo;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -81,6 +83,36 @@ class ContratoRepository implements ContratoContract
             return true;
         } catch (Exception $ex) {
             if ($autoCommit) DB::rollBack();
+            throw new Exception($ex);
+        }
+    }
+
+    public function createArquivos(array $params, bool $autoCommit = true): bool
+    {
+        $autoCommit && DB::beginTransaction();
+        try {
+            Arquivo::where('tabela', 'contrato')->where('chave', $params['contrato_id'])->delete();
+            $index = 0;
+            foreach ($params['arquivos'] as $index => $arquivos) {
+                if ($arquivos instanceof UploadedFile) {
+                    $path = $arquivos->store('/public');
+                    $arquivo = new Arquivo([
+                        'nome' => $params['nome'][$index] ?? '',
+                        'descricao' => $params['descricao'][$index] ?? '',
+                        'tabela' => 'contrato',
+                        'path' => $path,
+                        'chave' => $params['contrato_id'],
+                        'tipo_arquivo_id' => $params['tipo_arquivo_id'][$index],
+                    ]);
+                    $arquivo->save();
+                    $index++;
+                }
+            }
+
+            $autoCommit && DB::commit();
+            return true;
+        } catch (Exception $ex) {
+            $autoCommit && DB::rollBack();
             throw new Exception($ex);
         }
     }
@@ -257,6 +289,10 @@ class ContratoRepository implements ContratoContract
         }
 
         $contrato->save();
+    }
+    public function getArquivos(int $id): array|\Illuminate\Database\Eloquent\Collection
+    {
+        return Arquivo::query()->where('tabela', 'contrato')->where('chave', $id)->get();
     }
 
 }
