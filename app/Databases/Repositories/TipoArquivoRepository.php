@@ -97,6 +97,18 @@ class TipoArquivoRepository implements TipoArquivoContract {
     {
         $query = TipoArquivo::query();
         $page = (($params['start'] ?? 0) / ($params['length'] ?? 10) + 1);
+        if(isset($params['search']['value']) && !empty($params['search']['value'])){
+            $search = strtolower($params['search']['value']);
+            $query->where('nome', 'like', '%'.$search.'%');
+        }
+        if(isset($params['order'][0]) && !empty($params['order'][0])){
+            $columnNumber = $params['order'][0]['column'];
+            $dir = $params['order'][0]['dir'];
+            $columnName = $params['columns'][$columnNumber]['data'];
+            $query->orderBy($columnName, $dir);
+        }else{
+            $query->orderBy('nome', 'asc');
+        }
         return $query->paginate($params['length'] ?? 10, ['*'], 'page', $page);
     }
 

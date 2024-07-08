@@ -40,12 +40,12 @@
             </a>
         </li>
         <li class="mt-2">
-            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'pessoa')) show text-primary @endif" @if(str_contains(request()->route()->getName(), 'fiscal')) aria-expanded="true" @endif>
+            <a href="#submenu1" data-bs-toggle="collapse" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'pessoa')) show text-primary @endif @if(str_contains(request()->route()->getName(), 'tipo-arquivo')) show text-primary @endif" @if(str_contains(request()->route()->getName(), 'fiscal')) aria-expanded="true" @endif >
                 <i class="fa fa-cog me-2"></i>
                 Configuração
                 <i class="fa fa-chevron-down ms-auto"></i>
             </a>
-            <ul id="submenu1" class="collapse list-unstyled ps-3  @if(str_contains(request()->route()->getName(), 'pessoa')) show @endif @if(str_contains(request()->route()->getName(), 'cargo')) show @endif" >
+            <ul id="submenu1" class="collapse list-unstyled ps-3  @if(str_contains(request()->route()->getName(), 'pessoa')) show @endif  @if(str_contains(request()->route()->getName(), 'tipo-arquivo')) show @endif @if(str_contains(request()->route()->getName(), 'cargo')) show @endif" >
                 <li>
                     <a href="#" class="nav-link menu-text">
                         <i class="fa fa-th-list me-2"></i>

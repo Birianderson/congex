@@ -10,10 +10,11 @@
                 <div class="col-lg-12 col-md-6 mb-3">
                     <label for="tabela" class="form-label" :class="{ 'required': !readOnly }">Tipo</label>
                     <select v-model="info.tabela" name="tabela" id="tabela" class="form-control" :disabled="readOnly">
-                        <option value="" disabled selected>Escolha uma opção</option>
+                        <option v-if="!info.tabela" value="" disabled selected>Escolha uma opção</option>
                         <option value="contrato">Contrato</option>
-                        <option value="termos">Termos</option>
-                        <option value="nota fiscal">Nota Fiscal</option>
+                        <option value="termo">Termos</option>
+                        <option value="nota-fiscal">Nota Fiscal</option>
+                        <option value="empenho">Empenho</option>
                     </select>
                 </div>
             </div>
@@ -52,6 +53,7 @@ export default {
                 const response = await axios.get(`${acao.value}${props.data.id}`);
                 acao.value += props.data.id;
                 info.value = response.data;
+                console.log(info.value)
             } catch (err) {
                 emit('notification', {
                     type: 'error',
