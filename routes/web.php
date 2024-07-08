@@ -9,6 +9,7 @@ use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Pessoa\PessoaController;
 use App\Http\Controllers\RiscoContrato\RiscoContratoController;
 use App\Http\Controllers\Termo\TermoController;
+use App\Http\Controllers\TipoArquivo\TipoArquivoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -101,6 +102,15 @@ Route::group(['prefix' => 'risco-contrato', 'namespace' => 'App\Http\Controllers
     Route::delete('/delete/{id}',[RiscoContratoController::class, 'delete'])->name('risco.delete');
 });
 
+Route::group(['prefix' => 'tipo-arquivo', 'namespace' => 'App\Http\Controllers\TipoArquivoController'], function() {
+    Route::get('/', [TipoArquivoController::class, 'index'])->name('tipo-arquivo.index');
+    Route::get('/list', [TipoArquivoController::class, 'list'])->name('tipo-arquivo.list');
+    Route::post('/',[TipoArquivoController::class,'create'])->name('tipo-arquivo.create');
+    Route::get('/historico/{id}',[TipoArquivoController::class, 'historico'])->name('tipo-arquivo.historico');
+    Route::get('/{id}',[TipoArquivoController::class, 'edit'])->name('tipo-arquivo.edit');
+    Route::post('/{id}',[TipoArquivoController::class, 'update'])->name('tipo-arquivo.update');
+    Route::delete('/delete/{id}',[TipoArquivoController::class, 'delete'])->name('tipo-arquivo.delete');
+});
 
 Route::group(['prefix' => 'dashboard', 'namespace' => 'App\Http\Controllers\DashboardController'], function() {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');

@@ -10,6 +10,7 @@ use App\Databases\Contracts\EmpenhoContract;
 use App\Databases\Contracts\PessoaContract;
 use App\Databases\Contracts\RiscoContratoContract;
 use App\Databases\Contracts\TermoContract;
+use App\Databases\Contracts\TipoArquivoContract;
 use App\Databases\Repositories\CargoRepository;
 use App\Databases\Repositories\ContratoRepository;
 use App\Databases\Repositories\EmpresaRepository;
@@ -18,6 +19,7 @@ use App\Databases\Repositories\EmpenhoRepository;
 use App\Databases\Repositories\PessoaRepository;
 use App\Databases\Repositories\RiscoContratoRepository;
 use App\Databases\Repositories\TermoRepository;
+use App\Databases\Repositories\TipoArquivoRepository;
 use App\Http\Requests\RiscoContratoRequest;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         app()->bind(EmpenhoContract::class, EmpenhoRepository::class);
         app()->bind(NotaFiscalContract::class, NotaFiscalRepository::class);
         app()->bind(RiscoContratoContract::class, RiscoContratoRepository::class);
+        app()->bind(TipoArquivoContract::class, TipoArquivoRepository::class);
     }
 
     /**

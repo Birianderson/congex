@@ -53,7 +53,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link menu-text">
+                    <a href="{{route('tipo-arquivo.index')}}" class="nav-link menu-text @if(str_contains(request()->route()->getName(), 'tipo-arquivo')) element-with-gradient text-white @endif">
                         <i class="fa fa-paperclip me-2"></i>
                         Arquivos
                     </a>
