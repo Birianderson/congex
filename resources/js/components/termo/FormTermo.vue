@@ -12,7 +12,7 @@
                     <input type="date" class="form-control" id="data_fim" name="data_fim" v-model="data_fim" />
                 </div>
             </div>
-            <input type="hidden" :value="props.data.id" name="contrato_id">
+            <input type="hidden" :value="props.data" name="contrato_id">
             <div class="row">
                 <div class="col-6 mb-4">
                     <label for="valor" class="form-label" :class="{ 'required': !readOnly }">Valor</label>
@@ -63,7 +63,7 @@ export default {
 
         const fetchContrato = async () => {
             try {
-                const response = await axios.get(`/contrato/${props.data.id}`);
+                const response = await axios.get(`/contrato/${props.data}`);
                 contrato.value = response.data;
                 console.log(contrato.value)
                 if (contrato.value.termos.length > 0) {
@@ -84,6 +84,7 @@ export default {
         };
 
         onMounted(async () => {
+            console.log(props.data)
             events.off("form-submitted");
             events.on("form-submitted", (sucesso) => {
                 if (sucesso) {
