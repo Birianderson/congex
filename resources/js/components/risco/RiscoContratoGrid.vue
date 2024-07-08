@@ -52,9 +52,8 @@ export default {
 
         const getCellClass = (value) => {
             if (value >= 20) return 'red';
-            if (value >= 10) return 'yellow';
-            if (value >= 5) return 'orange';
-            return 'light-orange';
+            if (value >= 7) return 'yellow';
+            return 'green';
         };
 
         const columns = ref([
@@ -209,26 +208,5 @@ export default {
 <style>
 @import '../../../../node_modules/datatables.net-bs5';
 
-.risk-dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    display: inline-block;
-}
 
-.risk-dot.red {
-    background-color: #ff0000;
-}
-
-.risk-dot.yellow {
-    background-color: #ffff00;
-}
-
-.risk-dot.orange {
-    background-color: #ffcc00;
-}
-
-.risk-dot.light-orange {
-    background-color: #ff9900;
-}
 </style>

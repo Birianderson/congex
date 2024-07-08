@@ -147,9 +147,8 @@ export default {
 
         const getCellClass = (value) => {
             if (value >= 20) return 'red';
-            if (value >= 10) return 'yellow';
-            if (value >= 5) return 'orange';
-            return 'light-orange';
+            if (value >= 7) return 'yellow';
+            return 'green';
         };
 
         const handleCellClick = (value) => {
@@ -220,6 +219,10 @@ export default {
 
 .yellow {
     background-color: #ffff00;
+}
+
+.green {
+    background-color: #90EE90;
 }
 
 .orange {

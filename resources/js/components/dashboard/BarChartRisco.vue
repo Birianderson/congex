@@ -63,9 +63,10 @@ onMounted(() => {
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
                     return `
           <div class="card">
-            <div class="element-with-gradient-${numero.value[0]} p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
+            <div class="bg-${getCellClass((series[seriesIndex][dataPointIndex]))}-500 p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
             <div class="p-3">
-              <span class="text-end"> ${formatarvalor(series[seriesIndex][dataPointIndex].toString())} </span>
+            <span v-if="data" class= "text-${getCellClass((series[seriesIndex][dataPointIndex]))}-500"></span>
+                        <span>Pontuação do Risco: ${series[seriesIndex][dataPointIndex]} de 25</span>
             </div>
           </div>
         `;
@@ -91,6 +92,12 @@ const formatarvalor = (valor) => {
     return 'R$ ' + valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ',00';
 };
 
+
+const getCellClass = (value) => {
+    if (value >= 20) return 'red';
+    if (value >= 7) return 'yellow';
+    return 'green';
+};
 
 chartOptions.value = {
     chart: {
@@ -124,10 +131,10 @@ chartOptions.value = {
         custom: function ({ series, seriesIndex, dataPointIndex, w }) {
             return `
           <div class="card">
-            <div class="bg-primary p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
+            <div class="bg-${getCellClass((series[seriesIndex][dataPointIndex]))}-500 p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
             <div class="p-3">
-              <span class="bx bx-radio-circle text-primary"></span>
-              <span class="text-end"> ${formatarvalor(series[seriesIndex][dataPointIndex].toString())} </span>
+            <span v-if="data" class=" icon-size-risco text-${getCellClass((series[seriesIndex][dataPointIndex]))}-500"></span>
+                        <span>Pontuação do Risco: ${series[seriesIndex][dataPointIndex]} de 25</span>
             </div>
           </div>
         `;
@@ -138,4 +145,16 @@ chartOptions.value = {
 </script>
 
 <style scoped>
+
+.red {
+    background-color: #ff0000;
+}
+
+.yellow {
+    background-color: #ffff00;
+}
+
+.green {
+    background-color: #90EE90;
+}
 </style>
