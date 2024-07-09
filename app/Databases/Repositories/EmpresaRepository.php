@@ -25,9 +25,10 @@ class EmpresaRepository implements EmpresaContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
+            $cnpj = preg_replace('/\D/', '', $params['cnpj']);
             $empresa = new Empresa([
                 'nome' => $params['nome'],
-                'cnpj' => $params['cnpj'],
+                'cnpj' => $cnpj,
             ]);
             $empresa->save();
 
@@ -52,10 +53,11 @@ class EmpresaRepository implements EmpresaContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
+            $cnpj = preg_replace('/\D/', '', $params['cnpj']);
             $empresa = $this->getById($id);
             $empresa->update([
                 'nome' => $params['nome'],
-                'cnpj' => $params['cnpj'],
+                'cnpj' => $cnpj,
             ]);
             $autoCommit && DB::commit();
             return true;

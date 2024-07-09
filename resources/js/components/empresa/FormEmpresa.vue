@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-lg-12 col-md-6 mb-3 ">
                     <label for="cnpj" class="form-label" :class="{ 'required': !readOnly }">CNPJ</label>
-                    <input v-model="info.cnpj" type="number" name="cnpj" id="cnpj" class="form-control" :disabled="readOnly"/>
+                    <input v-model="info.cnpj" type="text" name="cnpj" id="cnpj" v-mask="'##.###.###/####-##'" class="form-control" :disabled="readOnly"/>
                 </div>
             </div>
             <div class="row border-top pt-4">
