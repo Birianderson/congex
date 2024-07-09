@@ -117,15 +117,24 @@
                 </div>
             </div>
             <div class="col-6">
+                <valor-filter :selecionado="selecionado"></valor-filter>
+            </div>
+            <div class="col-6">
+                <responsabilidade-filter :selecionado="selecionado"></responsabilidade-filter>
+            </div>
+
+            <div class="col-6">
                 <div class="card  shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">VALOR MONETÁRIO DOS CONTRATOS</h5>
-                    <bar-chart-valor id="valor" :series="valoresContratoBarChartValor[0]" :labels="nomesContratosBarChart"></bar-chart-valor>
+                    <bar-chart-valor id="valor" :series="valoresContratoBarChartValor[0]"
+                                     :labels="nomesContratosBarChart"></bar-chart-valor>
                 </div>
             </div>
             <div class="col-6">
                 <div class="card shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">RISCO POR CONTRATO</h5>
-                    <bar-chart-risco id="risco" :series="riscoContratosBarChartRisco[0]" :labels="nomesContratosBarChart"></bar-chart-risco>
+                    <bar-chart-risco id="risco" :series="riscoContratosBarChartRisco[0]"
+                                     :labels="nomesContratosBarChart"></bar-chart-risco>
                 </div>
             </div>
         </div>
@@ -134,6 +143,7 @@
 
 <script setup lang="ts">
 import {defineProps, inject, onMounted, ref} from "vue";
+
 const events = inject('events');
 const props = defineProps({
     dataPizza: {type: [Array, String], required: true},
@@ -170,6 +180,7 @@ const selecionado = ref(6);
 const selecionarCard = (index) => {
     events.emit('selecionaCard', index)
     events.emit('filter', index)
+    events.emit('selecionadoTransmit', index)
 };
 
 onMounted(() => {
@@ -182,7 +193,7 @@ onMounted(() => {
         let valoresContratosArray = JSON.parse(props.valoresContratos);
         valoresContratosArray = JSON.parse(valoresContratosArray);
         let nomesContratosArray = JSON.parse(props.nomesContratos);
-        let riscoContratosArray =  JSON.parse(props.riscoContratosBarChartRisco);
+        let riscoContratosArray = JSON.parse(props.riscoContratosBarChartRisco);
         riscoContratosArray = JSON.parse(riscoContratosArray);
         if (data === 0) {
             coresFiltradas.value = ['#00b478ff'];
@@ -244,7 +255,7 @@ onMounted(() => {
                     countArray++;
                 }
             }
-        }else if (data === 6) {
+        } else if (data === 6) {
             coresFiltradas.value = ['#6d6bfc'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] != 'NV') {
@@ -254,8 +265,7 @@ onMounted(() => {
                     countArray++;
                 }
             }
-        }
-        else if (data === 7) {
+        } else if (data === 7) {
             coresFiltradas.value = ['#FFD200'];
             for (let i = 0; i < status.length; i++) {
                 if (atencao.value[i] == '1') {
@@ -265,8 +275,7 @@ onMounted(() => {
                     countArray++;
                 }
             }
-        }
-        else if (data === 8) {
+        } else if (data === 8) {
             coresFiltradas.value = ['#6C757D'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'NV') {
@@ -276,19 +285,57 @@ onMounted(() => {
                     countArray++;
                 }
             }
-        }
-        else {
+        } else {
             coresFiltradas.value = ['#6d6bfc'];
         }
         const somaValores = valoresFiltradosContratosData.value.reduce((acc, currentValue) => acc + currentValue, 0);
-        porcentagensRadial.value = parseInt((somaValores/valorTotal.value)*100)
+        porcentagensRadial.value = parseInt((somaValores / valorTotal.value) * 100)
         valorTotalRadialBarFormatado.value = formatarRealBrasileiro(somaValores);
         nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
-        events.emit('updateBarraChartsValor',[nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [data]])
-        events.emit('updateBarraChartsRisco',[nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data]])
-        events.emit('updateRadialCharts',[porcentagensRadial.value, coresFiltradas.value]);
+        console.log(nomesContratosBarChart.value, 'Terminou')
+        console.log(valoresContratoBarChartValor.value, 'Terminou')
+        console.log(riscoContratosBarChartRisco.value, 'Terminou')
+        events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [data]])
+        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data]])
+        events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
+    });
+    events.on("filterValor", (data) => {
+        console.log(data, 'filter valor')
+        let countArray = 0;
+        let status = JSON.parse(props.statusContratos);
+        valoresFiltradosContratosData.value = JSON.parse(valoresContratoBarChartValor.value);
+        nomeFiltradosContratosData.value = JSON.parse(nomesContratosBarChart.value);
+        riscoFiltradosContratosData.value = JSON.parse(riscoContratosBarChartRisco.value);
+        console.log(valoresFiltradosContratosData.value, 'valoresFiltradosContratosData.value')
+        console.log(nomeFiltradosContratosData.value, 'nomeFiltradosContratosData.value')
+        console.log(riscoFiltradosContratosData.value, 'riscoFiltradosContratosData.value')
+        let valoresContratosArray = JSON.parse(valoresContratoBarChartValor.value);
+        let nomesContratosArray = JSON.parse(nomesContratosBarChart.value);
+        let riscoContratosArray = JSON.parse(riscoContratosBarChartRisco.value);
+        console.log(valoresContratosArray, 'valoresContratosArray')
+        console.log(nomesContratosArray, 'nomesContratosArray')
+        console.log(riscoContratosArray, 'riscoContratosArray')
+        for (let i = 0; i < valoresContratosArray.length; i++) {
+            console.log(parseFloat(valoresContratosArray[i]) > parseFloat(data[0]), 'data 0')
+            console.log(parseFloat(valoresContratosArray[i]) < parseFloat(data[1]), 'data 1')
+            if (parseFloat(valoresContratosArray[i]) > parseFloat(data[0]) && parseFloat(valoresContratosArray[i]) < parseFloat(data[1])) {
+                console.log(data[0], 'data 0')
+                console.log(data[1], 'data 1')
+                console.log(valoresContratosArray[countArray],'MAIOR E MENOS Q MEU MCU')
+                countArray++;
+            }
+        }
+        const somaValores = valoresFiltradosContratosData.value.reduce((acc, currentValue) => acc + currentValue, 0);
+        porcentagensRadial.value = parseInt((somaValores / valorTotal.value) * 100)
+        valorTotalRadialBarFormatado.value = formatarRealBrasileiro(somaValores);
+        nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
+        valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
+        riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
+        events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [data]])
+        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data]])
+        events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
     });
     try {
 
@@ -309,14 +356,14 @@ onMounted(() => {
         riscoContratosBarChartRisco.value = [];
         let countArray = 0;
         for (let i = 0; i < atencao.value.length; i++) {
-            if(atencao.value[i] == '1'){
+            if (atencao.value[i] == '1') {
                 numeroContratosEmAtencao.value++;
             }
-            if(statusContratosData.value[i] == 'NV'){
+            if (statusContratosData.value[i] == 'NV') {
                 totalContratosEncerrado.value++
-            }else{
+            } else {
                 riscoContratosBarChartRisco.value[countArray] = riscoFiltradosContratosData.value[i]
-                valoresContratoBarChartValor.value[countArray] =  valoresFiltradosContratosData.value[i]
+                valoresContratoBarChartValor.value[countArray] = valoresFiltradosContratosData.value[i]
                 nomesContratosBarChart.value[countArray] = nomeFiltradosContratosData.value[i]
                 numeroContratosAtivo.value++;
                 countArray++;
@@ -338,7 +385,7 @@ onMounted(() => {
     }
 });
 const formatarRealBrasileiro = (valor) => {
-    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    return valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
 };
 </script>
 
