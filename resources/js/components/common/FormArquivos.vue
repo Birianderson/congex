@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div v-else>
-                    <div class="text-center">Adicione Arquivos em Configuração</div>
+                    <h4 class="text-center mt-4 mb-3">Adicione os tipos de arquivos em Configuração->Arquivos</h4>
                 </div>
                 <input type="hidden" name="chave" :value="props.data.id">
                 <div class="row border-top pt-4">

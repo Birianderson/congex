@@ -61,8 +61,8 @@ export default {
                     const formatArquivo = (situacao) => {
                         const arquivoMap = {
                             'contrato': 'Contrato',
-                            'termos': 'Termo',
-                            'nota-fiscal': 'Nota Fiscal',
+                            'termo': 'Termo',
+                            'nota_fiscal': 'Nota Fiscal',
                             'empenho': 'Empenho',
                         };
                         return arquivoMap[situacao] || situacao;

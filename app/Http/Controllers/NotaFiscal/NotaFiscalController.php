@@ -4,6 +4,7 @@ namespace App\Http\Controllers\NotaFiscal;
 
 use App\Databases\Contracts\NotaFiscalContract;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArquivoRequest;
 use App\Http\Requests\NotaFiscalRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -70,5 +71,27 @@ class NotaFiscalController extends Controller
         return response()->json('success', 201);
     }
 
+    public function get_arquivos(int $id): JsonResponse
+    {
+        $arquivos = $this->repository->getArquivos($id);
+        return response()->json($arquivos);
+    }
+
+    public function create_arquivos(ArquivoRequest $request): JsonResponse
+    {
+        $params = $request->except('_token');
+        $this->repository->createArquivos($params);
+        return response()->json('success', 201);
+    }
+
+    public function download($file) {
+        $filePath = storage_path('app/public/' . base64_decode($file));
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'Arquivo não encontrado.'], 404);
+        }
+
+        return response()->download($filePath);
+    }
 }
 

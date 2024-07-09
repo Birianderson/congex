@@ -13,7 +13,7 @@
                         <option v-if="!info.tabela" value="" disabled selected>Escolha uma opção</option>
                         <option value="contrato">Contrato</option>
                         <option value="termo">Termos</option>
-                        <option value="nota-fiscal">Nota Fiscal</option>
+                        <option value="nota_fiscal">Nota Fiscal</option>
                         <option value="empenho">Empenho</option>
                     </select>
                 </div>

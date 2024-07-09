@@ -82,7 +82,8 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                    <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-numero="${row.nfe}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
+                     <button class="btn btn-sm btn-primary termo-btn" data-action="arquivos" data-id="${row.id}" data-numero="${row.nfe}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Arquivos"><i class="fa fa-paperclip"></i></button>
                     <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Deletar"><i class="fa fa-trash" ></i></button>
                     `;
                 }
@@ -139,9 +140,10 @@ export default {
             let editelements = document.querySelectorAll("[data-action=edit]");
             editelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
+                    let numero = evt.currentTarget.getAttribute('data-numero');
                     let id = evt.currentTarget.getAttribute('data-id');
                     events.emit('popup', {
-                        title: 'Editar Nota Fiscal',
+                        title: `Editar Nota Fiscal - ${numero}`,
                         component: 'form-nota-fiscal',
                         size: 'xl',
                         data: {
@@ -166,6 +168,27 @@ export default {
                     });
                 })
             })
+
+            let arquivoselements = document.querySelectorAll("[data-action=arquivos]");
+            arquivoselements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    let numero = evt.currentTarget.getAttribute('data-numero');
+                    events.emit('popup', {
+                        title: `Arquivos da Nota Fiscal - ${numero}`,
+                        component: 'form-arquivos',
+                        size: 'xl',
+                        data: {
+                            id: `${id}`,
+                            numero: `${numero}`,
+                            acao: '/nota-fiscal/create_arquivos/',
+                            loadData: '/nota-fiscal/get_arquivos/',
+                            fetchTipoArquivo: '/tipo-arquivo/getByTabela/nota_fiscal',
+                            getDownloadUrl: '/nota-fiscal/download/'
+                        },
+                    });
+                });
+            });
         };
 
         const options = {

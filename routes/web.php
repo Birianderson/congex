@@ -74,6 +74,9 @@ Route::group(['prefix' => 'nota-fiscal', 'namespace' => 'App\Http\Controllers\Pe
     Route::get('/controle_financeiro/{id_empenho}', [NotaFiscalController::class, 'index'])->name('nota_fiscal.controle_financeiro');
     Route::get('/list/{id}', [NotaFiscalController::class, 'list'])->name('nota_fiscal.list');
     Route::post('/',[NotaFiscalController::class,'create'])->name('nota_fiscal.create');
+    Route::get('/get_arquivos/{id}',[NotaFiscalController::class, 'get_arquivos'])->name('nota_fiscal.get_arquivos');
+    Route::post('/create_arquivos/{id}',[NotaFiscalController::class, 'create_arquivos'])->name('nota_fiscal.create_arquivos');
+    Route::get('/download/{file}',[NotaFiscalController::class, 'download'])->name('nota_fiscal.download');
     Route::get('/historico/{id}',[NotaFiscalController::class, 'historico'])->name('nota_fiscal.historico');
     Route::get('/{id}',[NotaFiscalController::class, 'edit'])->name('nota_fiscal.edit');
     Route::post('/{id}',[NotaFiscalController::class, 'update'])->name('nota_fiscal.update');
