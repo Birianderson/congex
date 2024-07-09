@@ -188,6 +188,7 @@ export default {
         };
 
         const calculateDaysToExpire = (data_fim) => {
+            console.log(data_fim)
             let today = moment().startOf('day');
             let end = moment(data_fim).startOf('day');
             let diffDays = end.diff(today, 'days');

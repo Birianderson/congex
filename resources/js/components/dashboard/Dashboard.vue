@@ -5,8 +5,8 @@
                 <termo-card
                     numero="0"
                     titulo="Contrato Inicial"
-                    :numero_contratos="dataPizzaData.series[0]"
-                    :porcentagem_contratos="porcentagensData[0]"
+                    :numero_contratos="numeroTermoCard.series[0]"
+                    :porcentagem_contratos="porcentagensTermoCard[0]"
                     :selected="selecionado === 0"
                     @click="selecionarCard(0)"
                 ></termo-card>
@@ -15,8 +15,8 @@
                 <termo-card
                     numero="1"
                     titulo="1° Termo Aditivo"
-                    :numero_contratos="dataPizzaData.series[1]"
-                    :porcentagem_contratos="porcentagensData[1]"
+                    :numero_contratos="numeroTermoCard.series[1]"
+                    :porcentagem_contratos="porcentagensTermoCard[1]"
                     :selected="selecionado === 1"
                     @click="selecionarCard(1)"
                 ></termo-card>
@@ -25,8 +25,8 @@
                 <termo-card
                     numero="2"
                     titulo="2° Termo Aditivo"
-                    :numero_contratos="dataPizzaData.series[2]"
-                    :porcentagem_contratos="porcentagensData[2]"
+                    :numero_contratos="numeroTermoCard.series[2]"
+                    :porcentagem_contratos="porcentagensTermoCard[2]"
                     :selected="selecionado === 2"
                     @click="selecionarCard(2)"
                 ></termo-card>
@@ -35,8 +35,8 @@
                 <termo-card
                     numero="3"
                     titulo="3° Termo Aditivo"
-                    :numero_contratos="dataPizzaData.series[3]"
-                    :porcentagem_contratos="porcentagensData[3]"
+                    :numero_contratos="numeroTermoCard.series[3]"
+                    :porcentagem_contratos="porcentagensTermoCard[3]"
                     :selected="selecionado === 3"
                     @click="selecionarCard(3)"
                 ></termo-card>
@@ -45,8 +45,8 @@
                 <termo-card
                     numero="4"
                     titulo="4° Termo Aditivo"
-                    :numero_contratos="dataPizzaData.series[4]"
-                    :porcentagem_contratos="porcentagensData[4]"
+                    :numero_contratos="numeroTermoCard.series[4]"
+                    :porcentagem_contratos="porcentagensTermoCard[4]"
                     :selected="selecionado === 4"
                     @click="selecionarCard(4)"
                 ></termo-card>
@@ -55,8 +55,8 @@
                 <termo-card
                     numero="5"
                     titulo="5° Termo Aditivo"
-                    :numero_contratos="dataPizzaData.series[5]"
-                    :porcentagem_contratos="porcentagensData[5]"
+                    :numero_contratos="numeroTermoCard.series[5]"
+                    :porcentagem_contratos="porcentagensTermoCard[5]"
                     :selected="selecionado === 5"
                     @click="selecionarCard(5)"
                 ></termo-card>
@@ -72,7 +72,7 @@
                                 <h5 class="mt-3">Gerência de Risco</h5>
                                 <span class="fw-semibold d-block mb-1">Valor dos contratos selecionados</span>
                                 <h3 id="ValorSelecionado" class=" card-title text-nowrap mb-2">{{
-                                        valortotalformatadoData
+                                        valorTotalRadialBarFormatado
                                     }} </h3>
                             </div>
                         </div>
@@ -88,8 +88,8 @@
                         <contrato-card
                             numero="6"
                             titulo="Contratos Ativos"
-                            :numero_contratos="totalContratosData"
-                            :porcentagem_contratos="porcentagensData[5]"
+                            :numero_contratos="numeroContratosAtivo"
+                            :porcentagem_contratos="porcentagensTermoCard[5]"
                             :selected="selecionado === 6"
                             @click="selecionarCard(6)"
                         ></contrato-card>
@@ -98,8 +98,8 @@
                         <contrato-card
                             numero="7"
                             titulo="Contratos em Atenção"
-                            :numero_contratos="dataPizzaData.series[5]"
-                            :porcentagem_contratos="porcentagensData[5]"
+                            :numero_contratos="numeroContratosEmAtencao"
+                            :porcentagem_contratos="porcentagensTermoCard[5]"
                             :selected="selecionado === 7"
                             @click="selecionarCard(7)"
                         ></contrato-card>
@@ -108,8 +108,8 @@
                         <contrato-card
                             numero="8"
                             titulo="Contratos Encerrados"
-                            :numero_contratos="dataPizzaData.series[5]"
-                            :porcentagem_contratos="porcentagensData[5]"
+                            :numero_contratos="totalContratosEncerrado"
+                            :porcentagem_contratos="porcentagensTermoCard[5]"
                             :selected="selecionado === 8"
                             @click="selecionarCard(8)"
                         ></contrato-card>
@@ -119,13 +119,13 @@
             <div class="col-6">
                 <div class="card  shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">VALOR MONETÁRIO DOS CONTRATOS</h5>
-                    <bar-chart-valor id="valor" :series="valoresContratosData[0]" :labels="nomesContratosData"></bar-chart-valor>
+                    <bar-chart-valor id="valor" :series="valoresContratoBarChartValor[0]" :labels="nomesContratosBarChart"></bar-chart-valor>
                 </div>
             </div>
             <div class="col-6">
                 <div class="card shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">RISCO POR CONTRATO</h5>
-                    <bar-chart-risco id="risco" :series="riscoContratos[0]" :labels="nomesContratosData"></bar-chart-risco>
+                    <bar-chart-risco id="risco" :series="riscoContratosBarChartRisco[0]" :labels="nomesContratosBarChart"></bar-chart-risco>
                 </div>
             </div>
         </div>
@@ -143,22 +143,26 @@ const props = defineProps({
     totalContratos: {type: [Array, String], required: true},
     porcentagens: {type: [Array, String], required: true},
     valorTotal: {type: [Array, String], required: true},
-    riscoContratos: {type: [Array, String], required: true},
+    riscoContratosBarChartRisco: {type: [Array, String], required: true},
+    atencao: {type: [Array, String], required: true},
 });
 
-const dataPizzaData = ref([]);
-const valoresContratosData = ref([]);
+const numeroTermoCard = ref([]);
+const valoresContratoBarChartValor = ref([]);
 const valoresFiltradosContratosData = ref([]);
+const atencao = ref([]);
+const numeroContratosEmAtencao = ref(0);
 const valorTotal = ref([]);
-const riscoContratos = ref([]);
-const riscoFiltradosContratos = ref([]);
+const riscoContratosBarChartRisco = ref([]);
+const riscoFiltradosContratosData = ref([]);
 const coresFiltradas = ref([]);
-const nomesContratosData = ref([]);
+const nomesContratosBarChart = ref([]);
 const nomeFiltradosContratosData = ref([]);
 const statusContratosData = ref([]);
-const totalContratosData = ref('');
-const valortotalformatadoData = ref([]);
-const porcentagensData = ref([]);
+const numeroContratosAtivo = ref(0);
+const totalContratosEncerrado = ref(0);
+const valorTotalRadialBarFormatado = ref([]);
+const porcentagensTermoCard = ref([]);
 const porcentagensRadial = ref([]);
 const ready = ref(false);
 const selecionado = ref(6);
@@ -174,19 +178,17 @@ onMounted(() => {
         let status = JSON.parse(props.statusContratos);
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
-        riscoFiltradosContratos.value = [];
+        riscoFiltradosContratosData.value = [];
         let valoresContratosArray = JSON.parse(props.valoresContratos);
         valoresContratosArray = JSON.parse(valoresContratosArray);
         let nomesContratosArray = JSON.parse(props.nomesContratos);
-        let riscoFiltradoArray =  JSON.parse(props.riscoContratos);
-        riscoFiltradoArray = JSON.parse(riscoFiltradoArray);
-        console.log(riscoFiltradoArray, 'riscoFiltradoArray')
-        console.log(riscoFiltradoArray, 'riscoFiltradoArray')
+        let riscoContratosArray =  JSON.parse(props.riscoContratosBarChartRisco);
+        riscoContratosArray = JSON.parse(riscoContratosArray);
         if (data === 0) {
             coresFiltradas.value = ['#00b478ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
-                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -196,7 +198,7 @@ onMounted(() => {
             coresFiltradas.value = ['#00a0a0ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
-                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -206,7 +208,7 @@ onMounted(() => {
             coresFiltradas.value = ['#008cc8ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
-                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -216,7 +218,7 @@ onMounted(() => {
             coresFiltradas.value = ['#f0b450ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
-                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -226,7 +228,7 @@ onMounted(() => {
             coresFiltradas.value = ['#fa9628ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
-                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
@@ -236,51 +238,100 @@ onMounted(() => {
             coresFiltradas.value = ['#fa641eff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
-                    riscoFiltradosContratos.value[countArray] = riscoFiltradoArray[i];
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     countArray++;
                 }
             }
         }else if (data === 6) {
-            riscoFiltradosContratos.value = JSON.parse(props.riscoContratos);
-            riscoFiltradosContratos.value = JSON.parse(riscoFiltradosContratos.value);
-
-            valoresFiltradosContratosData.value = JSON.parse(props.valoresContratos);
-            valoresFiltradosContratosData.value = JSON.parse(valoresFiltradosContratosData.value);
-
-            coresFiltradas.value = ['#7367F0'];
-            nomeFiltradosContratosData.value = JSON.parse(props.nomesContratos);
+            coresFiltradas.value = ['#6d6bfc'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] != 'NV') {
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        }
+        else if (data === 7) {
+            coresFiltradas.value = ['#FFD200'];
+            for (let i = 0; i < status.length; i++) {
+                if (atencao.value[i] == '1') {
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
+        }
+        else if (data === 8) {
+            coresFiltradas.value = ['#6C757D'];
+            for (let i = 0; i < status.length; i++) {
+                if (status[i] == 'NV') {
+                    riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                    nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                    countArray++;
+                }
+            }
         }
         else {
             coresFiltradas.value = ['#6d6bfc'];
         }
         const somaValores = valoresFiltradosContratosData.value.reduce((acc, currentValue) => acc + currentValue, 0);
         porcentagensRadial.value = parseInt((somaValores/valorTotal.value)*100)
-        valortotalformatadoData.value = formatarRealBrasileiro(somaValores);
-        nomesContratosData.value = JSON.stringify(nomeFiltradosContratosData.value);
-        valoresContratosData.value = JSON.stringify(valoresFiltradosContratosData.value);
-        riscoContratos.value = JSON.stringify(riscoFiltradosContratos.value);
-        events.emit('updateBarraChartsValor',[nomesContratosData.value, valoresContratosData.value, coresFiltradas.value, [data]])
-        events.emit('updateBarraChartsRisco',[nomesContratosData.value, riscoContratos.value, coresFiltradas.value, [data]])
+        valorTotalRadialBarFormatado.value = formatarRealBrasileiro(somaValores);
+        nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
+        valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
+        riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
+        events.emit('updateBarraChartsValor',[nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [data]])
+        events.emit('updateBarraChartsRisco',[nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data]])
         events.emit('updateRadialCharts',[porcentagensRadial.value, coresFiltradas.value]);
     });
     try {
+
+        atencao.value = Array.isArray(props.atencao) ? props.atencao : JSON.parse(props.atencao);
         valorTotal.value = Array.isArray(props.valorTotal) ? props.valorTotal : JSON.parse(props.valorTotal);
-        riscoContratos.value = Array.isArray(props.riscoContratos) ? props.riscoContratos : JSON.parse(props.riscoContratos);
-        dataPizzaData.value = Array.isArray(props.dataPizza) ? props.dataPizza : JSON.parse(props.dataPizza);
-        valoresContratosData.value = Array.isArray(props.valoresContratos) ? props.valoresContratos : JSON.parse(props.valoresContratos);
-        nomesContratosData.value = props.nomesContratos;
+        riscoContratosBarChartRisco.value = Array.isArray(props.riscoContratosBarChartRisco) ? props.riscoContratosBarChartRisco : JSON.parse(props.riscoContratosBarChartRisco);
+        numeroTermoCard.value = Array.isArray(props.dataPizza) ? props.dataPizza : JSON.parse(props.dataPizza);
+        valoresContratoBarChartValor.value = Array.isArray(props.valoresContratos) ? props.valoresContratos : JSON.parse(props.valoresContratos);
+        nomesContratosBarChart.value = props.nomesContratos;
         statusContratosData.value = Array.isArray(props.statusContratos) ? props.statusContratos : JSON.parse(props.statusContratos);
-        totalContratosData.value = props.totalContratos;
-        valortotalformatadoData.value = formatarRealBrasileiro(valorTotal.value);
-        porcentagensData.value = Array.isArray(props.porcentagens) ? props.porcentagens : JSON.parse(props.porcentagens);
-        valoresContratosData.value = [{
-            data: valoresContratosData.value
+        valorTotalRadialBarFormatado.value = formatarRealBrasileiro(valorTotal.value);
+        porcentagensTermoCard.value = Array.isArray(props.porcentagens) ? props.porcentagens : JSON.parse(props.porcentagens);
+        valoresFiltradosContratosData.value = JSON.parse(valoresContratoBarChartValor.value);
+        nomeFiltradosContratosData.value = JSON.parse(nomesContratosBarChart.value);
+        riscoFiltradosContratosData.value = JSON.parse(riscoContratosBarChartRisco.value);
+        valoresContratoBarChartValor.value = [];
+        nomesContratosBarChart.value = [];
+        riscoContratosBarChartRisco.value = [];
+        let countArray = 0;
+        for (let i = 0; i < atencao.value.length; i++) {
+            if(atencao.value[i] == '1'){
+                numeroContratosEmAtencao.value++;
+            }
+            if(statusContratosData.value[i] == 'NV'){
+                totalContratosEncerrado.value++
+            }else{
+                riscoContratosBarChartRisco.value[countArray] = riscoFiltradosContratosData.value[i]
+                valoresContratoBarChartValor.value[countArray] =  valoresFiltradosContratosData.value[i]
+                nomesContratosBarChart.value[countArray] = nomeFiltradosContratosData.value[i]
+                numeroContratosAtivo.value++;
+                countArray++;
+            }
+        }
+        nomesContratosBarChart.value = JSON.stringify(nomesContratosBarChart.value);
+        valoresContratoBarChartValor.value = JSON.stringify(valoresContratoBarChartValor.value);
+        riscoContratosBarChartRisco.value = JSON.stringify(riscoContratosBarChartRisco.value)
+        valoresContratoBarChartValor.value = [{
+            data: valoresContratoBarChartValor.value
         }];
-        riscoContratos.value = [{
-            data: riscoContratos.value
+        riscoContratosBarChartRisco.value = [{
+            data: riscoContratosBarChartRisco.value
         }]
+
         ready.value = true;
     } catch (error) {
         console.error("Error parsing props: ", error);

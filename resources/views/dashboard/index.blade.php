@@ -7,6 +7,7 @@
         total-contratos="{{ json_encode($totalContratos) }}"
         porcentagens="{{ json_encode($porcentagens) }}"
         valor-total="{{json_encode($valortotal)}}"
-        risco-contratos="{{json_encode($riscoContratos)}}"
+        risco-contratos-bar-chart-risco="{{json_encode($riscoContratos)}}"
+        atencao="{{json_encode($atencao)}}"
     ></dashboard>
 </x-app-layout>

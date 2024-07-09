@@ -75,7 +75,6 @@ onMounted(() => {
         };
     });
     try {
-        console.log(props)
         valores.value = JSON.parse(props.series.data);
         formattedValores.value = [{
             data: valores.value,

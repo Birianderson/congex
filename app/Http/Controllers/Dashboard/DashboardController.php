@@ -1,18 +1,23 @@
 <?php
 
 namespace App\Http\Controllers\Dashboard;
+
 use App\Databases\Models\Contrato;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function __construct(){}
+    public function __construct()
+    {
+    }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
-        $contratos = Contrato::query()->with(['empresa', 'responsabilidades','termos', 'risco'])
+        $contratos = Contrato::query()->with(['empresa', 'responsabilidades', 'termos', 'risco'])
             ->selectRaw("
                 CONTRATO.*,
                 CASE
@@ -40,7 +45,7 @@ class DashboardController extends Controller
                     WHEN contrato.situacao = 'V4' THEN (SELECT ta.VALOR FROM TERMO ta WHERE ta.CONTRATO_ID = contrato.id AND ta.numero = '4')
                 END AS valor_real
             ")->orderBy('valor_real')->get();
-         $valoresContratos = [];
+        $valoresContratos = [];
         $nomesContratos = [];
         $riscoContratos = [];
         $statusCount = [
@@ -66,16 +71,22 @@ class DashboardController extends Controller
         $dividendo = 0;
 
         foreach ($contratos as $contrato) {
+            if ($contrato->situacao != 'NV') {
+                $valortotal = $valortotal + $contrato->valor_real;
+            }
             $dividendo++;
             $status = $contrato->situacao;
-            $valortotal = $valortotal + $contrato->valor_real;
             $valoresContratos[] = $contrato->valor_real;
             $riscoContratos[] = $contrato->risco->pontuacao ?? 0;
-            $nomesContratos[] = $contrato->empresa->nome . ' - N° '. $contrato->numero;
+            $nomesContratos[] = $contrato->empresa->nome . ' - N° ' . $contrato->numero;
             $statusContratos[] = $contrato->situacao;
             if (array_key_exists($status, $statusCount)) {
                 $statusCount[$status]++;
             }
+            $dataFimReal = Carbon::parse($contrato->data_fim_real);
+            $hoje = Carbon::now();
+            $quatroMesesFuturo = $hoje->copy()->addMonths(4);
+            $atencao[] = ($dataFimReal->greaterThan($hoje) && $dataFimReal->lessThan($quatroMesesFuturo)) ? 1 : 0;
         }
 
         // Calcula a soma dos valores no array
@@ -110,7 +121,7 @@ class DashboardController extends Controller
         $nomesContratos = json_encode($nomesContratos);
         $riscoContratos = json_encode($riscoContratos);
 
-        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos'));
+        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos', 'atencao'));
     }
 }
 
