@@ -74,8 +74,8 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Termos"><i class="fa fa-search"></i></button>
-                        <a href="/termo/controle_financeiro/${parseInt(row.id)}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Termos do Contrato"><i class="fa fa-book"></i></a>
+                        <button class="btn btn-sm btn-primary termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Termos"><i class="fa fa-search"></i></button>
+                        <a href="/termo/controle_financeiro/${parseInt(row.id)}" class="btn btn-sm btn-primary termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Termos do Contrato"><i class="fa fa-book"></i></a>
                     `;
                 }
             }

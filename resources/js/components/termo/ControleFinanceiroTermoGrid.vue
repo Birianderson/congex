@@ -102,8 +102,9 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary termo-btn" data-action="empenho" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Empenhos"><i class="fa fa-search"></i></button>
-                        <a href="/empenho/controle_financeiro/${parseInt(row.contrato_id)}/termo/${row.id}" class="btn btn-sm btn-info termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Empenhos"><i class="fa fa-folder"></i></a>
+                        <button class="btn btn-sm btn-primary termo-btn" data-action="empenho" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Empenhos"><i class="fa fa-search"></i></button>
+                        <button class="btn btn-sm btn-primary termo-btn" data-action="arquivos" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Arquivos"><i class="fa fa-paperclip"></i></button>
+                        <a href="/empenho/controle_financeiro/${parseInt(row.contrato_id)}/termo/${row.id}" class="btn btn-sm btn-primary termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Empenhos"><i class="fa fa-folder"></i></a>
                     `;
                 }
             }
@@ -114,8 +115,6 @@ export default {
             empenhoelements.forEach(item => {
                 item.addEventListener('click', (evt) => {
                     let id = evt.currentTarget.getAttribute('data-id');
-                    let nome = evt.currentTarget.getAttribute('data-nome');
-                    let numero = evt.currentTarget.getAttribute('data-numero');
                     events.emit('popup', {
                         title: `Visualizar Empenhos`,
                         component: 'controle-financeiro-empenho-grid',
@@ -124,7 +123,31 @@ export default {
                     });
                 });
             });
+
+            let arquivoselements = document.querySelectorAll("[data-action=arquivos]");
+            arquivoselements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    let nome = evt.currentTarget.getAttribute('data-nome');
+                    let numero = evt.currentTarget.getAttribute('data-numero');
+                    events.emit('popup', {
+                        title: `Arquivos do ${formatSituacao(numero)}`,
+                        component: 'form-arquivos',
+                        size: 'xl',
+                        data: {
+                            id: `${id}`,
+                            nome: `${nome}`,
+                            numero: `${numero}`,
+                            acao: '/termo/create_arquivos/',
+                            loadData: '/termo/get_arquivos/',
+                            fetchTipoArquivo: '/tipo-arquivo/getByTabela/termo',
+                            getDownloadUrl: '/termo/download/'
+                        },
+                    });
+                });
+            });
         };
+
 
         const columnsReadOnly = ref([
             {

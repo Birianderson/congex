@@ -35,6 +35,9 @@ Route::group(['prefix' => 'termo', 'namespace' => 'App\Http\Controllers\TermoCon
     Route::get('/list', [TermoController::class, 'list'])->name('termo.list');
     Route::get('/getByContratoId/{id}', [TermoController::class, 'getbycontratoid'])->name('termo.list');
     Route::post('/',[TermoController::class,'create'])->name('termo.create');
+    Route::get('/get_arquivos/{id}',[TermoController::class, 'get_arquivos'])->name('termo.get_arquivos');
+    Route::post('/create_arquivos/{id}',[TermoController::class, 'create_arquivos'])->name('termo.create_arquivos');
+    Route::get('/download/{file}',[TermoController::class, 'download'])->name('termo.download');
     Route::get('/historico/{id}',[TermoController::class, 'historico'])->name('termo.historico');
     Route::get('/{id}',[TermoController::class, 'edit'])->name('termo.edit');
     Route::post('/{id}',[TermoController::class, 'update'])->name('termo.update');
