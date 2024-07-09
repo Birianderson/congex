@@ -294,9 +294,6 @@ onMounted(() => {
         nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
-        console.log(nomesContratosBarChart.value, 'Terminou')
-        console.log(valoresContratoBarChartValor.value, 'Terminou')
-        console.log(riscoContratosBarChartRisco.value, 'Terminou')
         events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [data]])
         events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data]])
         events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
@@ -304,26 +301,19 @@ onMounted(() => {
     events.on("filterValor", (data) => {
         console.log(data, 'filter valor')
         let countArray = 0;
-        let status = JSON.parse(props.statusContratos);
-        valoresFiltradosContratosData.value = JSON.parse(valoresContratoBarChartValor.value);
-        nomeFiltradosContratosData.value = JSON.parse(nomesContratosBarChart.value);
-        riscoFiltradosContratosData.value = JSON.parse(riscoContratosBarChartRisco.value);
-        console.log(valoresFiltradosContratosData.value, 'valoresFiltradosContratosData.value')
-        console.log(nomeFiltradosContratosData.value, 'nomeFiltradosContratosData.value')
-        console.log(riscoFiltradosContratosData.value, 'riscoFiltradosContratosData.value')
+        valoresFiltradosContratosData.value = [];
+        nomeFiltradosContratosData.value = [];
+        riscoFiltradosContratosData.value = [];
         let valoresContratosArray = JSON.parse(valoresContratoBarChartValor.value);
         let nomesContratosArray = JSON.parse(nomesContratosBarChart.value);
         let riscoContratosArray = JSON.parse(riscoContratosBarChartRisco.value);
-        console.log(valoresContratosArray, 'valoresContratosArray')
-        console.log(nomesContratosArray, 'nomesContratosArray')
-        console.log(riscoContratosArray, 'riscoContratosArray')
         for (let i = 0; i < valoresContratosArray.length; i++) {
             console.log(parseFloat(valoresContratosArray[i]) > parseFloat(data[0]), 'data 0')
             console.log(parseFloat(valoresContratosArray[i]) < parseFloat(data[1]), 'data 1')
             if (parseFloat(valoresContratosArray[i]) > parseFloat(data[0]) && parseFloat(valoresContratosArray[i]) < parseFloat(data[1])) {
-                console.log(data[0], 'data 0')
-                console.log(data[1], 'data 1')
-                console.log(valoresContratosArray[countArray],'MAIOR E MENOS Q MEU MCU')
+                valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
+                nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
+                riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
                 countArray++;
             }
         }

@@ -4,11 +4,11 @@
             <div class="row">
                 <div class="col-5">
                     <label for="valor-menor">Maior que:</label>
-                    <input-money id="valor-menor" name="valorMenor" :value="valorMenor"></input-money>
+                    <input type="text" id="valor-menor" v-model="valorMenor" @input="formatValorMenor" class="form-control" placeholder="R$ 0">
                 </div>
                 <div class="col-5">
                     <label for="valor-maior">Menor que:</label>
-                    <input-money id="valor-maior" name="valorMaior" :value="valorMaior"></input-money>
+                    <input type="text" id="valor-maior" v-model="valorMaior" @input="formatValorMaior" class="form-control" placeholder="R$ 10.000">
                 </div>
                 <div class="col-2 align-content-end text-end">
                     <button type="button" class="btn btn-primary me-1" @click="filtrar">
@@ -21,26 +21,45 @@
 </template>
 
 <script>
-import {ref, computed, onMounted, inject} from 'vue';
+import { ref, onMounted, inject } from 'vue';
 
 export default {
-    setup(props, {emit}) {
-        const valorMenor = ref('0');  // Inicialize com '0' para permitir a filtragem inicial
-        const valorMaior = ref('10000000000000');  // Inicialize com um valor alto para incluir todos os itens
+    setup(props, { emit }) {
+        const valorMenor = ref('0');
+        const valorMaior = ref('0');
         const selecionado = ref(0);
         const events = inject('events');
 
-        const filtrar = () => {
-            events.emit('selecionaCard', selecionado.value)
-            events.emit('filter', selecionado.value)
-            events.emit('filterValor', [valorMenor.value, valorMaior.value]);
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 0
+            }).format(value.replace(/\D/g, ''));
         };
 
-        onMounted(async () => {
-            selecionado.value = props.selecionado
+        const formatValorMenor = () => {
+            valorMenor.value = formatCurrency(valorMenor.value);
+        };
+
+        const formatValorMaior = () => {
+            valorMaior.value = formatCurrency(valorMaior.value);
+        };
+
+        const filtrar = () => {
+            const valorMenorNumerico = valorMenor.value.replace(/\D/g, '');
+            const valorMaiorNumerico = valorMaior.value.replace(/\D/g, '');
+            events.emit('selecionaCard', selecionado.value);
+            events.emit('filter', selecionado.value);
+            events.emit('filterValor', [valorMenorNumerico, valorMaiorNumerico]);
+        };
+
+        onMounted(() => {
+            selecionado.value = props.selecionado;
+            formatValorMenor();
+            formatValorMaior();
             events.on("selecionadoTransmit", (data) => {
                 selecionado.value = parseInt(data);
-                console.log(selecionado.value, 'valor filter')
             });
         });
 
@@ -48,6 +67,8 @@ export default {
             valorMenor,
             valorMaior,
             filtrar,
+            formatValorMenor,
+            formatValorMaior
         };
     },
     props: {

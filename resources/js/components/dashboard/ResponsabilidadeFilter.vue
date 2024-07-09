@@ -71,6 +71,8 @@ export default {
         });
 
         onMounted(async () => {
+            fetchPessoas();
+            fetchCargos();
             selecionado.value = props.selecionado
             events.on("selecionadoTransmit", (data) => {
                 selecionado.value = parseInt(data);

@@ -18,13 +18,14 @@ let cores = ref([]);
 let numero = ref([]);
 let formattedValores = ref([]);
 let labels = ref([]);
-const chartOptions = ref({})
+const chartOptions = ref({});
 const ready = ref(false);
 const events = inject('events');
+
 onMounted(() => {
     events.on("updateBarraChartsValor", (data) => {
-        numero.value = data[3]
-        cores.value = [data[2]]
+        numero.value = data[3];
+        cores.value = [data[2]];
         valores.value = JSON.parse(data[1]);
         formattedValores.value = [{
             data: valores.value,
@@ -73,6 +74,7 @@ onMounted(() => {
             },
         };
     });
+
     try {
         valores.value = JSON.parse(props.series.data);
         formattedValores.value = [{
@@ -87,9 +89,16 @@ onMounted(() => {
 });
 
 const formatarvalor = (valor) => {
-    return 'R$ ' + valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') + ',00';
+    // Converte o valor para um número de ponto flutuante
+    let valorFloat = parseFloat(valor).toFixed(2);
+    // Formata o valor como moeda brasileira
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(valorFloat);
 };
-
 
 chartOptions.value = {
     chart: {
@@ -120,7 +129,7 @@ chartOptions.value = {
     },
     tooltip: {
         enabledOnSeries: false,
-        custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        custom: function ({series, seriesIndex, dataPointIndex, w}) {
             return `
           <div class="card">
             <div class="bg-primary p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
@@ -133,7 +142,6 @@ chartOptions.value = {
         },
     },
 };
-
 </script>
 
 <style scoped>

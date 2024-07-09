@@ -69,7 +69,6 @@ class DashboardController extends Controller
         ];
         $valortotal = 0;
         $dividendo = 0;
-
         foreach ($contratos as $contrato) {
             if ($contrato->situacao != 'NV') {
                 $valortotal = $valortotal + $contrato->valor_real;
