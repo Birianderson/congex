@@ -57,6 +57,9 @@ Route::group(['prefix' => 'empenho', 'namespace' => 'App\Http\Controllers\Empenh
     Route::get('/controle_financeiro/{id_contrato}/termo/{id_termo}', [EmpenhoController::class, 'index'])->name('empenho.controle_financeiro');
     Route::get('/list/{termo_id}', [EmpenhoController::class, 'list'])->name('empenho.list');
     Route::get('/termo/{id}', [EmpenhoController::class, 'termo'])->name('empenho.termo');
+    Route::get('/get_arquivos/{id}',[EmpenhoController::class, 'get_arquivos'])->name('empenho.get_arquivos');
+    Route::post('/create_arquivos/{id}',[EmpenhoController::class, 'create_arquivos'])->name('empenho.create_arquivos');
+    Route::get('/download/{file}',[EmpenhoController::class, 'download'])->name('empenho.download');
     Route::post('/',[EmpenhoController::class,'create'])->name('empenho.create');
     Route::get('/get-by-query', [EmpenhoController::class, 'getByQuery'])->name('empenho.get-by-query');
     Route::get('/{id}',[EmpenhoController::class, 'edit'])->name('empenho.edit');

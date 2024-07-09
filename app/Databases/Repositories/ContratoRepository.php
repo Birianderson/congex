@@ -91,21 +91,34 @@ class ContratoRepository implements ContratoContract
     {
         $autoCommit && DB::beginTransaction();
         try {
-            Arquivo::where('tabela', 'contrato')->where('chave', $params['contrato_id'])->delete();
-            $index = 0;
-            foreach ($params['arquivos'] as $index => $arquivos) {
-                if ($arquivos instanceof UploadedFile) {
-                    $path = $arquivos->store('/public');
+            // Percorrer os arquivos enviados
+            foreach ($params['tipo_arquivo_id'] as $index => $tipoArquivoId) {
+                // Verificar se há um arquivo existente
+                $arquivoExistente = Arquivo::where('tabela', 'empenho')
+                    ->where('chave', $params['chave'])
+                    ->where('tipo_arquivo_id', $tipoArquivoId)
+                    ->first();
+
+                // Se um novo arquivo foi enviado, faça o upload e substitua o existente
+                if (isset($params['arquivos'][$index]) && $params['arquivos'][$index] instanceof UploadedFile) {
+                    if ($arquivoExistente) {
+                        $arquivoExistente->delete();
+                    }
+                    $path = $params['arquivos'][$index]->store('/public');
                     $arquivo = new Arquivo([
                         'nome' => $params['nome'][$index] ?? '',
                         'descricao' => $params['descricao'][$index] ?? '',
-                        'tabela' => 'contrato',
+                        'tabela' => 'empenho',
                         'path' => $path,
-                        'chave' => $params['contrato_id'],
-                        'tipo_arquivo_id' => $params['tipo_arquivo_id'][$index],
+                        'chave' => $params['chave'],
+                        'tipo_arquivo_id' => $tipoArquivoId,
                     ]);
                     $arquivo->save();
-                    $index++;
+                } elseif ($arquivoExistente) {
+                    // Se nenhum novo arquivo foi enviado, apenas atualize o nome e a descrição
+                    $arquivoExistente->nome = $params['nome'][$index] ?? $arquivoExistente->nome;
+                    $arquivoExistente->descricao = $params['descricao'][$index] ?? $arquivoExistente->descricao;
+                    $arquivoExistente->save();
                 }
             }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Empenho;
 use App\Databases\Contracts\EmpenhoContract;
 use App\Databases\Models\Contrato;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ArquivoRequest;
 use App\Http\Requests\EmpenhoRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,26 +34,6 @@ class EmpenhoController extends Controller
         return view('empenho.controle_financeiro', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_termo'));
     }
 
-    public function notaFiscal($id_contrato, $id_termo, $id_empenho): View
-    {
-        $contrato = $this->repository->getContratoById($id_contrato);
-        $termo = $this->repository->getTermoById($id_termo);
-        $nome = $contrato->empresa->nome;
-        $numero_contrato = $contrato->numero;
-        $empenho = $this->repository->getById($id_empenho);
-        $numero_empenho = $empenho->empenho;
-        $termoMap = [
-            '0' => 'Contrato Inicial',
-            '1' => '1° Termo Aditivo',
-            '2' => '2° Termo Aditivo',
-            '3' => '3° Termo Aditivo',
-            '4' => '4° Termo Aditivo',
-            '5' => '5° Termo Aditivo'
-        ];
-        $termoStr = $termoMap[$termo->numero] ?? 'Termo Desconhecido';
-
-        return view('nota_fiscal.index', compact('id_contrato', 'nome', 'numero_contrato', 'termoStr','id_empenho','numero_empenho'));
-    }
 
     public function list(Request $request, $termo_id): JsonResponse
     {
@@ -64,15 +45,6 @@ class EmpenhoController extends Controller
         ]);
     }
 
-    public function listNotas(Request $request, $empenho_id): JsonResponse
-    {
-        $dados = $this->repository->getAllNotas($request->all(), $empenho_id);
-        return response()->json([
-            'data' => $dados->all(),
-            'recordsFiltered' => $dados->total(),
-            'recordsTotal' => $dados->total()
-        ]);
-    }
 
 
     public function create(EmpenhoRequest $request){
@@ -92,6 +64,18 @@ class EmpenhoController extends Controller
         return response()->json($this->repository->getByQuery($request->query('q'))->toArray());
     }
 
+    public function get_arquivos(int $id): JsonResponse
+    {
+        $arquivos = $this->repository->getArquivos($id);
+        return response()->json($arquivos);
+    }
+
+    public function create_arquivos(ArquivoRequest $request): JsonResponse
+    {
+        $params = $request->except('_token');
+        $this->repository->createArquivos($params);
+        return response()->json('success', 201);
+    }
 
     /**
      *
@@ -105,6 +89,16 @@ class EmpenhoController extends Controller
     public function delete(int $id){
         $this->repository->destroy($id);
         return response()->json('success', 201);
+    }
+
+    public function download($file) {
+        $filePath = storage_path('app/public/' . base64_decode($file));
+
+        if (!file_exists($filePath)) {
+            return response()->json(['message' => 'Arquivo não encontrado.'], 404);
+        }
+
+        return response()->download($filePath);
     }
 
 }

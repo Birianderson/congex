@@ -99,8 +99,8 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary historico-btn" data-action="historico"  data-id="${data.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
-                        <button class="btn btn-sm btn-info termo-btn" data-action="arquivos" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Arquivos"><i class="fa fa-paperclip"></i></button>
+                        <button class="btn btn-sm btn-primary historico-btn" data-action="historico"  data-id="${data.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Histórico"><i class="fa fa-history"></i></button>
+                        <button class="btn btn-sm btn-primary termo-btn" data-action="arquivos" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Arquivos"><i class="fa fa-paperclip"></i></button>
                         <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
                         <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover"><i class="fa fa-trash"></i></button>
                     `;

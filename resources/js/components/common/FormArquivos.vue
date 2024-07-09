@@ -34,7 +34,7 @@
                 <div v-else>
                     <div class="text-center">Adicione Arquivos em Configuração</div>
                 </div>
-                <input type="hidden" name="contrato_id" :value="props.data.id">
+                <input type="hidden" name="chave" :value="props.data.id">
                 <div class="row border-top pt-4">
                     <div class="col-12 d-flex justify-content-center align-items-center" v-if="!tipoArquivo.length">
                         <button type="button" class="btn btn-danger text-white" @click="close" aria-label="Close">
@@ -79,7 +79,7 @@ export default {
             } catch (err) {
                 emit('notification', {
                     type: 'error',
-                    message: 'Não foi possível recuperar os dados do Contrato.'
+                    message: 'Não foi possível recuperar os dados do Arquivo.'
                 });
             }
             ready.value = true;
@@ -125,7 +125,7 @@ export default {
                     events.emit('reload', true);
                     events.emit('notification', {
                         type: 'success',
-                        message: 'Contrato salvo com Sucesso!'
+                        message: 'Arquivo salvo com Sucesso!'
                     });
                     emit('reload');
                     emit('close', true);
