@@ -4,11 +4,11 @@
             <div class="row">
                 <div class="col-5">
                     <label for="valor-menor">Maior que:</label>
-                    <input-money id="valor-menor" name="valorMenor" :modelValue="valorMenor"></input-money>
+                    <input-money id="valor-menor" name="valorMenor" :value="valorMenor"></input-money>
                 </div>
                 <div class="col-5">
                     <label for="valor-maior">Menor que:</label>
-                    <input-money id="valor-maior" name="valorMaior" :modelValue="valorMaior"></input-money>
+                    <input-money id="valor-maior" name="valorMaior" :value="valorMaior"></input-money>
                 </div>
                 <div class="col-2 align-content-end text-end">
                     <button type="button" class="btn btn-primary me-1" @click="filtrar">
