@@ -24,9 +24,12 @@ class PessoaRepository implements PessoaContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
+            // Remover caracteres especiais do CPF
+            $cpf = preg_replace('/\D/', '', $params['cpf']);
+
             $Pessoa = new Pessoa([
                 'nome' => $params['nome'],
-                'cpf' => $params['cpf'],
+                'cpf' => $cpf,
             ]);
             $Pessoa->save();
 
@@ -37,6 +40,7 @@ class PessoaRepository implements PessoaContract {
             throw new Exception($ex);
         }
     }
+
 
 
     /**
@@ -51,10 +55,12 @@ class PessoaRepository implements PessoaContract {
     {
         $autoCommit && DB::beginTransaction();
         try {
+
+            $cpf = preg_replace('/\D/', '', $params['cpf']);
             $Pessoa = $this->getById($id);
             $Pessoa->update([
                 'nome' => $params['nome'],
-                'cpf' => $params['cpf'],
+                'cpf' => $cpf,
             ]);
             $autoCommit && DB::commit();
             return true;

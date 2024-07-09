@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-lg-12 col-md-6 mb-3 ">
                     <label for="cpf" class="form-label" :class="{ 'required': !readOnly }">CPF</label>
-                    <input v-model="info.cpf" type="number" name="cpf" id="cpf" class="form-control" :disabled="readOnly"/>
+                    <input v-model="info.cpf" type="text" name="cpf" id="cpf" class="form-control" v-mask="'###.###.###-##'" :disabled="readOnly"/>
                 </div>
             </div>
             <div class="row border-top pt-4">
@@ -24,25 +24,23 @@
                     <button type="button" class="btn btn-secondary text-white" @click="close" aria-label="Close">
                         <i class="fa fa-close"></i> Cancelar
                     </button>
-
                 </div>
             </div>
         </form>
     </div>
 </template>
 
-
 <script>
-import {inject, onMounted, ref} from 'vue';
+import { inject, onMounted, ref } from 'vue';
 
 export default {
-
-    setup(props, {emit}) {
+    setup(props, { emit }) {
         const events = inject('events');
         const info = ref({});
         const ready = ref(false);
         const acao = ref('/pessoa/');
         const readOnly = ref(false);
+
         const loadData = async () => {
             try {
                 const response = await axios.get(`${acao.value}${props.data.id}`);
@@ -55,10 +53,11 @@ export default {
                 });
             }
             ready.value = true;
-        }
+        };
+
         const close = () => {
             events.emit('popup-close', true);
-        }
+        };
 
         onMounted(async () => {
             console.log(props);
@@ -79,20 +78,19 @@ export default {
             } else {
                 ready.value = true;
             }
-
-        })
+        });
 
         return {
-            info, ready, acao, readOnly, close
-        }
-
+            info,
+            ready,
+            acao,
+            readOnly,
+            close
+        };
     },
 
     props: {
-        data: {default: null, required: true}
+        data: { default: null, required: true }
     }
-
-}
-
-
+};
 </script>

@@ -32,7 +32,14 @@ export default {
 
         const columns = ref([
             {data: 'nome', title: 'Nome', width: '40%',},
-            {data: 'cpf', title: 'CPF', width: '40%',},
+            {
+                data: 'cpf',
+                title: 'CPF',
+                width: '40%',
+                render: (data) => {
+                    return formatCPF(data);
+                }
+            },
             {
                 data: null,
                 title: 'Ações',
@@ -103,6 +110,10 @@ export default {
                 })
             })
         }
+
+        const formatCPF = (cpf) => {
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        };
 
         return {
             ready, options, columns, ajax, mydatatable, aplicarEventos
