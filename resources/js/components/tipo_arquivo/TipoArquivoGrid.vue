@@ -33,7 +33,7 @@ export default {
         const mydatatable = ref();
 
         const columns = ref([
-            { data: 'nome', title: 'Nome', width: '40%' },
+            { data: 'nome', title: 'Nome', width: '40%',orderable: false, },
             {
                 data: null,
                 title: 'Ações',
