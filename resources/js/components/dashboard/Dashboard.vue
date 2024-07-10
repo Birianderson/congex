@@ -132,7 +132,7 @@
             </div>
             <div class="col-6">
                 <div class="card shadow-termo align-items-stretch">
-                    <h5 class="card-header m-0 me-2 pb-3">RISCO POR CONTRATO</h5>
+                    <h5 class="card-header m-0 me-2 pb-3">GESTÂO DE RISCO DE CONTRATOS</h5>
                     <bar-chart-risco id="risco" :series="riscoContratosBarChartRisco[0]"
                                      :labels="nomesContratosBarChart"></bar-chart-risco>
                 </div>
@@ -426,6 +426,7 @@ const filterValor = () => {
 
 const filterResponsabilidade = () => {
     events.on("filterResponsabilidade", (data) => {
+        console.log('resposna')
         let countArray = 0;
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
