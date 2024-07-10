@@ -51,7 +51,15 @@ onMounted(() => {
                     horizontal: true,
                 }
             },
-            colors: cores.value[0][0],
+            colors: [function({ value, seriesIndex, w }) {
+                if (value >= 20) {
+                    return '#ff0000'
+                } else if (value >= 7){
+                    return '#ffff00'
+                } else{
+                    return '#90EE90'
+                }
+            }],
             xaxis: {
                 min: 0,
                 max: 25,
@@ -126,7 +134,15 @@ chartOptions.value = {
             horizontal: true,
         }
     },
-    colors: ['#7367F0'],
+    colors: [function({ value, seriesIndex, w }) {
+        if (value >= 20) {
+            return '#ff0000'
+        } else if (value >= 7){
+            return '#ffff00'
+        } else{
+            return '#90EE90'
+        }
+    }],
     xaxis: {
         min: 0,
         max: 25,
