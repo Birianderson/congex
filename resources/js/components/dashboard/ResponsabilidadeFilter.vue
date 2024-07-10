@@ -13,7 +13,8 @@
                 </div>
                 <div class="col-5">
                     <label for="cargo">Cargo</label>
-                    <select class="form-select" id="cargo" v-model="selectedCargo" :disabled="isButtonDisabled" name="cargo">
+                    <select class="form-select" id="cargo" v-model="selectedCargo" :disabled="isButtonDisabled"
+                            name="cargo">
                         <option disabled selected value="">Todos</option>
                         <option v-for="cargo in cargos" :key="cargo.id" :value="cargo.id">
                             {{ cargo.nome }}
@@ -33,17 +34,16 @@
 
 <script>
 import axios from 'axios';
-import { ref, onMounted, inject, computed } from 'vue';
+import {ref, onMounted, inject, computed} from 'vue';
 
 export default {
     props: {
-        selecionado: { default: null, required: true }
+        selecionado: {default: null, required: true}
     },
-    setup(props, { emit }) {
+    setup(props, {emit}) {
         const selectedPessoa = ref('');
         const selectedCargo = ref('');
         const pessoas = ref([]);
-        const isButtonDisabled = ref(true);
         const cargos = ref([]);
         const events = inject('events');
         const selecionado = ref(props.selecionado);
@@ -75,23 +75,24 @@ export default {
         };
 
         const filtrar = () => {
-            if (selectedCargo.value !== '') {
+            if (selectedCargo.value === '') {
+                events.emit('selecionaCard', selecionado.value);
+                events.emit('filter', selecionado.value);
+                events.emit('filterPessoa', [selectedPessoa.value, selecionado.value]);
+            }
+            if(selectedCargo.value !== '') {
                 events.emit('selecionaCard', selecionado.value);
                 events.emit('filter', selecionado.value);
                 events.emit('filterResponsabilidade', [selectedPessoa.value, selectedCargo.value, selecionado.value]);
             }
-            if (selectedPessoa.value !== '') {
-                events.emit('selecionaCard', selecionado.value);
-                events.emit('filter', selecionado.value);
-                events.emit('filterPessoa', [selectedPessoa.value, selecionado.value]);
-            } else {
-                events.emit('clearValor');
+            if (selectedPessoa.value === '' && selectedCargo.value === ''){
                 events.emit('selecionaCard', selecionado.value);
                 events.emit('filter', selecionado.value);
             }
         };
 
         const buttonClass = computed(() => `background-color-chart-${selecionado.value}`);
+        const isButtonDisabled = computed(() => selectedPessoa.value === '');
 
         onMounted(async () => {
             await fetchPessoas();
