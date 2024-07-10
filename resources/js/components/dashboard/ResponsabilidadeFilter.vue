@@ -69,22 +69,22 @@ export default {
             }
         };
 
-        const isButtonDisabled = computed(() => {
-            return !selectedPessoa.value;
-        });
-
         const filtrar = () => {
             if (selectedCargo.value !== '') {
                 events.emit('selecionaCard', selecionado.value);
                 events.emit('filter', selecionado.value);
-                events.emit('filterResponsabilidade', [filterResponsabilidade, valorMaiorNumerico]);
-            } else {
+                events.emit('filterResponsabilidade', [selectedPessoa.value, selectedCargo.value, selecionado.value]);
+            }
+            if (selectedPessoa.value !== '') {
                 events.emit('selecionaCard', selecionado.value);
                 events.emit('filter', selecionado.value);
                 events.emit('filterPessoa', [selectedPessoa.value, selecionado.value]);
+            } else {
+                events.emit('clearValor');
+                events.emit('selecionaCard', selecionado.value);
+                events.emit('filter', selecionado.value);
             }
         };
-
 
         onMounted(async () => {
             fetchPessoas();
@@ -93,6 +93,10 @@ export default {
             events.on("selecionadoTransmit", (data) => {
                 selecionado.value = parseInt(data);
             });
+            events.on("clearResponsabilidade", (data) => {
+                selectedPessoa.value = ''
+                selectedCargo.value = ''
+            });
         });
 
         return {
@@ -100,7 +104,6 @@ export default {
             selectedCargo,
             pessoas,
             cargos,
-            isButtonDisabled,
             filtrar,
         };
     },

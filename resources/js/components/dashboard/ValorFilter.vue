@@ -4,11 +4,13 @@
             <div class="row">
                 <div class="col-5">
                     <label for="valor-menor">Maior que:</label>
-                    <input type="text" id="valor-menor" v-model="valorMenor" @input="formatValorMenor" class="form-control" placeholder="R$ 0">
+                    <input type="text" id="valor-menor" v-model="valorMenor" @input="formatValorMenor"
+                           class="form-control" placeholder="R$ 0">
                 </div>
                 <div class="col-5">
                     <label for="valor-maior">Menor que:</label>
-                    <input type="text" id="valor-maior" v-model="valorMaior" @input="formatValorMaior" class="form-control" placeholder="R$ 10.000">
+                    <input type="text" id="valor-maior" v-model="valorMaior" @input="formatValorMaior"
+                           class="form-control" placeholder="R$ 10.000">
                 </div>
                 <div class="col-2 align-content-end text-end">
                     <button type="button" class="btn btn-primary me-1" @click="filtrar">
@@ -21,12 +23,12 @@
 </template>
 
 <script>
-import { ref, onMounted, inject } from 'vue';
+import {ref, onMounted, inject} from 'vue';
 
 export default {
-    setup(props, { emit }) {
-        const valorMenor = ref('0');
-        const valorMaior = ref('0');
+    setup(props, {emit}) {
+        const valorMenor = ref('');
+        const valorMaior = ref('');
         const selecionado = ref(0);
         const events = inject('events');
 
@@ -47,19 +49,27 @@ export default {
         };
 
         const filtrar = () => {
-            const valorMenorNumerico = valorMenor.value.replace(/\D/g, '');
-            const valorMaiorNumerico = valorMaior.value.replace(/\D/g, '');
-            events.emit('selecionaCard', selecionado.value);
-            events.emit('filter', selecionado.value);
-            events.emit('filterValor', [valorMenorNumerico, valorMaiorNumerico, selecionado]);
+            if (valorMenor.value === '' && valorMaior.value === '') {
+                events.emit('selecionaCard', selecionado.value);
+                events.emit('clearResponsabilidade');
+                events.emit('filter', selecionado.value);
+            } else {
+                const valorMenorNumerico = valorMenor.value.replace(/\D/g, '');
+                const valorMaiorNumerico = valorMaior.value.replace(/\D/g, '');
+                events.emit('selecionaCard', selecionado.value);
+                events.emit('filter', selecionado.value);
+                events.emit('filterValor', [valorMenorNumerico, valorMaiorNumerico, selecionado]);
+            }
         };
 
         onMounted(() => {
             selecionado.value = props.selecionado;
-            formatValorMenor();
-            formatValorMaior();
             events.on("selecionadoTransmit", (data) => {
                 selecionado.value = parseInt(data);
+            });
+            events.on("clearValor", () => {
+                valorMenor.value = '';
+                valorMaior.value = ''
             });
         });
 

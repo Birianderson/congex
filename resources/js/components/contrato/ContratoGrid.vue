@@ -205,7 +205,7 @@ export default {
             } else if (diffMonths >= 1 && diffMonths < 4) {
                 color = '#FFD700';
                 text = `${diffMonths} meses e ${diffDays % 30} dias`;
-            } else if (diffDays < 30) {
+            } else if (diffDays <= 30) {
                 color = 'red';
                 text = `${diffDays} dias`;
             }
