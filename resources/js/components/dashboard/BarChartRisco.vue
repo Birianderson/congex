@@ -61,6 +61,9 @@ onMounted(() => {
                 }
             }],
             xaxis: {
+                title: {
+                    text: 'Pontos de Risco'
+                },
                 min: 0,
                 max: 25,
                 categories: nomes,
@@ -144,6 +147,9 @@ chartOptions.value = {
         }
     }],
     xaxis: {
+        title: {
+            text: 'Pontos de Risco'
+        },
         min: 0,
         max: 25,
         categories: nomes,

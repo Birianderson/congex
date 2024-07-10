@@ -46,11 +46,14 @@ onMounted(() => {
             },
             colors: cores.value[0][0],
             xaxis: {
+                title: {
+                    text: 'Valor Monetário'
+                },
                 categories: nomes,
                 showDuplicates: true,
                 labels: {
                     formatter: function (value) {
-                        return value; // Mantém os labels originais
+                        return formatarvalor(value.toString());
                     },
                     hideOverlappingLabels: false,
                 }
@@ -114,11 +117,14 @@ chartOptions.value = {
     },
     colors: ['#7367F0'],
     xaxis: {
+        title: {
+            text: 'Valor Monetário'
+        },
         categories: nomes,
         showDuplicates: true,
         labels: {
             formatter: function (value) {
-                return value; // Mantém os labels originais
+                return formatarvalor(value.toString());
             },
             hideOverlappingLabels: false,
         }
