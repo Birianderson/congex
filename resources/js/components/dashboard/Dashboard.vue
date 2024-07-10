@@ -133,8 +133,12 @@
             <div class="col-6">
                 <div class="card shadow-termo align-items-stretch">
                     <h5 class="card-header m-0 me-2 pb-3">GESTÂO DE RISCO DE CONTRATOS</h5>
-                    <bar-chart-risco id="risco" :series="riscoContratosBarChartRisco[0]"
-                                     :labels="nomesContratosBarChart"></bar-chart-risco>
+                    <bar-chart-risco id="risco"
+                                     :series="riscoContratosBarChartRisco[0]"
+                                     :labels="nomesContratosBarChart"
+                                     :situacao="riscoSituacaoContratosBarChartRisco"
+                                     :possibilidades="riscoPossibilidadesContratosBarChartRisco"
+                    ></bar-chart-risco>
                 </div>
             </div>
         </div>
@@ -154,6 +158,8 @@ const props = defineProps({
     porcentagens: {type: [Array, String], required: true},
     valorTotal: {type: [Array, String], required: true},
     riscoContratosBarChartRisco: {type: [Array, String], required: true},
+    riscoPossibilidadesContratosBarChartRisco: {type: [Array, String], required: true},
+    riscoSituacaoContratosBarChartRisco: {type: [Array, String], required: true},
     atencao: {type: [Array, String], required: true},
     pessoas_id: {type: [Array, String], required: true},
     cargos_id: {type: [Array, String], required: true},
@@ -169,8 +175,15 @@ const cargosIdArray = ref([]);
 const atencao = ref([]);
 const numeroContratosEmAtencao = ref(0);
 const valorTotal = ref([]);
+
 const riscoContratosBarChartRisco = ref([]);
+const riscoPossibilidadesContratosBarChartRisco = ref([])
+const riscoSituacaoContratosBarChartRisco = ref([])
+
 const riscoFiltradosContratosData = ref([]);
+const riscoPossibilidadesFiltradosContratosData = ref([]);
+const riscoSituacaoFiltradosContratosData = ref([]);
+
 const coresFiltradas = ref([]);
 const numeroSelected = ref([]);
 const nomesContratosBarChart = ref([]);
@@ -196,9 +209,14 @@ onMounted(() => {
     filterResponsabilidade();
     filterPessoa();
     try {
+        console.log(props)
         atencao.value = Array.isArray(props.atencao) ? props.atencao : JSON.parse(props.atencao);
         valorTotal.value = Array.isArray(props.valorTotal) ? props.valorTotal : JSON.parse(props.valorTotal);
+
         riscoContratosBarChartRisco.value = Array.isArray(props.riscoContratosBarChartRisco) ? props.riscoContratosBarChartRisco : JSON.parse(props.riscoContratosBarChartRisco);
+        riscoPossibilidadesContratosBarChartRisco.value = Array.isArray(props.riscoPossibilidadesContratosBarChartRisco) ? props.riscoPossibilidadesContratosBarChartRisco : JSON.parse(props.riscoPossibilidadesContratosBarChartRisco);
+        riscoSituacaoContratosBarChartRisco.value = Array.isArray(props.riscoSituacaoContratosBarChartRisco) ? props.riscoSituacaoContratosBarChartRisco : JSON.parse(props.riscoSituacaoContratosBarChartRisco);
+
         numeroTermoCard.value = Array.isArray(props.dataPizza) ? props.dataPizza : JSON.parse(props.dataPizza);
         valoresContratoBarChartValor.value = Array.isArray(props.valoresContratos) ? props.valoresContratos : JSON.parse(props.valoresContratos);
         nomesContratosBarChart.value = props.nomesContratos;
@@ -207,20 +225,31 @@ onMounted(() => {
         porcentagensTermoCard.value = Array.isArray(props.porcentagens) ? props.porcentagens : JSON.parse(props.porcentagens);
         valoresFiltradosContratosData.value = JSON.parse(valoresContratoBarChartValor.value);
         nomeFiltradosContratosData.value = JSON.parse(nomesContratosBarChart.value);
+
+
         riscoFiltradosContratosData.value = JSON.parse(riscoContratosBarChartRisco.value);
+        riscoPossibilidadesFiltradosContratosData.value = JSON.parse(riscoPossibilidadesContratosBarChartRisco.value);
+        riscoSituacaoFiltradosContratosData.value = JSON.parse(riscoSituacaoContratosBarChartRisco.value);
+
         valoresContratoBarChartValor.value = [];
         nomesContratosBarChart.value = [];
+
         pessoasIdAtivo.value = JSON.parse(props.pessoas_id);
         pessoasIdAtivo.value.forEach((pessoaIdStr, index) => {
             pessoasIdArray.value[index] = pessoaIdStr.split(',').map(id => id.trim());
         })
         pessoasIdAtivo.value = []
+
         cargosIdAtivo.value = JSON.parse(props.cargos_id);
         cargosIdAtivo.value.forEach((cargoIdStr, index) => {
             cargosIdArray.value[index] = cargoIdStr.split(',').map(id => id.trim());
         })
         cargosIdAtivo.value = []
+
         riscoContratosBarChartRisco.value = [];
+        riscoPossibilidadesContratosBarChartRisco.value = [];
+        riscoSituacaoContratosBarChartRisco.value = [];
+
         let countArray = 0;
         for (let i = 0; i < atencao.value.length; i++) {
             if (atencao.value[i] == '1') {
@@ -232,10 +261,11 @@ onMounted(() => {
                 cargosIdAtivo.value[countArray] = cargosIdArray.value[i]
                 pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i]
                 riscoContratosBarChartRisco.value[countArray] = riscoFiltradosContratosData.value[i]
+                riscoPossibilidadesContratosBarChartRisco.value[countArray] = riscoPossibilidadesFiltradosContratosData.value[i]
+                riscoSituacaoContratosBarChartRisco.value[countArray] = riscoSituacaoFiltradosContratosData.value[i]
                 valoresContratoBarChartValor.value[countArray] = valoresFiltradosContratosData.value[i]
                 nomesContratosBarChart.value[countArray] = nomeFiltradosContratosData.value[i]
                 numeroContratosAtivo.value++;
-
                 countArray++;
             }
         }
@@ -243,11 +273,13 @@ onMounted(() => {
         nomesContratosBarChart.value = JSON.stringify(nomesContratosBarChart.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresContratoBarChartValor.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoContratosBarChartRisco.value)
+        riscoPossibilidadesContratosBarChartRisco.value = JSON.stringify(riscoPossibilidadesContratosBarChartRisco.value)
+        riscoSituacaoContratosBarChartRisco.value = JSON.stringify(riscoSituacaoContratosBarChartRisco.value)
         valoresContratoBarChartValor.value = [{
             data: valoresContratoBarChartValor.value
         }];
         riscoContratosBarChartRisco.value = [{
-            data: riscoContratosBarChartRisco.value
+            data: riscoContratosBarChartRisco.value,
         }]
 
         ready.value = true;
@@ -264,6 +296,8 @@ const filter = () => {
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
         riscoFiltradosContratosData.value = [];
+        riscoPossibilidadesFiltradosContratosData.value = []
+        riscoSituacaoFiltradosContratosData.value = []
         pessoasIdAtivo.value = JSON.parse(props.pessoas_id);
         pessoasIdAtivo.value.forEach((pessoaIdStr, index) => {
             pessoasIdArray.value[index] = pessoaIdStr.split(',').map(id => id.trim());
@@ -279,11 +313,17 @@ const filter = () => {
         let nomesContratosArray = JSON.parse(props.nomesContratos);
         let riscoContratosArray = JSON.parse(props.riscoContratosBarChartRisco);
         riscoContratosArray = JSON.parse(riscoContratosArray);
+        let riscoPossibilidadesContratosArray = JSON.parse(props.riscoPossibilidadesContratosBarChartRisco);
+        riscoPossibilidadesContratosArray = JSON.parse(riscoPossibilidadesContratosArray);
+        let riscoSituacaoContratosArray = JSON.parse(props.riscoSituacaoContratosBarChartRisco);
+        riscoSituacaoContratosArray = JSON.parse(riscoSituacaoContratosArray);
         if (data === 0) {
             coresFiltradas.value = ['#00b478ff'];
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -296,6 +336,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -308,6 +350,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -320,6 +364,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -332,6 +378,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -344,6 +392,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'V' + data) {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -356,6 +406,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] != 'NV') {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -368,6 +420,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (atencao.value[i] == '1') {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -380,6 +434,8 @@ const filter = () => {
             for (let i = 0; i < status.length; i++) {
                 if (status[i] == 'NV') {
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
@@ -396,8 +452,10 @@ const filter = () => {
         nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
+        riscoSituacaoContratosBarChartRisco.value = JSON.stringify(riscoSituacaoFiltradosContratosData.value);
+        riscoPossibilidadesContratosBarChartRisco.value = JSON.stringify(riscoPossibilidadesFiltradosContratosData.value);
         events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [data]])
-        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data]])
+        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data],riscoSituacaoContratosBarChartRisco.value, riscoPossibilidadesContratosBarChartRisco.value])
         events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
     });
 }
@@ -407,6 +465,8 @@ const filterValor = () => {
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
         riscoFiltradosContratosData.value = [];
+        riscoPossibilidadesFiltradosContratosData.value = [];
+        riscoSituacaoFiltradosContratosData.value = [];
         numeroSelected.value = data[2].value;
         pessoasIdAtivo.value = JSON.parse(props.pessoas_id);
         pessoasIdAtivo.value.forEach((pessoaIdStr, index) => {
@@ -416,11 +476,15 @@ const filterValor = () => {
         let valoresContratosArray = JSON.parse(valoresContratoBarChartValor.value);
         let nomesContratosArray = JSON.parse(nomesContratosBarChart.value);
         let riscoContratosArray = JSON.parse(riscoContratosBarChartRisco.value);
+        let riscoSituacaoContratosArray = JSON.parse(riscoSituacaoContratosBarChartRisco.value);
+        let riscoPossibilidadesContratosArray = JSON.parse(riscoPossibilidadesContratosBarChartRisco.value);
         for (let i = 0; i < valoresContratosArray.length; i++) {
             if (parseFloat(valoresContratosArray[i]) > parseFloat(data[0]) && parseFloat(valoresContratosArray[i]) < parseFloat(data[1])) {
                 valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                 nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                 riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                 pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
                 countArray++;
             }
@@ -431,9 +495,11 @@ const filterValor = () => {
         nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
+        riscoPossibilidadesContratosBarChartRisco.value = JSON.stringify(riscoPossibilidadesFiltradosContratosData.value);
+        riscoSituacaoContratosBarChartRisco.value = JSON.stringify(riscoSituacaoFiltradosContratosData.value);
         events.emit('clearResponsabilidade');
         events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [numeroSelected.value]])
-        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [numeroSelected.value]])
+        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data],riscoSituacaoContratosBarChartRisco.value, riscoPossibilidadesContratosBarChartRisco.value])
         events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
     });
 }
@@ -445,9 +511,13 @@ const filterResponsabilidade = () => {
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
         riscoFiltradosContratosData.value = [];
+        riscoSituacaoFiltradosContratosData.value = [];
+        riscoPossibilidadesFiltradosContratosData.value = [];
         let valoresContratosArray = JSON.parse(valoresContratoBarChartValor.value);
         let nomesContratosArray = JSON.parse(nomesContratosBarChart.value);
         let riscoContratosArray = JSON.parse(riscoContratosBarChartRisco.value);
+        let riscoSituacaoContratosArray = JSON.parse(riscoSituacaoContratosBarChartRisco.value);
+        let riscoPossibilidadesContratosArray = JSON.parse(riscoPossibilidadesContratosBarChartRisco.value);
         numeroSelected.value = data[2];
         for (let i = 0; i < pessoasIdAtivo.value.length; i++) {
             for (let j = 0; j < pessoasIdAtivo.value[i].length; j++) {
@@ -455,6 +525,8 @@ const filterResponsabilidade = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     countArray++;
                 }
             }
@@ -465,9 +537,11 @@ const filterResponsabilidade = () => {
         nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
+        riscoPossibilidadesContratosBarChartRisco.value = JSON.stringify(riscoPossibilidadesFiltradosContratosData.value);
+        riscoSituacaoContratosBarChartRisco.value = JSON.stringify(riscoSituacaoFiltradosContratosData.value);
         events.emit('clearValor');
         events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [numeroSelected.value]])
-        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [numeroSelected.value]])
+        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data],riscoSituacaoContratosBarChartRisco.value, riscoPossibilidadesContratosBarChartRisco.value])
         events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
     });
 }
@@ -479,9 +553,13 @@ const filterPessoa = () => {
         valoresFiltradosContratosData.value = [];
         nomeFiltradosContratosData.value = [];
         riscoFiltradosContratosData.value = [];
+        riscoSituacaoFiltradosContratosData.value = [];
+        riscoPossibilidadesFiltradosContratosData.value = [];
         let valoresContratosArray = JSON.parse(valoresContratoBarChartValor.value);
         let nomesContratosArray = JSON.parse(nomesContratosBarChart.value);
         let riscoContratosArray = JSON.parse(riscoContratosBarChartRisco.value);
+        let riscoSituacaoContratosArray = JSON.parse(riscoSituacaoContratosBarChartRisco.value);
+        let riscoPossibilidadesContratosArray = JSON.parse(riscoPossibilidadesContratosBarChartRisco.value);
         numeroSelected.value = data[1];
         for (let i = 0; i < pessoasIdAtivo.value.length; i++) {
             for (let j = 0; j < pessoasIdAtivo.value[i].length; j++) {
@@ -489,6 +567,8 @@ const filterPessoa = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     riscoFiltradosContratosData.value[countArray] = riscoContratosArray[i];
+                    riscoPossibilidadesFiltradosContratosData.value[countArray] = riscoPossibilidadesContratosArray[i];
+                    riscoSituacaoFiltradosContratosData.value[countArray] = riscoSituacaoContratosArray[i];
                     countArray++;
                 }
             }
@@ -499,9 +579,11 @@ const filterPessoa = () => {
         nomesContratosBarChart.value = JSON.stringify(nomeFiltradosContratosData.value);
         valoresContratoBarChartValor.value = JSON.stringify(valoresFiltradosContratosData.value);
         riscoContratosBarChartRisco.value = JSON.stringify(riscoFiltradosContratosData.value);
+        riscoPossibilidadesContratosBarChartRisco.value = JSON.stringify(riscoPossibilidadesFiltradosContratosData.value);
+        riscoSituacaoContratosBarChartRisco.value = JSON.stringify(riscoSituacaoFiltradosContratosData.value);
         events.emit('clearValor');
         events.emit('updateBarraChartsValor', [nomesContratosBarChart.value, valoresContratoBarChartValor.value, coresFiltradas.value, [numeroSelected.value]])
-        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [numeroSelected.value]])
+        events.emit('updateBarraChartsRisco', [nomesContratosBarChart.value, riscoContratosBarChartRisco.value, coresFiltradas.value, [data],riscoSituacaoContratosBarChartRisco.value, riscoPossibilidadesContratosBarChartRisco.value])
         events.emit('updateRadialCharts', [porcentagensRadial.value, coresFiltradas.value]);
     });
 };

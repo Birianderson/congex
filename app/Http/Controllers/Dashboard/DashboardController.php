@@ -48,6 +48,8 @@ class DashboardController extends Controller
         $valoresContratos = [];
         $nomesContratos = [];
         $riscoContratos = [];
+        $riscoPossibilidadesContratos = [];
+        $riscoSituacaoContratos = [];
         $statusCount = [
             'V0' => 0,
             'V1' => 0,
@@ -78,6 +80,8 @@ class DashboardController extends Controller
             $status = $contrato->situacao;
             $valoresContratos[] = $contrato->valor_real;
             $riscoContratos[] = $contrato->risco->pontuacao ?? 0;
+            $riscoPossibilidadesContratos[] = $contrato->risco->possibilidades ?? '';
+            $riscoSituacaoContratos[] = $contrato->risco->situacao ?? '';
             $nomesContratos[] = $contrato->empresa->nome . ' - N° ' . $contrato->numero;
             $tempCargos = [];
             $tempPessoas = [];
@@ -127,8 +131,10 @@ class DashboardController extends Controller
         $valoresContratos = json_encode($valoresContratos);
         $nomesContratos = json_encode($nomesContratos);
         $riscoContratos = json_encode($riscoContratos);
+        $riscoPossibilidadesContratos = json_encode($riscoPossibilidadesContratos);
+        $riscoSituacaoContratos = json_encode($riscoSituacaoContratos);
 
-        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos', 'atencao', 'cargos_id', 'pessoas_id'));
+        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos','riscoPossibilidadesContratos','riscoSituacaoContratos', 'atencao', 'cargos_id', 'pessoas_id'));
     }
 }
 

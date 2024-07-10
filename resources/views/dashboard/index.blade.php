@@ -8,6 +8,8 @@
         porcentagens="{{ json_encode($porcentagens) }}"
         valor-total="{{json_encode($valortotal)}}"
         risco-contratos-bar-chart-risco="{{json_encode($riscoContratos)}}"
+        risco-possibilidades-contratos-bar-chart-risco="{{json_encode($riscoPossibilidadesContratos)}}"
+        risco-situacao-contratos-bar-chart-risco="{{json_encode($riscoSituacaoContratos)}}"
         atencao="{{json_encode($atencao)}}"
         pessoas_id="{{json_encode($pessoas_id)}}"
         cargos_id="{{json_encode($cargos_id)}}"

@@ -10,6 +10,8 @@ import {defineProps, inject, onMounted, ref} from "vue";
 const props = defineProps({
     series: {required: true},
     labels: {required: true},
+    situacao: {required: true},
+    possibilidades: {required: true}
 });
 
 let valores = ref([]);
@@ -18,6 +20,8 @@ let cores = ref([]);
 let numero = ref([]);
 let formattedValores = ref([]);
 let labels = ref([]);
+let possibilidades = ref([]);
+let situacao = ref([]);
 const chartOptions = ref({})
 const ready = ref(false);
 const events = inject('events');
@@ -26,6 +30,10 @@ onMounted(() => {
         numero.value = data[3]
         cores.value = [data[2]]
         valores.value = JSON.parse(data[1]);
+        situacao.value = JSON.parse(data[4]);
+        possibilidades.value = JSON.parse(data[5])
+        console.log(situacao.value, ' situacao.value')
+        console.log(possibilidades.value, ' possibilidades.value')
         formattedValores.value = [{
             data: valores.value,
             name: ''
@@ -45,6 +53,8 @@ onMounted(() => {
             },
             colors: cores.value[0][0],
             xaxis: {
+                min: 0,
+                max: 25,
                 categories: nomes,
                 showDuplicates: true,
                 labels: {
@@ -66,7 +76,9 @@ onMounted(() => {
             <div class="bg-${getCellClass((series[seriesIndex][dataPointIndex]))}-500 p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
             <div class="p-3">
             <span v-if="data" class= "text-${getCellClass((series[seriesIndex][dataPointIndex]))}-500"></span>
-                        <span>Pontuação do Risco: ${series[seriesIndex][dataPointIndex]} de 25</span>
+                        <div>Pontuação: ${series[seriesIndex][dataPointIndex]} de 25</div>
+                        <div>Tratamaento: ${possibilidades.value[dataPointIndex]}</div>
+                        <div>Situação: ${situacao.value[dataPointIndex]}</div>
             </div>
           </div>
         `;
@@ -75,11 +87,15 @@ onMounted(() => {
         };
     });
     try {
+
         valores.value = JSON.parse(props.series.data);
+        situacao.value = JSON.parse(props.situacao);
+        possibilidades.value = JSON.parse(props.possibilidades)
         formattedValores.value = [{
             data: valores.value,
             name: ''
         }];
+        console.log(formattedValores.value)
         nomes.value = JSON.parse(props.labels);
         ready.value = true;
     } catch (error) {
@@ -112,6 +128,8 @@ chartOptions.value = {
     },
     colors: ['#7367F0'],
     xaxis: {
+        min: 0,
+        max: 25,
         categories: nomes,
         showDuplicates: true,
         labels: {
@@ -127,13 +145,15 @@ chartOptions.value = {
     },
     tooltip: {
         enabledOnSeries: false,
-        custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        custom: function ({series, seriesIndex, dataPointIndex, w}) {
             return `
           <div class="card">
             <div class="bg-${getCellClass((series[seriesIndex][dataPointIndex]))}-500 p-3" style="color: white">${nomes.value[dataPointIndex]} </div>
-            <div class="p-3">
+            <div class="ms-2 mt-2">
             <span v-if="data" class=" icon-size-risco text-${getCellClass((series[seriesIndex][dataPointIndex]))}-500"></span>
-                        <span>Pontuação do Risco: ${series[seriesIndex][dataPointIndex]} de 25</span>
+                        <div>Pontuação: ${series[seriesIndex][dataPointIndex]} de 25</div>
+                        <div>Tratamaento: ${possibilidades.value[dataPointIndex]}</div>
+                        <div>Situação: ${situacao.value[dataPointIndex]}</div>
             </div>
           </div>
         `;
