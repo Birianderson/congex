@@ -1,5 +1,5 @@
 <template>
-    <div class=" card border-radius-termo shadow-termo">
+    <div class="card border-radius-termo shadow-termo">
         <div class="m-4">
             <div class="row">
                 <div class="col-5">
@@ -13,8 +13,7 @@
                 </div>
                 <div class="col-5">
                     <label for="cargo">Cargo</label>
-                    <select class="form-select" id="cargo" v-model="selectedCargo" :disabled="isButtonDisabled"
-                            name="cargo">
+                    <select class="form-select" id="cargo" v-model="selectedCargo" :disabled="isButtonDisabled" name="cargo">
                         <option disabled selected value="">Todos</option>
                         <option v-for="cargo in cargos" :key="cargo.id" :value="cargo.id">
                             {{ cargo.nome }}
@@ -22,7 +21,7 @@
                     </select>
                 </div>
                 <div class="col-2 align-content-end text-end">
-                    <button type="button" class="btn btn-primary me-1" @click="filtrar" :disabled="isButtonDisabled">
+                    <button type="button" class="btn me-1 text-white" :class="buttonClass" @click="filtrar">
                         Filtrar
                     </button>
                 </div>
@@ -31,18 +30,24 @@
     </div>
 </template>
 
+
 <script>
 import axios from 'axios';
-import {ref, onMounted, computed, inject} from 'vue';
+import { ref, onMounted, inject, computed } from 'vue';
 
 export default {
-    setup(props, {emit}) {
+    props: {
+        selecionado: { default: null, required: true }
+    },
+    setup(props, { emit }) {
         const selectedPessoa = ref('');
         const selectedCargo = ref('');
         const pessoas = ref([]);
+        const isButtonDisabled = ref(true);
         const cargos = ref([]);
         const events = inject('events');
-        const selecionado = ref();
+        const selecionado = ref(props.selecionado);
+
         const fetchPessoas = async () => {
             try {
                 const response = await axios.get('/pessoa/list');
@@ -86,16 +91,17 @@ export default {
             }
         };
 
+        const buttonClass = computed(() => `background-color-chart-${selecionado.value}`);
+
         onMounted(async () => {
-            fetchPessoas();
-            fetchCargos();
-            selecionado.value = props.selecionado
+            await fetchPessoas();
+            await fetchCargos();
             events.on("selecionadoTransmit", (data) => {
                 selecionado.value = parseInt(data);
             });
-            events.on("clearResponsabilidade", (data) => {
-                selectedPessoa.value = ''
-                selectedCargo.value = ''
+            events.on("clearResponsabilidade", () => {
+                selectedPessoa.value = '';
+                selectedCargo.value = '';
             });
         });
 
@@ -103,14 +109,15 @@ export default {
             selectedPessoa,
             selectedCargo,
             pessoas,
+            selecionado,
+            isButtonDisabled,
             cargos,
             filtrar,
+            buttonClass
         };
-    },
-    props: {
-        selecionado: {default: null, required: true}
     }
 };
+
 </script>
 
 <style>

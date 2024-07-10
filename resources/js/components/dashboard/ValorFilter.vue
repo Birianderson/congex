@@ -13,7 +13,7 @@
                            class="form-control" placeholder="R$ 10.000">
                 </div>
                 <div class="col-2 align-content-end text-end">
-                    <button type="button" class="btn btn-primary me-1" @click="filtrar">
+                    <button type="button" class="btn me-1 text-white" :class="buttonClass" @click="filtrar">
                         Filtrar
                     </button>
                 </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {ref, onMounted, inject} from 'vue';
+import {ref, onMounted, inject, computed} from 'vue';
 
 export default {
     setup(props, {emit}) {
@@ -62,6 +62,8 @@ export default {
             }
         };
 
+        const buttonClass = computed(() => `background-color-chart-${selecionado.value}`);
+
         onMounted(() => {
             selecionado.value = props.selecionado;
             events.on("selecionadoTransmit", (data) => {
@@ -78,7 +80,8 @@ export default {
             valorMaior,
             filtrar,
             formatValorMenor,
-            formatValorMaior
+            formatValorMaior,
+            buttonClass
         };
     },
     props: {
