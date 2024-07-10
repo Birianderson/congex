@@ -29,39 +29,66 @@
 }
 
 .background-color-chart-0 {
-    background-color: $color-end-0
+    background-color: $color-end-0;
+    &:hover, &:active {
+        background-color: darken($color-end-0, 10%);
+    }
 }
 
 .background-color-chart-1 {
-    background-color: $color-end-1
+    background-color: $color-end-1;
+    &:hover, &:active {
+        background-color: darken($color-end-1, 10%);
+    }
 }
 
 .background-color-chart-2 {
-    background-color: $color-end-2
+    background-color: $color-end-2;
+    &:hover, &:active {
+        background-color: darken($color-end-2, 10%);
+    }
 }
 
 .background-color-chart-3 {
-    background-color: $color-end-3
+    background-color: $color-end-3;
+    &:hover, &:active {
+        background-color: darken($color-end-3, 10%);
+    }
 }
 
 .background-color-chart-4 {
-    background-color: $color-end-4
+    background-color: $color-end-4;
+    &:hover, &:active {
+        background-color: darken($color-end-4, 10%);
+    }
 }
 
 .background-color-chart-5 {
-    background-color: $color-end-5
+    background-color: $color-end-5;
+    &:hover, &:active {
+        background-color: darken($color-end-5, 10%);
+    }
 }
 
 .background-color-chart-6 {
-    background-color: $color-end-6
+    background-color: $color-end-6;
+    &:hover, &:active {
+        background-color: darken($color-end-6, 10%);
+    }
 }
 
 .background-color-chart-7 {
-    background-color: $color-end-7
+    background-color: $color-end-7;
+    &:hover, &:active {
+        background-color: darken($color-end-7, 10%);
+    }
 }
 
 .background-color-chart-8 {
-    background-color: $color-end-8
+    background-color: $color-end-8;
+    &:hover, &:active {
+        background-color: darken($color-end-8, 10%);
+    }
 }
 
 .color-text-chart-0 {
