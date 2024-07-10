@@ -108,7 +108,7 @@ export default {
                 width: '15%',
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-secondary termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Termos"><i class="fa fa-search"></i></button>
+                        <button class="btn btn-sm btn-primary termo-btn" data-action="termo" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Termos"><i class="fa fa-search"></i></button>
                         <button class="btn btn-sm btn-primary risco-btn" data-action="risco" data-id="${row.id}" data-nome="${row.empresa.nome}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Riscos do Contrato"><i class="fa fa-warning"></i></button>
                     `;
                 }
@@ -184,7 +184,7 @@ export default {
             } else if (diffMonths >= 1 && diffMonths < 4) {
                 color = '#FFD700';
                 text = `${diffMonths} meses e ${diffDays % 30} dias`;
-            } else if (diffDays < 30) {
+            } else if (diffDays <= 30) {
                 color = 'red';
                 text = `${diffDays} dias`;
             }
