@@ -269,6 +269,11 @@ const filter = () => {
             pessoasIdArray.value[index] = pessoaIdStr.split(',').map(id => id.trim());
         })
         pessoasIdAtivo.value = []
+        cargosIdAtivo.value = JSON.parse(props.cargos_id);
+        cargosIdAtivo.value.forEach((cargosIdStr, index) => {
+            cargosIdArray.value[index] = cargosIdStr.split(',').map(id => id.trim());
+        })
+        cargosIdAtivo.value = []
         let valoresContratosArray = JSON.parse(props.valoresContratos);
         valoresContratosArray = JSON.parse(valoresContratosArray);
         let nomesContratosArray = JSON.parse(props.nomesContratos);
@@ -282,6 +287,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -293,6 +299,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -304,6 +311,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -315,6 +323,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -326,6 +335,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -337,6 +347,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -348,6 +359,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -359,6 +371,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
@@ -370,6 +383,7 @@ const filter = () => {
                     valoresFiltradosContratosData.value[countArray] = valoresContratosArray[i];
                     nomeFiltradosContratosData.value[countArray] = nomesContratosArray[i];
                     pessoasIdAtivo.value[countArray] = pessoasIdArray.value[i];
+                    cargosIdAtivo.value[countArray] = cargosIdArray.value[i];
                     countArray++;
                 }
             }
