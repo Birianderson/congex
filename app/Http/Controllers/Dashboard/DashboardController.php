@@ -69,6 +69,7 @@ class DashboardController extends Controller
         ];
         $valortotal = 0;
         $dividendo = 0;
+        $atencao = [];
         foreach ($contratos as $contrato) {
             if ($contrato->situacao != 'NV') {
                 $valortotal = $valortotal + $contrato->valor_real;
@@ -78,6 +79,14 @@ class DashboardController extends Controller
             $valoresContratos[] = $contrato->valor_real;
             $riscoContratos[] = $contrato->risco->pontuacao ?? 0;
             $nomesContratos[] = $contrato->empresa->nome . ' - N° ' . $contrato->numero;
+            $tempCargos = [];
+            $tempPessoas = [];
+            foreach ($contrato->responsabilidades as $responsabilidade) {
+                $tempCargos[] = $responsabilidade->cargo_id;
+                $tempPessoas[] = $responsabilidade->pessoa_id;
+            }
+            $cargos_id[] = implode(',', $tempCargos);
+            $pessoas_id[] = implode(',', $tempPessoas);
             $statusContratos[] = $contrato->situacao;
             if (array_key_exists($status, $statusCount)) {
                 $statusCount[$status]++;
@@ -87,7 +96,6 @@ class DashboardController extends Controller
             $quatroMesesFuturo = $hoje->copy()->addMonths(4);
             $atencao[] = ($dataFimReal->greaterThan($hoje) && $dataFimReal->lessThan($quatroMesesFuturo)) ? 1 : 0;
         }
-
         // Calcula a soma dos valores no array
         $total = array_sum($statusCount);
 
@@ -120,7 +128,7 @@ class DashboardController extends Controller
         $nomesContratos = json_encode($nomesContratos);
         $riscoContratos = json_encode($riscoContratos);
 
-        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos', 'atencao'));
+        return view('dashboard.index', compact('dataPizza', 'valoresContratos', 'nomesContratos', 'statusContratos', 'totalContratos', 'porcentagens', 'valortotal', 'riscoContratos', 'atencao', 'cargos_id', 'pessoas_id'));
     }
 }
 

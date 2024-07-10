@@ -1,5 +1,5 @@
 <template>
-    <div v-if="ready" id="chart">
+    <div v-if="ready" id="chartValor">
         <apexchart type="bar" height="350" :options="chartOptions" :series="formattedValores"></apexchart>
     </div>
 </template>

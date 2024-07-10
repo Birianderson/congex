@@ -51,7 +51,7 @@ export default {
             const valorMaiorNumerico = valorMaior.value.replace(/\D/g, '');
             events.emit('selecionaCard', selecionado.value);
             events.emit('filter', selecionado.value);
-            events.emit('filterValor', [valorMenorNumerico, valorMaiorNumerico]);
+            events.emit('filterValor', [valorMenorNumerico, valorMaiorNumerico, selecionado]);
         };
 
         onMounted(() => {

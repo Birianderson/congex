@@ -13,7 +13,8 @@
                 </div>
                 <div class="col-5">
                     <label for="cargo">Cargo</label>
-                    <select class="form-select" id="cargo" v-model="selectedCargo" :disabled="isButtonDisabled" name="cargo">
+                    <select class="form-select" id="cargo" v-model="selectedCargo" :disabled="isButtonDisabled"
+                            name="cargo">
                         <option disabled selected value="">Todos</option>
                         <option v-for="cargo in cargos" :key="cargo.id" :value="cargo.id">
                             {{ cargo.nome }}
@@ -21,7 +22,9 @@
                     </select>
                 </div>
                 <div class="col-2 align-content-end text-end">
-                    <button type="button" class="btn btn-primary me-1" :disabled="isButtonDisabled">Filtrar</button>
+                    <button type="button" class="btn btn-primary me-1" @click="filtrar" :disabled="isButtonDisabled">
+                        Filtrar
+                    </button>
                 </div>
             </div>
         </div>
@@ -33,7 +36,7 @@ import axios from 'axios';
 import {ref, onMounted, computed, inject} from 'vue';
 
 export default {
-    setup(props, { emit }) {
+    setup(props, {emit}) {
         const selectedPessoa = ref('');
         const selectedCargo = ref('');
         const pessoas = ref([]);
@@ -70,13 +73,25 @@ export default {
             return !selectedPessoa.value;
         });
 
+        const filtrar = () => {
+            if (selectedCargo.value !== '') {
+                events.emit('selecionaCard', selecionado.value);
+                events.emit('filter', selecionado.value);
+                events.emit('filterResponsabilidade', [filterResponsabilidade, valorMaiorNumerico]);
+            } else {
+                events.emit('selecionaCard', selecionado.value);
+                events.emit('filter', selecionado.value);
+                events.emit('filterPessoa', [selectedPessoa.value, selecionado.value]);
+            }
+        };
+
+
         onMounted(async () => {
             fetchPessoas();
             fetchCargos();
             selecionado.value = props.selecionado
             events.on("selecionadoTransmit", (data) => {
                 selecionado.value = parseInt(data);
-                console.log(selecionado.value,'responsabilidade filter')
             });
         });
 
@@ -86,10 +101,11 @@ export default {
             pessoas,
             cargos,
             isButtonDisabled,
+            filtrar,
         };
     },
     props: {
-        selecionado: { default: null, required: true }
+        selecionado: {default: null, required: true}
     }
 };
 </script>
