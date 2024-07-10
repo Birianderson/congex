@@ -41,7 +41,7 @@ Route::group(['prefix' => 'termo', 'namespace' => 'App\Http\Controllers\TermoCon
     Route::get('/historico/{id}',[TermoController::class, 'historico'])->name('termo.historico');
     Route::get('/{id}',[TermoController::class, 'edit'])->name('termo.edit');
     Route::post('/{id}',[TermoController::class, 'update'])->name('termo.update');
-    Route::post('/{id}/delete',[TermoController::class, 'delete'])->name('termo.delete');
+    Route::delete('/delete/{id}',[TermoController::class, 'delete'])->name('termo.delete');
 });
 
 Route::group(['prefix' => 'empresa', 'namespace' => 'App\Http\Controllers\EmpresaController'], function() {

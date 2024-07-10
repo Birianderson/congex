@@ -5,11 +5,11 @@
             <div class="row">
                 <div class="col-6 mb-4">
                     <label for="data_inicio" class="form-label" :class="{ 'required': !readOnly }">Início da Vigência</label>
-                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" :min="min_data_fim" v-model="min_data_fim" />
+                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" :min="min_data_fim" v-model="contrato.data_inicio" />
                 </div>
                 <div class="col-6 mb-4">
                     <label for="data_fim" class="form-label" :class="{ 'required': !readOnly }">Fim da Vigência</label>
-                    <input type="date" class="form-control" id="data_fim" name="data_fim" v-model="data_fim" />
+                    <input type="date" class="form-control" id="data_fim" name="data_fim" v-model="contrato.data_fim" />
                 </div>
             </div>
             <input type="hidden" :value="props.data" name="contrato_id">
@@ -63,35 +63,27 @@ export default {
 
         const fetchContrato = async () => {
             try {
-                const response = await axios.get(`/contrato/${props.data}`);
+                const response = await axios.get(`/termo/${props.data.id}`);
+                acao.value += props.data.id;
                 contrato.value = response.data;
-                console.log(contrato.value)
-                if (contrato.value.termos.length > 0) {
-                    min_data_fim.value = contrato.value.termos[contrato.value.termos.length - 1].data_fim
-                    data_fim.value = moment(min_data_fim.value).add(1, 'year').format('YYYY-MM-DD');
-                    valor.value = contrato.value.termos[contrato.value.termos.length - 1].valor
-
-                } else {
-                    min_data_fim.value = contrato.value.data_fim
-                    data_fim.value = moment(min_data_fim.value).add(1, 'year').format('YYYY-MM-DD');
-                    valor.value = contrato.value.valor
-                }
+                min_data_fim.value = contrato.value.data_fim
+                data_fim.value = moment(min_data_fim.value).add(1, 'year').format('YYYY-MM-DD');
+                valor.value = contrato.value.valor
 
                 ready.value = true;
             } catch (error) {
-                console.error('Erro ao buscar contrato:', error);
+                console.error('Erro ao buscar termo:', error);
             }
         };
 
         onMounted(async () => {
-            console.log(props.data)
             events.off("form-submitted");
             events.on("form-submitted", (sucesso) => {
                 if (sucesso) {
                     events.emit('reload', true);
                     events.emit('notification', {
                         type: 'success',
-                        message: 'Contrato salvo com Sucesso!'
+                        message: 'Termo salvo com Sucesso!'
                     });
                     emit('reload');
                     emit('close', true);

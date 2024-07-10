@@ -105,6 +105,8 @@ export default {
                         <button class="btn btn-sm btn-primary termo-btn" data-action="empenho" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar Empenhos"><i class="fa fa-search"></i></button>
                         <button class="btn btn-sm btn-primary termo-btn" data-action="arquivos" data-id="${row.id}" data-numero="${row.numero}" data-bs-toggle="tooltip" data-bs-placement="top" title="Arquivos"><i class="fa fa-paperclip"></i></button>
                         <a href="/empenho/controle_financeiro/${parseInt(row.contrato_id)}/termo/${row.id}" class="btn btn-sm btn-primary termo-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Empenhos"><i class="fa fa-folder"></i></a>
+                        <button class="btn btn-sm btn-primary edit-btn" data-action="edit" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar"><i class="fa fa-pencil"></i></button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-action="delete" data-id="${row.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover"><i class="fa fa-trash"></i></button>
                     `;
                 }
             }
@@ -120,6 +122,21 @@ export default {
                         component: 'controle-financeiro-empenho-grid',
                         size: 'xl',
                         data: { id: `${id}` },
+                    });
+                });
+            });
+
+            let editelements = document.querySelectorAll("[data-action=edit]");
+            editelements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    events.emit('popup', {
+                        title: 'Editar Contrato',
+                        component: 'form-termo',
+                        size: 'xl',
+                        data: {
+                            id: `${id}`,
+                        },
                     });
                 });
             });
@@ -142,6 +159,22 @@ export default {
                             loadData: '/termo/get_arquivos/',
                             fetchTipoArquivo: '/tipo-arquivo/getByTabela/termo',
                             getDownloadUrl: '/termo/download/'
+                        },
+                    });
+                });
+            });
+
+            let deleteElements = document.querySelectorAll("[data-action=delete]");
+            deleteElements.forEach(item => {
+                item.addEventListener('click', (evt) => {
+                    let id = evt.currentTarget.getAttribute('data-id');
+                    events.emit('loading', true);
+                    events.emit('popup', {
+                        title: `Deletar Contrato`,
+                        component: 'popup-delete',
+                        data: {
+                            acao: '/termo/delete/',
+                            id: `${id}`,
                         },
                     });
                 });

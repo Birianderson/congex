@@ -79,8 +79,10 @@ class TermoRepository implements TermoContract {
         try {
             $Termo = $this->getById($id);
             $Termo->update([
-                'nome' => $params['nome'],
-                'cpf' => $params['cpf'],
+                'observacao' => $params['observacao'] ?? '',
+                'data_inicio'=>$params['data_inicio'],
+                'data_fim'=>$params['data_fim'],
+                'valor'=>  $params['valor'],
             ]);
             $autoCommit && DB::commit();
             return true;
